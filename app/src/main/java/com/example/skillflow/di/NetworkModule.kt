@@ -49,4 +49,10 @@ object NetworkModule {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .build()
     }
+
+    @Provides
+    @Singleton
+    fun provideSkillApi(retrofit: Retrofit): com.example.skillflow.data.remote.SkillApi {
+        return retrofit.create(com.example.skillflow.data.remote.SkillApi::class.java)
+    }
 }
