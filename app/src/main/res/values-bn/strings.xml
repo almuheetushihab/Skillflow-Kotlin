@@ -14,6 +14,10 @@
     <string name="send_reset_link">রিসেট লিঙ্ক পাঠান</string>
     <string name="welcome_back">স্বাগতম!</string>
     <string name="create_account">অ্যাকাউন্ট তৈরি করুন</string>
+    <string name="name">নাম</string>
+    <string name="reset_password_hint">পাসওয়ার্ড রিসেট লিঙ্ক পেতে আপনার ইমেল লিখুন।</string>
+    <string name="reset_link_sent">%1$s এ রিসেট লিঙ্ক পাঠানো হয়েছে!</string>
+    <string name="back_to_login">লগইনে ফিরে যান</string>
 
     <!-- Onboarding -->
     <string name="welcome_to_skillflow">স্কিলফ্লোতে স্বাগতম</string>

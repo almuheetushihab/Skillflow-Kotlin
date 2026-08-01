@@ -82,4 +82,42 @@ class SettingsRepositoryImpl @Inject constructor(
             preferences[PreferencesKeys.LAST_ACTIVITY_DATE] = date
         }
     }
+
+    private object NewPreferencesKeys {
+        val LANGUAGE = stringPreferencesKey("language")
+        val LEARNING_TIME = intPreferencesKey("learning_time") // Store in minutes
+        val USER_EMAIL = stringPreferencesKey("user_email")
+        val USER_NAME = stringPreferencesKey("user_name")
+    }
+
+    override fun getLanguage(): Flow<String> = dataStore.data.map { it[NewPreferencesKeys.LANGUAGE] ?: "en" }
+
+    override suspend fun setLanguage(languageCode: String) {
+        dataStore.edit { it[NewPreferencesKeys.LANGUAGE] = languageCode }
+    }
+
+    override fun getLearningTime(): Flow<Long> = dataStore.data.map { (it[NewPreferencesKeys.LEARNING_TIME] ?: 0).toLong() }
+
+    override suspend fun addLearningTime(minutes: Long) {
+        dataStore.edit { 
+            val current = it[NewPreferencesKeys.LEARNING_TIME] ?: 0
+            it[NewPreferencesKeys.LEARNING_TIME] = current + minutes.toInt()
+        }
+    }
+
+    override fun getUserEmail(): Flow<String?> = dataStore.data.map { it[NewPreferencesKeys.USER_EMAIL] }
+
+    override suspend fun setUserEmail(email: String) {
+        dataStore.edit { it[NewPreferencesKeys.USER_EMAIL] = email }
+    }
+
+    override fun getUserName(): Flow<String?> = dataStore.data.map { it[NewPreferencesKeys.USER_NAME] }
+
+    override suspend fun setUserName(name: String) {
+        dataStore.edit { it[NewPreferencesKeys.USER_NAME] = name }
+    }
+
+    override suspend fun clearSession() {
+        dataStore.edit { it.clear() }
+    }
 }

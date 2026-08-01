@@ -13,4 +13,15 @@ interface SettingsRepository {
     suspend fun updateStreak(count: Int)
     fun getLastActivityDate(): Flow<String?>
     suspend fun updateLastActivityDate(date: String)
+    
+    // New Feature Methods
+    fun getLanguage(): Flow<String>
+    suspend fun setLanguage(languageCode: String)
+    fun getLearningTime(): Flow<Long>
+    suspend fun addLearningTime(minutes: Long)
+    fun getUserEmail(): Flow<String?>
+    suspend fun setUserEmail(email: String)
+    fun getUserName(): Flow<String?>
+    suspend fun setUserName(name: String)
+    suspend fun clearSession()
 }

@@ -1,17 +1,14 @@
 package com.example.skillflow.ui.common
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -19,6 +16,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.spacing
 
 @Composable
 fun AuthTextField(
@@ -40,13 +38,19 @@ fun AuthTextField(
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             isError = error != null,
-            singleLine = true
+            singleLine = true,
+            colors = OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = GradientStart,
+                unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                errorBorderColor = MaterialTheme.colorScheme.error
+            )
         )
         if (error != null) {
             Text(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = MaterialTheme.spacing.small, top = 4.dp)
             )
         }
     }
@@ -65,6 +69,11 @@ fun AuthButton(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
+            .shadow(
+                elevation = if (enabled) 8.dp else 0.dp,
+                shape = RoundedCornerShape(28.dp),
+                spotColor = GradientStart
+            )
             .clip(RoundedCornerShape(28.dp))
             .background(
                 if (enabled) Brush.linearGradient(listOf(GradientStart, GradientEnd))
