@@ -1,0 +1,13 @@
+package com.example.skillflow.domain.repository
+
+import com.example.skillflow.domain.model.CareerPath
+import com.example.skillflow.domain.model.KnowledgeNugget
+import kotlinx.coroutines.flow.Flow
+
+interface SkillRepository {
+    fun getDailyNuggets(careerPathId: String): Flow<List<KnowledgeNugget>>
+    fun getSavedNuggets(): Flow<List<KnowledgeNugget>>
+    suspend fun toggleSaveNugget(nuggetId: String)
+    suspend fun markNuggetAsDone(nuggetId: String)
+    fun getCareerPaths(): Flow<List<CareerPath>>
+}
