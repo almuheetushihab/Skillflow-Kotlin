@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavType
@@ -63,7 +65,10 @@ fun SkillFlowAppContent() {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar {
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp
+                ) {
                     val items = listOf(
                         Triple(Screen.Home, "Home", Icons.Default.Home),
                         Triple(Screen.Roadmap, "Roadmap", Icons.Default.Route),
@@ -73,7 +78,7 @@ fun SkillFlowAppContent() {
                     items.forEach { (screen, label, icon) ->
                         NavigationBarItem(
                             icon = { Icon(icon, contentDescription = label) },
-                            label = { Text(label) },
+                            label = { Text(label, style = MaterialTheme.typography.labelMedium) },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
                                 navController.navigate(screen.route) {
@@ -93,7 +98,11 @@ fun SkillFlowAppContent() {
         NavHost(
             navController = navController,
             startDestination = Screen.Onboarding.route,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(innerPadding),
+            enterTransition = { slideInHorizontally { it } + fadeIn() },
+            exitTransition = { slideOutHorizontally { -it } + fadeOut() },
+            popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
+            popExitTransition = { slideOutHorizontally { it } + fadeOut() }
         ) {
             composable(Screen.Onboarding.route) {
                 OnboardingScreen(onNavigateToHome = {

@@ -1,20 +1,22 @@
 package com.example.skillflow.ui.detail
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.presentation.detail.DetailViewModel
+import com.example.skillflow.ui.theme.GradientEnd
+import com.example.skillflow.ui.theme.GradientStart
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,16 +38,24 @@ fun DetailScreen(
 
     val rotation by animateFloatAsState(
         targetValue = if (state.isFlipped) 180f else 0f,
-        animationSpec = tween(durationMillis = 500)
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        )
+    )
+
+    val backgroundGradient = Brush.verticalGradient(
+        listOf(MaterialTheme.colorScheme.background, MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
     )
 
     Scaffold(
+        modifier = Modifier.background(backgroundGradient),
         topBar = {
             TopAppBar(
-                title = { Text("Knowledge Nugget") },
+                title = { Text("Daily nugget", style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
                 actions = {
@@ -51,7 +63,8 @@ fun DetailScreen(
                         IconButton(onClick = { viewModel.toggleSave() }) {
                             Icon(
                                 imageVector = if (nugget.isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                                contentDescription = "Save"
+                                contentDescription = "Save",
+                                tint = if (nugget.isSaved) GradientStart else MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }
@@ -68,78 +81,124 @@ fun DetailScreen(
         ) {
             if (nugget == null) {
                 if (state.isLoading) {
-                    CircularProgressIndicator()
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = GradientStart)
+                    }
                 } else {
-                    Text("Nugget not found")
+                    Text("Oops! Content not found.")
                 }
             } else {
+                Text(
+                    text = "Tap the card to reveal knowledge",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(400.dp)
+                        .height(420.dp)
                         .graphicsLayer {
                             rotationY = rotation
-                            cameraDistance = 12f * density
+                            cameraDistance = 15f * density
                         }
                         .clickable { viewModel.flipCard() },
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                    shape = RoundedCornerShape(32.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 12.dp)
                 ) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         if (rotation <= 90f) {
-                            // Front side
-                            Column(
+                            // Front
+                            Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(24.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                                    .background(Brush.linearGradient(listOf(GradientStart, GradientEnd))),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = nugget.title,
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    textAlign = TextAlign.Center,
-                                    fontWeight = FontWeight.Bold
-                                )
-                                Spacer(modifier = Modifier.height(16.dp))
-                                Text(
-                                    text = "Tap to reveal answer",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
+                                Column(
+                                    modifier = Modifier.padding(32.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Surface(
+                                        shape = CircleShape,
+                                        color = Color.White.copy(alpha = 0.2f),
+                                        modifier = Modifier.size(64.dp)
+                                    ) {
+                                        Icon(
+                                            Icons.Default.QuestionMark,
+                                            contentDescription = null,
+                                            tint = Color.White,
+                                            modifier = Modifier.padding(16.dp)
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    Text(
+                                        text = nugget.title,
+                                        style = MaterialTheme.typography.displaySmall,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.White
+                                    )
+                                }
                             }
                         } else {
-                            // Back side
-                            Column(
+                            // Back
+                            Box(
                                 modifier = Modifier
                                     .fillMaxSize()
-                                    .padding(24.dp)
-                                    .graphicsLayer { rotationY = 180f },
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center
+                                    .graphicsLayer { rotationY = 180f }
+                                    .background(MaterialTheme.colorScheme.surface),
+                                contentAlignment = Alignment.Center
                             ) {
-                                Text(
-                                    text = nugget.content,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    lineHeight = 24.sp,
-                                    textAlign = TextAlign.Center
-                                )
+                                Column(
+                                    modifier = Modifier.padding(32.dp),
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    Icon(
+                                        Icons.Default.Lightbulb,
+                                        contentDescription = null,
+                                        tint = GradientStart,
+                                        modifier = Modifier.size(48.dp)
+                                    )
+                                    Spacer(modifier = Modifier.height(24.dp))
+                                    Text(
+                                        text = nugget.content,
+                                        style = MaterialTheme.typography.headlineSmall,
+                                        lineHeight = 32.sp,
+                                        textAlign = TextAlign.Center,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                }
                             }
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.weight(1f))
 
                 Button(
                     onClick = { viewModel.markAsDone() },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = !nugget.isDone,
-                    shape = MaterialTheme.shapes.medium
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .clip(RoundedCornerShape(28.dp))
+                        .background(
+                            if (!nugget.isDone) Brush.linearGradient(listOf(GradientStart, GradientEnd))
+                            else Brush.linearGradient(listOf(Color.Gray, Color.LightGray))
+                        ),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    enabled = !nugget.isDone
                 ) {
-                    Icon(Icons.Default.Check, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = if (nugget.isDone) "Learned" else "Mark as Done")
+                    Icon(Icons.Default.CheckCircle, contentDescription = null)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = if (nugget.isDone) "Knowledge Mastered" else "Mark as Learned",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
