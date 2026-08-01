@@ -3,25 +3,27 @@ package com.example.skillflow.ui.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
+import com.example.skillflow.presentation.auth.AuthState
 import com.example.skillflow.presentation.auth.AuthViewModel
-import com.example.skillflow.ui.theme.GradientEnd
+import com.example.skillflow.ui.common.AuthButton
+import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
+import com.example.skillflow.ui.theme.spacing
 
 @Composable
 fun LoginScreen(
@@ -40,6 +42,29 @@ fun LoginScreen(
         }
     }
 
+    LoginContent(
+        state = state,
+        email = email,
+        password = password,
+        onEmailChange = { email = it },
+        onPasswordChange = { password = it },
+        onLoginClick = { viewModel.login(email, password) },
+        onNavigateToSignUp = onNavigateToSignUp,
+        onNavigateToForgotPassword = onNavigateToForgotPassword
+    )
+}
+
+@Composable
+fun LoginContent(
+    state: AuthState,
+    email: String,
+    password: String,
+    onEmailChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit,
+    onNavigateToSignUp: () -> Unit,
+    onNavigateToForgotPassword: () -> Unit
+) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
@@ -48,7 +73,7 @@ fun LoginScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(MaterialTheme.spacing.large),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -58,27 +83,24 @@ fun LoginScreen(
                 color = GradientStart,
                 fontWeight = FontWeight.ExtraBold
             )
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
-            OutlinedTextField(
+            AuthTextField(
                 value = email,
-                onValueChange = { email = it },
-                label = { Text(stringResource(R.string.email)) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp)
+                onValueChange = onEmailChange,
+                label = stringResource(R.string.email),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
-            OutlinedTextField(
+            AuthTextField(
                 value = password,
-                onValueChange = { password = it },
-                label = { Text(stringResource(R.string.password)) },
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
+                onValueChange = onPasswordChange,
+                label = stringResource(R.string.password),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
 
             Text(
                 text = stringResource(R.string.forgot_password),
@@ -89,31 +111,15 @@ fun LoginScreen(
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
-            Button(
-                onClick = { viewModel.login(email, password) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(28.dp))
-                    .background(Brush.linearGradient(listOf(GradientStart, GradientEnd))),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                enabled = !state.isLoading
-            ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
-                } else {
-                    Text(
-                        stringResource(R.string.login),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
-            }
+            AuthButton(
+                text = stringResource(R.string.login),
+                onClick = onLoginClick,
+                isLoading = state.isLoading
+            )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
             Text(
                 text = stringResource(R.string.dont_have_account),
@@ -122,9 +128,30 @@ fun LoginScreen(
             )
 
             if (state.error != null) {
-                Spacer(modifier = Modifier.height(16.dp))
-                Text(text = state.error!!, color = MaterialTheme.colorScheme.error)
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Text(
+                    text = state.error,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LoginContentPreview() {
+    SkillflowTheme {
+        LoginContent(
+            state = AuthState(),
+            email = "",
+            password = "",
+            onEmailChange = {},
+            onPasswordChange = {},
+            onLoginClick = {},
+            onNavigateToSignUp = {},
+            onNavigateToForgotPassword = {}
+        )
     }
 }

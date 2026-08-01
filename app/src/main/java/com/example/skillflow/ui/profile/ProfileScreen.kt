@@ -19,14 +19,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
+import com.example.skillflow.presentation.profile.ProfileState
 import com.example.skillflow.presentation.profile.ProfileViewModel
-import com.example.skillflow.ui.theme.GradientEnd
+import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
+import com.example.skillflow.ui.theme.spacing
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
     onResetOnboarding: () -> Unit,
@@ -34,29 +37,37 @@ fun ProfileScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    ProfileContent(
+        state = state,
+        onToggleDarkMode = viewModel::toggleDarkMode,
+        onResetOnboarding = {
+            viewModel.resetOnboarding()
+            onResetOnboarding()
+        }
+    )
+}
+
+@Composable
+fun ProfileContent(
+    state: ProfileState,
+    onToggleDarkMode: () -> Unit,
+    onResetOnboarding: () -> Unit
+) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
 
     Scaffold(
         modifier = Modifier.background(backgroundGradient),
-        topBar = { 
-            CenterAlignedTopAppBar(
-                title = { 
-                    Text(
-                        stringResource(R.string.my_profile), 
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    ) 
-                }
-            )
+        topBar = {
+            SkillflowTopAppBar(title = stringResource(R.string.my_profile))
         }
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(24.dp),
+                .padding(MaterialTheme.spacing.large),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Surface(
@@ -69,12 +80,12 @@ fun ProfileScreen(
                 Icon(
                     imageVector = Icons.Default.Person,
                     contentDescription = null,
-                    modifier = Modifier.padding(20.dp),
+                    modifier = Modifier.padding(MaterialTheme.spacing.large - 4.dp),
                     tint = GradientStart
                 )
             }
             
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             
             Text(
                 text = stringResource(R.string.learner_profile),
@@ -85,7 +96,7 @@ fun ProfileScreen(
             Surface(
                 shape = RoundedCornerShape(12.dp),
                 color = GradientStart.copy(alpha = 0.1f),
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier.padding(top = MaterialTheme.spacing.small)
             ) {
                 Text(
                     text = stringResource(R.string.career_goal, state.careerPathId ?: "Not set"),
@@ -96,7 +107,7 @@ fun ProfileScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -105,7 +116,7 @@ fun ProfileScreen(
                 elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
                 border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             ) {
-                Column(modifier = Modifier.padding(8.dp)) {
+                Column(modifier = Modifier.padding(MaterialTheme.spacing.small)) {
                     ListItem(
                         headlineContent = { Text(stringResource(R.string.settings), fontWeight = FontWeight.Bold) },
                         leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
@@ -116,7 +127,7 @@ fun ProfileScreen(
                         trailingContent = {
                             Switch(
                                 checked = state.isDarkMode,
-                                onCheckedChange = { viewModel.toggleDarkMode() }
+                                onCheckedChange = { onToggleDarkMode() }
                             )
                         }
                     )
@@ -132,10 +143,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { 
-                    viewModel.resetOnboarding()
-                    onResetOnboarding()
-                },
+                onClick = onResetOnboarding,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp)
@@ -143,9 +151,25 @@ fun ProfileScreen(
                     .background(Brush.linearGradient(listOf(Color(0xFFFF5252), Color(0xFFFF1744)))),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
             ) {
-                Text(stringResource(R.string.reset_learning_goal), fontWeight = FontWeight.Bold, color = Color.White)
+                Text(
+                    text = stringResource(R.string.reset_learning_goal),
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileContentPreview() {
+    SkillflowTheme {
+        ProfileContent(
+            state = ProfileState(careerPathId = "Android Developer", isDarkMode = false),
+            onToggleDarkMode = {},
+            onResetOnboarding = {}
+        )
     }
 }

@@ -14,6 +14,10 @@
     <string name="send_reset_link">Send Reset Link</string>
     <string name="welcome_back">Welcome Back!</string>
     <string name="create_account">Create Account</string>
+    <string name="name">Name</string>
+    <string name="reset_password_hint">Enter your email to receive a password reset link.</string>
+    <string name="reset_link_sent">Reset link sent to %1$s!</string>
+    <string name="back_to_login">Back to Login</string>
 
     <!-- Onboarding -->
     <string name="welcome_to_skillflow">Welcome to SkillFlow</string>

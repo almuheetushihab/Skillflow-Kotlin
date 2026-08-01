@@ -1,7 +1,5 @@
 package com.example.skillflow.ui.onboarding
 
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -17,13 +15,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
+import com.example.skillflow.domain.model.CareerPath
+import com.example.skillflow.presentation.onboarding.OnboardingState
 import com.example.skillflow.presentation.onboarding.OnboardingViewModel
+import com.example.skillflow.ui.common.LoadingView
+import com.example.skillflow.ui.onboarding.components.CareerPathItem
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
+import com.example.skillflow.ui.theme.spacing
 
 @Composable
 fun OnboardingScreen(
@@ -38,6 +42,19 @@ fun OnboardingScreen(
         }
     }
 
+    OnboardingContent(
+        state = state,
+        onCareerPathSelected = viewModel::selectCareerPath,
+        onCompleteOnboarding = viewModel::completeOnboarding
+    )
+}
+
+@Composable
+fun OnboardingContent(
+    state: OnboardingState,
+    onCareerPathSelected: (String) -> Unit,
+    onCompleteOnboarding: () -> Unit
+) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.05f), MaterialTheme.colorScheme.background)
     )
@@ -50,10 +67,10 @@ fun OnboardingScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(24.dp),
+                    .padding(MaterialTheme.spacing.large),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(64.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraExtraLarge))
                 
                 Text(
                     text = stringResource(R.string.app_name),
@@ -62,7 +79,7 @@ fun OnboardingScreen(
                     fontWeight = FontWeight.ExtraBold
                 )
                 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
                 
                 Text(
                     text = stringResource(R.string.micro_learning_subtitle),
@@ -80,79 +97,38 @@ fun OnboardingScreen(
                     modifier = Modifier.align(Alignment.Start)
                 )
                 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
                 if (state.isLoading) {
-                    Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator(color = GradientStart)
-                    }
+                    LoadingView(modifier = Modifier.weight(1f))
                 } else {
                     LazyColumn(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
                     ) {
-                        itemsIndexed(state.careerPaths) { index, path ->
-                            val isSelected = state.selectedCareerPathId == path.id
-                            
-                            Surface(
-                                onClick = { viewModel.selectCareerPath(path.id) },
-                                shape = RoundedCornerShape(20.dp),
-                                color = if (isSelected) GradientStart.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface,
-                                border = androidx.compose.foundation.BorderStroke(
-                                    2.dp, 
-                                    if (isSelected) GradientStart else MaterialTheme.colorScheme.outlineVariant
-                                ),
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Row(
-                                    modifier = Modifier.padding(20.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(if (isSelected) GradientStart else MaterialTheme.colorScheme.secondaryContainer),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Text(
-                                            path.name.take(1),
-                                            color = if (isSelected) Color.White else MaterialTheme.colorScheme.primary,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Column {
-                                        Text(
-                                            text = path.name,
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Bold
-                                        )
-                                        Text(
-                                            text = path.description,
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-                                    }
-                                }
-                            }
+                        itemsIndexed(state.careerPaths) { _, path ->
+                            CareerPathItem(
+                                path = path,
+                                isSelected = state.selectedCareerPathId == path.id,
+                                onClick = { onCareerPathSelected(path.id) }
+                            )
                         }
                     }
                 }
 
                 if (state.error != null) {
                     Text(
-                        text = state.error!!,
+                        text = state.error,
                         color = MaterialTheme.colorScheme.error,
                         style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(vertical = 8.dp)
+                        modifier = Modifier.padding(vertical = MaterialTheme.spacing.small)
                     )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
                 
                 Button(
-                    onClick = { viewModel.completeOnboarding() },
+                    onClick = onCompleteOnboarding,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
@@ -167,8 +143,38 @@ fun OnboardingScreen(
                         color = Color.White
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnboardingContentPreview() {
+    SkillflowTheme {
+        OnboardingContent(
+            state = OnboardingState(
+                careerPaths = listOf(
+                    CareerPath("1", "Android Developer", "Build amazing mobile apps", ""),
+                    CareerPath("2", "Backend Engineer", "Design scalable systems", "")
+                ),
+                selectedCareerPathId = "1"
+            ),
+            onCareerPathSelected = {},
+            onCompleteOnboarding = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnboardingContentLoadingPreview() {
+    SkillflowTheme {
+        OnboardingContent(
+            state = OnboardingState(isLoading = true),
+            onCareerPathSelected = {},
+            onCompleteOnboarding = {}
+        )
     }
 }

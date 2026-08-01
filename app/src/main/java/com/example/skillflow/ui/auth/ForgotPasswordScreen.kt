@@ -2,21 +2,25 @@ package com.example.skillflow.ui.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
-import com.example.skillflow.ui.theme.GradientEnd
+import com.example.skillflow.ui.common.AuthButton
+import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
+import com.example.skillflow.ui.theme.spacing
 
 @Composable
 fun ForgotPasswordScreen(
@@ -25,6 +29,23 @@ fun ForgotPasswordScreen(
     var email by remember { mutableStateOf("") }
     var isSubmitted by remember { mutableStateOf(false) }
 
+    ForgotPasswordContent(
+        email = email,
+        isSubmitted = isSubmitted,
+        onEmailChange = { email = it },
+        onSubmit = { isSubmitted = true },
+        onNavigateBack = onNavigateBack
+    )
+}
+
+@Composable
+fun ForgotPasswordContent(
+    email: String,
+    isSubmitted: Boolean,
+    onEmailChange: (String) -> Unit,
+    onSubmit: () -> Unit,
+    onNavigateBack: () -> Unit
+) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
@@ -33,7 +54,7 @@ fun ForgotPasswordScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp),
+                .padding(MaterialTheme.spacing.large),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -43,56 +64,59 @@ fun ForgotPasswordScreen(
                 color = GradientStart,
                 fontWeight = FontWeight.ExtraBold
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             Text(
-                text = "Enter your email to receive a password reset link.",
+                text = stringResource(R.string.reset_password_hint),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
 
             if (!isSubmitted) {
-                OutlinedTextField(
+                AuthTextField(
                     value = email,
-                    onValueChange = { email = it },
-                    label = { Text(stringResource(R.string.email)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
+                    onValueChange = onEmailChange,
+                    label = stringResource(R.string.email),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
 
-                Button(
-                    onClick = { isSubmitted = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .clip(RoundedCornerShape(28.dp))
-                        .background(Brush.linearGradient(listOf(GradientStart, GradientEnd))),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
-                ) {
-                    Text(
-                        stringResource(R.string.send_reset_link),
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
-                }
+                AuthButton(
+                    text = stringResource(R.string.send_reset_link),
+                    onClick = onSubmit,
+                    enabled = email.isNotEmpty()
+                )
             } else {
                 Text(
-                    text = "Reset link sent to $email!",
+                    text = stringResource(R.string.reset_link_sent, email),
                     color = Color(0xFF4CAF50),
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
                 Button(
                     onClick = onNavigateBack,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Back to Login")
+                    Text(stringResource(R.string.back_to_login))
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ForgotPasswordContentPreview() {
+    SkillflowTheme {
+        ForgotPasswordContent(
+            email = "user@example.com",
+            isSubmitted = false,
+            onEmailChange = {},
+            onSubmit = {},
+            onNavigateBack = {}
+        )
     }
 }
