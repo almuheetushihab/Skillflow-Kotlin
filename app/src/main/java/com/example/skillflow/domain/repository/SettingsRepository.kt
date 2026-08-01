@@ -7,6 +7,8 @@ interface SettingsRepository {
     suspend fun saveSelectedCareerPath(careerPathId: String)
     fun isOnboardingCompleted(): Flow<Boolean>
     suspend fun setOnboardingCompleted(completed: Boolean)
+    fun isLoggedIn(): Flow<Boolean>
+    suspend fun setLoggedIn(loggedIn: Boolean)
     fun getStreakCount(): Flow<Int>
     suspend fun updateStreak(count: Int)
     fun getLastActivityDate(): Flow<String?>

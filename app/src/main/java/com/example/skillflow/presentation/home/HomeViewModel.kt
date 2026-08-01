@@ -15,6 +15,9 @@ import javax.inject.Inject
 
 data class HomeState(
     val dailyNuggets: List<KnowledgeNugget> = emptyList(),
+    val searchResults: List<KnowledgeNugget> = emptyList(),
+    val searchQuery: String = "",
+    val isSearching: Boolean = false,
     val streakCount: Int = 0,
     val isLoading: Boolean = false,
     val error: String? = null,
@@ -62,6 +65,21 @@ class HomeViewModel @Inject constructor(
                 .collect { nuggets ->
                     _state.update { it.copy(isLoading = false, dailyNuggets = nuggets) }
                     checkAndUpdateStreak()
+                }
+        }
+    }
+
+    fun onSearchQueryChange(query: String) {
+        _state.update { it.copy(searchQuery = query, isSearching = query.isNotEmpty()) }
+        if (query.isEmpty()) {
+            _state.update { it.copy(searchResults = emptyList()) }
+            return
+        }
+        
+        viewModelScope.launch {
+            skillRepository.searchNuggets(query)
+                .collect { results ->
+                    _state.update { it.copy(searchResults = results) }
                 }
         }
     }

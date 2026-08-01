@@ -10,4 +10,5 @@ interface SkillRepository {
     suspend fun toggleSaveNugget(nuggetId: String)
     suspend fun markNuggetAsDone(nuggetId: String)
     fun getCareerPaths(): Flow<List<CareerPath>>
+    fun searchNuggets(query: String): Flow<List<KnowledgeNugget>>
 }

@@ -1,3 +1,68 @@
 <resources>
-    <string name="app_name">Skillflow</string>
+    <string name="app_name">SkillFlow</string>
+
+    <!-- Auth -->
+    <string name="login">Login</string>
+    <string name="signup">Sign Up</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="dont_have_account">Don\'t have an account? Sign Up</string>
+    <string name="already_have_account">Already have an account? Login</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="send_reset_link">Send Reset Link</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="create_account">Create Account</string>
+
+    <!-- Onboarding -->
+    <string name="welcome_to_skillflow">Welcome to SkillFlow</string>
+    <string name="micro_learning_subtitle">Micro-learning, Maximum Growth.</string>
+    <string name="select_career_goal">Select your career path</string>
+    <string name="begin_journey">Begin My Journey</string>
+    <string name="please_select_goal">Please select a career goal</string>
+
+    <!-- Home -->
+    <string name="daily_goals">Daily Goals</string>
+    <string name="streak">Streak</string>
+    <string name="daily_progress">Daily Progress</string>
+    <string name="nuggets_learned">%1$d of %2$d Knowledge Nuggets Learned</string>
+    <string name="todays_nuggets">Today\'s Nuggets</string>
+    <string name="ready_to_explore">Ready to Explore</string>
+    <string name="mastered">Mastered</string>
+    <string name="search_hint">Search knowledge...</string>
+    <string name="search_results">Search Results</string>
+
+    <!-- Detail -->
+    <string name="knowledge_nugget">Knowledge Nugget</string>
+    <string name="tap_to_reveal">Tap the card to reveal knowledge</string>
+    <string name="mark_as_learned">Mark as Learned</string>
+    <string name="knowledge_mastered">Knowledge Mastered</string>
+    <string name="tap_to_reveal_answer">Tap to reveal answer</string>
+    <string name="nugget_not_found">Oops! Content not found.</string>
+
+    <!-- Roadmap -->
+    <string name="my_journey">My Journey</string>
+    <string name="actively_learning">Actively Learning</string>
+    <string name="career_roadmap">Career Roadmap</string>
+
+    <!-- Bookmarks -->
+    <string name="saved_nuggets">Saved Nuggets</string>
+    <string name="no_bookmarks">No bookmarks yet</string>
+    <string name="bookmarks_empty_hint">Saved nuggets will appear here</string>
+
+    <!-- Profile -->
+    <string name="my_profile">My Profile</string>
+    <string name="learner_profile">Learner Profile</string>
+    <string name="career_goal">Career Goal: %1$s</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="daily_reminders">Daily Reminders</string>
+    <string name="reset_learning_goal">Reset Learning Goal</string>
+    <string name="settings">App Settings</string>
+
+    <!-- Quiz -->
+    <string name="daily_quiz">Daily Quiz</string>
+    <string name="question_count">Question %1$d</string>
+    <string name="submit">Submit</string>
+    <string name="finish_quiz">Finish Quiz</string>
 </resources>

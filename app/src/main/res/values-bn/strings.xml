@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">স্কিলফ্লো</string>
+
+    <!-- Auth -->
+    <string name="login">লগইন</string>
+    <string name="signup">সাইন আপ</string>
+    <string name="email">ইমেইল</string>
+    <string name="password">পাসওয়ার্ড</string>
+    <string name="confirm_password">পাসওয়ার্ড নিশ্চিত করুন</string>
+    <string name="forgot_password">পাসওয়ার্ড ভুলে গেছেন?</string>
+    <string name="dont_have_account">অ্যাকাউন্ট নেই? সাইন আপ করুন</string>
+    <string name="already_have_account">ইতিমধ্যেই অ্যাকাউন্ট আছে? লগইন করুন</string>
+    <string name="reset_password">পাসওয়ার্ড রিসেট</string>
+    <string name="send_reset_link">রিসেট লিঙ্ক পাঠান</string>
+    <string name="welcome_back">স্বাগতম!</string>
+    <string name="create_account">অ্যাকাউন্ট তৈরি করুন</string>
+
+    <!-- Onboarding -->
+    <string name="welcome_to_skillflow">স্কিলফ্লোতে স্বাগতম</string>
+    <string name="micro_learning_subtitle">ক্ষুদ্র শিক্ষা, বিশাল উন্নতি।</string>
+    <string name="select_career_goal">আপনার ক্যারিয়ার পথ নির্বাচন করুন</string>
+    <string name="begin_journey">আমার যাত্রা শুরু করি</string>
+    <string name="please_select_goal">দয়া করে একটি ক্যারিয়ার লক্ষ্য নির্বাচন করুন</string>
+
+    <!-- Home -->
+    <string name="daily_goals">দৈনিক লক্ষ্য</string>
+    <string name="streak">ধারাবাহিকতা</string>
+    <string name="daily_progress">দৈনিক উন্নতি</string>
+    <string name="nuggets_learned">%2$d টি বিষয়ের মধ্যে %1$d টি শেখা হয়েছে</string>
+    <string name="todays_nuggets">আজকের বিষয়সমূহ</string>
+    <string name="ready_to_explore">শিখতে প্রস্তুত</string>
+    <string name="mastered">সম্পন্ন হয়েছে</string>
+    <string name="search_hint">বিষয় খুঁজুন...</string>
+    <string name="search_results">অনুসন্ধানের ফলাফল</string>
+
+    <!-- Detail -->
+    <string name="knowledge_nugget">জ্ঞানের উৎস</string>
+    <string name="tap_to_reveal">বিস্তারিত দেখতে কার্ডে ট্যাপ করুন</string>
+    <string name="mark_as_learned">শেখা হয়েছে হিসেবে চিহ্নিত করুন</string>
+    <string name="knowledge_mastered">শিক্ষা সম্পন্ন হয়েছে</string>
+    <string name="tap_to_reveal_answer">উত্তর দেখতে ট্যাপ করুন</string>
+    <string name="nugget_not_found">দুঃখিত! কন্টেন্ট পাওয়া যায়নি।</string>
+
+    <!-- Roadmap -->
+    <string name="my_journey">আমার যাত্রা</string>
+    <string name="actively_learning">বর্তমানে শিখছি</string>
+    <string name="career_roadmap">ক্যারিয়ার রোডম্যাপ</string>
+
+    <!-- Bookmarks -->
+    <string name="saved_nuggets">সংরক্ষিত বিষয়</string>
+    <string name="no_bookmarks">এখনও কিছু সংরক্ষিত নেই</string>
+    <string name="bookmarks_empty_hint">আপনার সংরক্ষিত বিষয়গুলো এখানে দেখা যাবে</string>
+
+    <!-- Profile -->
+    <string name="my_profile">আমার প্রোফাইল</string>
+    <string name="learner_profile">শিক্ষার্থীর প্রোফাইল</string>
+    <string name="career_goal">ক্যারিয়ার লক্ষ্য: %1$s</string>
+    <string name="dark_mode">ডার্ক মোড</string>
+    <string name="daily_reminders">দৈনিক রিমাইন্ডার</string>
+    <string name="reset_learning_goal">ক্যারিয়ার লক্ষ্য পরিবর্তন করুন</string>
+    <string name="settings">অ্যাপ সেটিংস</string>
+
+    <!-- Quiz -->
+    <string name="daily_quiz">দৈনিক কুইজ</string>
+    <string name="question_count">প্রশ্ন %1$d</string>
+    <string name="submit">জমা দিন</string>
+    <string name="finish_quiz">কুইজ শেষ করুন</string>
+</resources>

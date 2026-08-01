@@ -25,6 +25,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.skillflow.domain.repository.SettingsRepository
+import com.example.skillflow.ui.auth.ForgotPasswordScreen
+import com.example.skillflow.ui.auth.LoginScreen
+import com.example.skillflow.ui.auth.SignUpScreen
 import com.example.skillflow.ui.bookmarks.BookmarksScreen
 import com.example.skillflow.ui.detail.DetailScreen
 import com.example.skillflow.ui.home.HomeScreen
@@ -34,22 +38,41 @@ import com.example.skillflow.ui.profile.ProfileScreen
 import com.example.skillflow.ui.roadmap.RoadmapScreen
 import com.example.skillflow.ui.theme.SkillflowTheme
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var settingsRepository: SettingsRepository
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val startDestination = runBlocking {
+            val isLoggedIn = settingsRepository.isLoggedIn().first()
+            val isOnboardingCompleted = settingsRepository.isOnboardingCompleted().first()
+            
+            when {
+                !isLoggedIn -> Screen.Login.route
+                !isOnboardingCompleted -> Screen.Onboarding.route
+                else -> Screen.Home.route
+            }
+        }
+
         setContent {
             SkillflowTheme {
-                SkillFlowAppContent()
+                SkillFlowAppContent(startDestination)
             }
         }
     }
 }
 
 @Composable
-fun SkillFlowAppContent() {
+fun SkillFlowAppContent(startDestination: String) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -97,13 +120,37 @@ fun SkillFlowAppContent() {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.Onboarding.route,
+            startDestination = startDestination,
             modifier = Modifier.padding(innerPadding),
             enterTransition = { slideInHorizontally { it } + fadeIn() },
             exitTransition = { slideOutHorizontally { -it } + fadeOut() },
             popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
             popExitTransition = { slideOutHorizontally { it } + fadeOut() }
         ) {
+            composable(Screen.Login.route) {
+                LoginScreen(
+                    onNavigateToSignUp = { navController.navigate(Screen.SignUp.route) },
+                    onNavigateToForgotPassword = { navController.navigate(Screen.ForgotPassword.route) },
+                    onLoginSuccess = { 
+                        navController.navigate(Screen.Onboarding.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(Screen.SignUp.route) {
+                SignUpScreen(
+                    onNavigateToLogin = { navController.popBackStack() },
+                    onSignUpSuccess = {
+                        navController.navigate(Screen.Onboarding.route) {
+                            popUpTo(Screen.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+            composable(Screen.ForgotPassword.route) {
+                ForgotPasswordScreen(onNavigateBack = { navController.popBackStack() })
+            }
             composable(Screen.Onboarding.route) {
                 OnboardingScreen(onNavigateToHome = {
                     navController.navigate(Screen.Home.route) {
@@ -132,7 +179,7 @@ fun SkillFlowAppContent() {
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(onResetOnboarding = {
-                    navController.navigate(Screen.Onboarding.route) {
+                    navController.navigate(Screen.Login.route) {
                         popUpTo(0) { inclusive = true }
                     }
                 })

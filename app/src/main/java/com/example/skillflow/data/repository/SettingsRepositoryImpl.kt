@@ -18,6 +18,7 @@ class SettingsRepositoryImpl @Inject constructor(
     private object PreferencesKeys {
         val CAREER_PATH_ID = stringPreferencesKey("career_path_id")
         val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+        val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
         val STREAK_COUNT = intPreferencesKey("streak_count")
         val LAST_ACTIVITY_DATE = stringPreferencesKey("last_activity_date")
     }
@@ -43,6 +44,18 @@ class SettingsRepositoryImpl @Inject constructor(
     override suspend fun setOnboardingCompleted(completed: Boolean) {
         dataStore.edit { preferences ->
             preferences[PreferencesKeys.ONBOARDING_COMPLETED] = completed
+        }
+    }
+
+    override fun isLoggedIn(): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[PreferencesKeys.IS_LOGGED_IN] ?: false
+        }
+    }
+
+    override suspend fun setLoggedIn(loggedIn: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[PreferencesKeys.IS_LOGGED_IN] = loggedIn
         }
     }
 
