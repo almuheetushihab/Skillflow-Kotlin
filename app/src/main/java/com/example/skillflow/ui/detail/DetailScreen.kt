@@ -31,6 +31,7 @@ import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
+import kotlinx.coroutines.delay
 
 @Composable
 fun DetailScreen(
@@ -44,7 +45,8 @@ fun DetailScreen(
         onNavigateBack = onNavigateBack,
         onToggleSave = viewModel::toggleSave,
         onFlipCard = viewModel::flipCard,
-        onMarkAsDone = viewModel::markAsDone
+        onMarkAsDone = viewModel::markAsDone,
+        onTrackTime = { viewModel.trackLearningTime(it) }
     )
 }
 
@@ -54,7 +56,8 @@ fun DetailContent(
     onNavigateBack: () -> Unit,
     onToggleSave: () -> Unit,
     onFlipCard: () -> Unit,
-    onMarkAsDone: () -> Unit
+    onMarkAsDone: () -> Unit,
+    onTrackTime: (Long) -> Unit
 ) {
     val nugget = state.nugget
 
@@ -125,6 +128,14 @@ fun DetailContent(
                     onFlip = onFlipCard
                 )
 
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                
+                // Track reading time
+                LaunchedEffect(Unit) {
+                    delay(60000) // 1 minute
+                    onTrackTime(1)
+                }
+
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
@@ -167,7 +178,8 @@ fun DetailContentPreview() {
             onNavigateBack = {},
             onToggleSave = {},
             onFlipCard = {},
-            onMarkAsDone = {}
+            onMarkAsDone = {},
+            onTrackTime = {}
         )
     }
 }
@@ -181,7 +193,8 @@ fun DetailContentLoadingPreview() {
             onNavigateBack = {},
             onToggleSave = {},
             onFlipCard = {},
-            onMarkAsDone = {}
+            onMarkAsDone = {},
+            onTrackTime = {}
         )
     }
 }

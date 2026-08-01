@@ -35,6 +35,7 @@ import com.example.skillflow.ui.home.HomeScreen
 import com.example.skillflow.ui.navigation.Screen
 import com.example.skillflow.ui.onboarding.OnboardingScreen
 import com.example.skillflow.ui.profile.ProfileScreen
+import com.example.skillflow.ui.profile.SettingsScreen
 import com.example.skillflow.ui.roadmap.RoadmapScreen
 import com.example.skillflow.ui.theme.SkillflowTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -178,11 +179,26 @@ fun SkillFlowAppContent(startDestination: String) {
                 })
             }
             composable(Screen.Profile.route) {
-                ProfileScreen(onResetOnboarding = {
-                    navController.navigate(Screen.Login.route) {
-                        popUpTo(0) { inclusive = true }
+                ProfileScreen(
+                    onResetOnboarding = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    },
+                    onNavigateToSettings = {
+                        navController.navigate(Screen.Settings.route)
                     }
-                })
+                )
+            }
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onLogout = {
+                        navController.navigate(Screen.Login.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }

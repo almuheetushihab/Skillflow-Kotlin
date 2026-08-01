@@ -33,6 +33,7 @@ import com.example.skillflow.ui.theme.spacing
 @Composable
 fun ProfileScreen(
     onResetOnboarding: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -40,6 +41,7 @@ fun ProfileScreen(
     ProfileContent(
         state = state,
         onToggleDarkMode = viewModel::toggleDarkMode,
+        onNavigateToSettings = onNavigateToSettings,
         onResetOnboarding = {
             viewModel.resetOnboarding()
             onResetOnboarding()
@@ -51,6 +53,7 @@ fun ProfileScreen(
 fun ProfileContent(
     state: ProfileState,
     onToggleDarkMode: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     onResetOnboarding: () -> Unit
 ) {
     val backgroundGradient = Brush.verticalGradient(
@@ -60,7 +63,14 @@ fun ProfileContent(
     Scaffold(
         modifier = Modifier.background(backgroundGradient),
         topBar = {
-            SkillflowTopAppBar(title = stringResource(R.string.my_profile))
+            SkillflowTopAppBar(
+                title = stringResource(R.string.my_profile),
+                actions = {
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(Icons.Default.Settings, contentDescription = "Settings")
+                    }
+                }
+            )
         }
     ) { padding ->
         Column(
@@ -169,6 +179,7 @@ fun ProfileContentPreview() {
         ProfileContent(
             state = ProfileState(careerPathId = "Android Developer", isDarkMode = false),
             onToggleDarkMode = {},
+            onNavigateToSettings = {},
             onResetOnboarding = {}
         )
     }
