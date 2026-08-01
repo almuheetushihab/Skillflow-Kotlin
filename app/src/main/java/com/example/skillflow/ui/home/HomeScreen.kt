@@ -1,22 +1,34 @@
 package com.example.skillflow.ui.home
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.presentation.home.HomeViewModel
+import com.example.skillflow.ui.theme.GradientEnd
+import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SunsetEnd
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,25 +38,47 @@ fun HomeScreen(
 ) {
     val state by viewModel.state.collectAsState()
 
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            MaterialTheme.colorScheme.background,
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        )
+    )
+
     Scaffold(
+        modifier = Modifier.background(backgroundGradient),
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Daily Goals") },
+                title = { 
+                    Text(
+                        "SkillFlow",
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    ) 
+                },
                 actions = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
+                    Surface(
+                        shape = RoundedCornerShape(16.dp),
+                        color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f),
                         modifier = Modifier.padding(end = 16.dp)
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.LocalFireDepartment,
-                            contentDescription = "Streak",
-                            tint = MaterialTheme.colorScheme.error
-                        )
-                        Text(
-                            text = "${state.streakCount}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.LocalFireDepartment,
+                                contentDescription = "Streak",
+                                tint = SunsetEnd
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "${state.streakCount}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = SunsetEnd
+                            )
+                        }
                     }
                 }
             )
@@ -54,63 +88,104 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
+                .padding(20.dp)
         ) {
             val completedCount = state.dailyNuggets.count { it.isDone }
             val totalCount = state.dailyNuggets.size
-            val progress = if (totalCount > 0) completedCount.toFloat() / totalCount else 0f
+            val progress = animateFloatAsState(
+                targetValue = if (totalCount > 0) completedCount.toFloat() / totalCount else 0f,
+                animationSpec = tween(1000, easing = FastOutSlowInEasing)
+            )
 
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(24.dp)),
+                colors = CardDefaults.cardColors(containerColor = Color.Transparent)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(
-                        text = "Today's Progress",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(8.dp),
-                        strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = "$completedCount of $totalCount completed",
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                Box(
+                    modifier = Modifier
+                        .background(Brush.linearGradient(listOf(GradientStart, GradientEnd)))
+                        .padding(20.dp)
+                ) {
+                    Column {
+                        Text(
+                            text = "Daily Progress",
+                            style = MaterialTheme.typography.titleLarge,
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        LinearProgressIndicator(
+                            progress = { progress.value },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(12.dp)
+                                .clip(RoundedCornerShape(6.dp)),
+                            color = Color.White,
+                            trackColor = Color.White.copy(alpha = 0.3f),
+                            strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = "$completedCount of $totalCount Knowledge Nuggets Learned",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.9f)
+                        )
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "Daily Knowledge Nuggets",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
+                text = "Today's Nuggets",
+                style = MaterialTheme.typography.headlineSmall,
+                fontWeight = FontWeight.ExtraBold
             )
             Spacer(modifier = Modifier.height(16.dp))
 
             if (state.isLoading) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = GradientStart)
                 }
             } else {
                 LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    items(state.dailyNuggets) { nugget ->
-                        NuggetCard(
-                            nugget = nugget,
-                            onClick = { onNavigateToDetail(nugget.id) }
-                        )
+                    itemsIndexed(state.dailyNuggets) { index, nugget ->
+                        AnimatedEntrance(index = index) {
+                            NuggetCard(
+                                nugget = nugget,
+                                onClick = { onNavigateToDetail(nugget.id) }
+                            )
+                        }
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun AnimatedEntrance(index: Int, content: @Composable () -> Unit) {
+    val animatedProgress = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        delay(index * 100L)
+        animatedProgress.animateTo(
+            targetValue = 1f,
+            animationSpec = tween(durationMillis = 500, easing = FastOutSlowInEasing)
+        )
+    }
+
+    Box(
+        modifier = Modifier.graphicsLayer {
+            alpha = animatedProgress.value
+            translationY = (1f - animatedProgress.value) * 50.dp.toPx()
+        }
+    ) {
+        content()
     }
 }
 
@@ -120,30 +195,69 @@ fun NuggetCard(nugget: KnowledgeNugget, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        shape = RoundedCornerShape(20.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp, 
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+        )
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
+                .padding(20.dp)
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        if (nugget.isDone) GradientStart.copy(alpha = 0.1f) 
+                        else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                if (nugget.isDone) {
+                    Icon(
+                        Icons.Default.Check, 
+                        contentDescription = null,
+                        tint = GradientStart
+                    )
+                } else {
+                    Text(
+                        nugget.title.take(1).uppercase(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.width(16.dp))
+            
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = nugget.title,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = if (nugget.isDone) "Completed" else "Ready to learn",
+                    text = if (nugget.isDone) "Mastered" else "Ready to Explore",
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (nugget.isDone) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
+                    color = if (nugget.isDone) GradientStart else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )
             }
-            if (nugget.isDone) {
-                RadioButton(selected = true, onClick = null)
-            }
+            
+            Icon(
+                Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.outline
+            )
         }
     }
 }
