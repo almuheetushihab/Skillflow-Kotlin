@@ -11,9 +11,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.skillflow.R
 import com.example.skillflow.presentation.bookmarks.BookmarksViewModel
 import com.example.skillflow.ui.home.AnimatedEntrance
 import com.example.skillflow.ui.home.NuggetCard
@@ -37,12 +39,12 @@ fun BookmarksScreen(
             CenterAlignedTopAppBar(
                 title = { 
                     Text(
-                        "Saved Nuggets", 
+                        stringResource(R.string.saved_nuggets), 
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     ) 
                 }
-            ) 
+            )
         }
     ) { padding ->
         if (state.isLoading) {
@@ -53,13 +55,13 @@ fun BookmarksScreen(
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
-                        "No bookmarks yet", 
+                        stringResource(R.string.no_bookmarks), 
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.outline
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        "Saved nuggets will appear here", 
+                        stringResource(R.string.bookmarks_empty_hint), 
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
                     )

@@ -19,8 +19,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
 
@@ -49,7 +51,7 @@ fun RoadmapScreen() {
             CenterAlignedTopAppBar(
                 title = { 
                     Text(
-                        "My Journey",
+                        stringResource(R.string.my_journey),
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     ) 
@@ -182,7 +184,7 @@ fun RoadmapStepItem(
                 if (isCurrent) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Actively Learning",
+                        text = stringResource(R.string.actively_learning),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold

@@ -17,9 +17,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.skillflow.R
 import com.example.skillflow.presentation.profile.ProfileViewModel
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
@@ -42,12 +44,12 @@ fun ProfileScreen(
             CenterAlignedTopAppBar(
                 title = { 
                     Text(
-                        "My Profile", 
+                        stringResource(R.string.my_profile), 
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     ) 
                 }
-            ) 
+            )
         }
     ) { padding ->
         Column(
@@ -75,7 +77,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(20.dp))
             
             Text(
-                text = "SkillFlow Explorer",
+                text = stringResource(R.string.learner_profile),
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -86,7 +88,7 @@ fun ProfileScreen(
                 modifier = Modifier.padding(top = 8.dp)
             ) {
                 Text(
-                    text = state.careerPathId?.uppercase() ?: "NO GOAL SET",
+                    text = stringResource(R.string.career_goal, state.careerPathId ?: "Not set"),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                     color = GradientStart,
@@ -105,12 +107,12 @@ fun ProfileScreen(
             ) {
                 Column(modifier = Modifier.padding(8.dp)) {
                     ListItem(
-                        headlineContent = { Text("App Settings", fontWeight = FontWeight.Bold) },
+                        headlineContent = { Text(stringResource(R.string.settings), fontWeight = FontWeight.Bold) },
                         leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
                     )
                     
                     ListItem(
-                        headlineContent = { Text("Dark Mode") },
+                        headlineContent = { Text(stringResource(R.string.dark_mode)) },
                         trailingContent = {
                             Switch(
                                 checked = state.isDarkMode,
@@ -120,7 +122,7 @@ fun ProfileScreen(
                     )
 
                     ListItem(
-                        headlineContent = { Text("Daily Reminders") },
+                        headlineContent = { Text(stringResource(R.string.daily_reminders)) },
                         leadingContent = { Icon(Icons.Default.Notifications, contentDescription = null) },
                         trailingContent = { Switch(checked = true, onCheckedChange = {}) }
                     )
@@ -141,7 +143,7 @@ fun ProfileScreen(
                     .background(Brush.linearGradient(listOf(Color(0xFFFF5252), Color(0xFFFF1744)))),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
             ) {
-                Text("Reset Learning Goal", fontWeight = FontWeight.Bold, color = Color.White)
+                Text(stringResource(R.string.reset_learning_goal), fontWeight = FontWeight.Bold, color = Color.White)
             }
             Spacer(modifier = Modifier.height(16.dp))
         }

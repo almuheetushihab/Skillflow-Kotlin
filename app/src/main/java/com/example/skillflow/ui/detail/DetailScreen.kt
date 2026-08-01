@@ -18,11 +18,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.skillflow.R
 import com.example.skillflow.presentation.detail.DetailViewModel
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
@@ -52,7 +54,7 @@ fun DetailScreen(
         modifier = Modifier.background(backgroundGradient),
         topBar = {
             TopAppBar(
-                title = { Text("Daily nugget", style = MaterialTheme.typography.titleLarge) },
+                title = { Text(stringResource(R.string.knowledge_nugget), style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
@@ -85,11 +87,11 @@ fun DetailScreen(
                         CircularProgressIndicator(color = GradientStart)
                     }
                 } else {
-                    Text("Oops! Content not found.")
+                    Text(stringResource(R.string.nugget_not_found))
                 }
             } else {
                 Text(
-                    text = "Tap the card to reveal knowledge",
+                    text = stringResource(R.string.tap_to_reveal),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                 )
@@ -193,7 +195,7 @@ fun DetailScreen(
                     Icon(Icons.Default.CheckCircle, contentDescription = null)
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = if (nugget.isDone) "Knowledge Mastered" else "Mark as Learned",
+                        text = if (nugget.isDone) stringResource(R.string.knowledge_mastered) else stringResource(R.string.mark_as_learned),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )

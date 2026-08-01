@@ -14,11 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.skillflow.R
 import com.example.skillflow.presentation.onboarding.OnboardingViewModel
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
@@ -54,7 +56,7 @@ fun OnboardingScreen(
                 Spacer(modifier = Modifier.height(64.dp))
                 
                 Text(
-                    text = "SkillFlow",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.displayLarge,
                     color = GradientStart,
                     fontWeight = FontWeight.ExtraBold
@@ -63,7 +65,7 @@ fun OnboardingScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 
                 Text(
-                    text = "Micro-learning, Maximum Growth.",
+                    text = stringResource(R.string.micro_learning_subtitle),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -72,7 +74,7 @@ fun OnboardingScreen(
                 Spacer(modifier = Modifier.height(48.dp))
 
                 Text(
-                    text = "Select your career path",
+                    text = stringResource(R.string.select_career_goal),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.align(Alignment.Start)
@@ -159,7 +161,7 @@ fun OnboardingScreen(
                     colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
                 ) {
                     Text(
-                        text = "Begin My Journey",
+                        text = stringResource(R.string.begin_journey),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
