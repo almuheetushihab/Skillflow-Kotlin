@@ -43,8 +43,14 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : androidx.appcompat.app.AppCompatActivity() {
 
     @Inject
     lateinit var settingsRepository: SettingsRepository
@@ -65,6 +71,13 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
+            val language by settingsRepository.getLanguage().collectAsState(initial = "en")
+            
+            LaunchedEffect(language) {
+                val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
+                AppCompatDelegate.setApplicationLocales(appLocale)
+            }
+
             SkillflowTheme {
                 SkillFlowAppContent(startDestination)
             }

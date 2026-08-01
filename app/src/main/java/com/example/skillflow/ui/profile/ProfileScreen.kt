@@ -1,6 +1,11 @@
 package com.example.skillflow.ui.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -17,11 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.example.skillflow.R
 import com.example.skillflow.presentation.profile.ProfileState
 import com.example.skillflow.presentation.profile.ProfileViewModel
@@ -37,6 +44,12 @@ fun ProfileScreen(
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.setProfilePicture(it.toString()) }
+    }
 
     ProfileContent(
         state = state,
@@ -45,7 +58,8 @@ fun ProfileScreen(
         onResetOnboarding = {
             viewModel.resetOnboarding()
             onResetOnboarding()
-        }
+        },
+        onChangePhoto = { launcher.launch("image/*") }
     )
 }
 
@@ -54,7 +68,8 @@ fun ProfileContent(
     state: ProfileState,
     onToggleDarkMode: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onResetOnboarding: () -> Unit
+    onResetOnboarding: () -> Unit,
+    onChangePhoto: () -> Unit
 ) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
@@ -80,25 +95,50 @@ fun ProfileContent(
                 .padding(MaterialTheme.spacing.large),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Surface(
-                shape = CircleShape,
-                modifier = Modifier.size(100.dp),
-                color = MaterialTheme.colorScheme.surface,
-                tonalElevation = 4.dp,
-                border = androidx.compose.foundation.BorderStroke(2.dp, GradientStart)
+            Box(
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .border(3.dp, GradientStart, CircleShape)
+                    .clickable { onChangePhoto() },
+                contentAlignment = Alignment.Center
             ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    modifier = Modifier.padding(MaterialTheme.spacing.large - 4.dp),
-                    tint = GradientStart
-                )
+                if (state.profilePictureUri != null) {
+                    AsyncImage(
+                        model = state.profilePictureUri,
+                        contentDescription = stringResource(R.string.profile_photo),
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp),
+                        tint = GradientStart.copy(alpha = 0.6f)
+                    )
+                }
+                
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.1f)),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
+                    Text(
+                        text = stringResource(R.string.change_photo),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = Color.White,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
             
             Text(
-                text = stringResource(R.string.learner_profile),
+                text = state.userName.ifEmpty { stringResource(R.string.learner_profile) },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold
             )
@@ -108,8 +148,9 @@ fun ProfileContent(
                 color = GradientStart.copy(alpha = 0.1f),
                 modifier = Modifier.padding(top = MaterialTheme.spacing.small)
             ) {
+                val goal = state.careerPathId ?: "Not set"
                 Text(
-                    text = stringResource(R.string.career_goal, state.careerPathId ?: "Not set"),
+                    text = stringResource(R.string.career_goal, goal),
                     style = MaterialTheme.typography.labelLarge,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                     color = GradientStart,
@@ -117,7 +158,7 @@ fun ProfileContent(
                 )
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -180,7 +221,8 @@ fun ProfileContentPreview() {
             state = ProfileState(careerPathId = "Android Developer", isDarkMode = false),
             onToggleDarkMode = {},
             onNavigateToSettings = {},
-            onResetOnboarding = {}
+            onResetOnboarding = {},
+            onChangePhoto = {}
         )
     }
 }

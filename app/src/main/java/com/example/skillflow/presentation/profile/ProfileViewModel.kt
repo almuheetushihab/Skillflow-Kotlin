@@ -9,6 +9,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class ProfileState(
+    val userName: String = "",
+    val profilePictureUri: String? = null,
     val careerPathId: String? = null,
     val streakCount: Int = 0,
     val isDarkMode: Boolean = false
@@ -36,6 +38,22 @@ class ProfileViewModel @Inject constructor(
             settingsRepository.getStreakCount().collect { count ->
                 _state.update { it.copy(streakCount = count) }
             }
+        }
+        viewModelScope.launch {
+            settingsRepository.getProfilePictureUri().collect { uri ->
+                _state.update { it.copy(profilePictureUri = uri) }
+            }
+        }
+        viewModelScope.launch {
+            settingsRepository.getUserName().collect { name ->
+                _state.update { it.copy(userName = name ?: "") }
+            }
+        }
+    }
+
+    fun setProfilePicture(uri: String) {
+        viewModelScope.launch {
+            settingsRepository.setProfilePictureUri(uri)
         }
     }
 

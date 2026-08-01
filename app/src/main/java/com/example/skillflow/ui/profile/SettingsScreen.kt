@@ -1,31 +1,32 @@
 package com.example.skillflow.ui.profile
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Mail
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
+import com.example.skillflow.presentation.profile.SettingsState
 import com.example.skillflow.presentation.profile.SettingsViewModel
 import com.example.skillflow.ui.common.AuthButton
 import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.common.SkillflowTopAppBar
+import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.spacing
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
@@ -35,11 +36,13 @@ fun SettingsScreen(
     val state by viewModel.state.collectAsState()
     var showEmailDialog by remember { mutableStateOf(false) }
     var newEmail by remember { mutableStateOf("") }
+    var showNameDialog by remember { mutableStateOf(false) }
+    var newName by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
             SkillflowTopAppBar(
-                title = "Settings",
+                title = stringResource(R.string.settings),
                 navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
                 onNavigationClick = onNavigateBack
             )
@@ -53,7 +56,7 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "Account Details",
+                text = stringResource(R.string.account_details),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -61,13 +64,16 @@ fun SettingsScreen(
 
             SettingsItem(
                 icon = Icons.Default.Person,
-                title = "Name",
+                title = stringResource(R.string.name),
                 subtitle = state.name.ifEmpty { "Not set" },
-                onClick = {}
+                onClick = {
+                    newName = state.name
+                    showNameDialog = true
+                }
             )
             SettingsItem(
-                icon = Icons.Default.Mail,
-                title = "Email",
+                icon = Icons.Default.Email,
+                title = stringResource(R.string.email),
                 subtitle = state.email.ifEmpty { "Not set" },
                 onClick = { 
                     newEmail = state.email
@@ -77,32 +83,54 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
             Text(
-                text = "App Settings",
+                text = stringResource(R.string.learning_stats),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            
+            SettingsItem(
+                icon = Icons.Default.Timer,
+                title = "Study Time",
+                subtitle = stringResource(R.string.minutes_learned, state.learningTime),
+                onClick = null
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Text(
+                text = "Preferences",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
-            SettingsItem(
-                icon = Icons.Default.Language,
-                title = "Language",
-                subtitle = if (state.language == "bn") "Bengali" else "English",
-                onClick = {
-                    viewModel.setLanguage(if (state.language == "bn") "en" else "bn")
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.Language, contentDescription = null, tint = GradientStart)
+                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+                    Text(
+                        text = stringResource(R.string.language_toggle, if (state.language == "bn") "বাংলা" else "English"),
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
                 }
-            )
-            
-            SettingsItem(
-                icon = Icons.Default.Timer,
-                title = "Total Learning Time",
-                subtitle = "${state.learningTime} minutes",
-                onClick = {}
-            )
+                
+                LanguageToggleButton(
+                    currentLanguage = state.language,
+                    onToggle = { viewModel.setLanguage(if (state.language == "bn") "en" else "bn") }
+                )
+            }
 
             Spacer(modifier = Modifier.weight(1f))
             
             AuthButton(
-                text = "Logout",
+                text = stringResource(R.string.logout),
                 onClick = {
                     viewModel.logout()
                     onLogout()
@@ -113,30 +141,72 @@ fun SettingsScreen(
     }
 
     if (showEmailDialog) {
-        AlertDialog(
-            onDismissRequest = { showEmailDialog = false },
-            title = { Text("Update Email") },
-            text = {
-                AuthTextField(
-                    value = newEmail,
-                    onValueChange = { newEmail = it },
-                    label = "New Email"
-                )
+        SettingsDialog(
+            title = stringResource(R.string.update_email),
+            value = newEmail,
+            onValueChange = { newEmail = it },
+            onConfirm = {
+                viewModel.updateEmail(newEmail)
+                showEmailDialog = false
             },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.updateEmail(newEmail)
-                    showEmailDialog = false
-                }) {
-                    Text("Save")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showEmailDialog = false }) {
-                    Text("Cancel")
-                }
-            }
+            onDismiss = { showEmailDialog = false }
         )
+    }
+
+    if (showNameDialog) {
+        SettingsDialog(
+            title = "Update Name",
+            value = newName,
+            onValueChange = { newName = it },
+            onConfirm = {
+                viewModel.updateName(newName)
+                showNameDialog = false
+            },
+            onDismiss = { showNameDialog = false }
+        )
+    }
+}
+
+@Composable
+fun LanguageToggleButton(
+    currentLanguage: String,
+    onToggle: () -> Unit
+) {
+    Surface(
+        onClick = onToggle,
+        shape = RoundedCornerShape(20.dp),
+        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
+        modifier = Modifier.height(40.dp).width(100.dp)
+    ) {
+        Box(contentAlignment = Alignment.Center) {
+            Row(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text("EN", style = MaterialTheme.typography.labelSmall)
+                Text("BN", style = MaterialTheme.typography.labelSmall)
+            }
+            
+            // Thumb
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(50.dp)
+                    .align(if (currentLanguage == "en") Alignment.CenterStart else Alignment.CenterEnd)
+                    .padding(2.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(GradientStart),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = if (currentLanguage == "en") "EN" else "BN",
+                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
     }
 }
 
@@ -145,18 +215,49 @@ fun SettingsItem(
     icon: androidx.compose.ui.graphics.vector.ImageVector,
     title: String,
     subtitle: String,
-    onClick: () -> Unit
+    onClick: (() -> Unit)?
 ) {
     ListItem(
         modifier = Modifier.padding(vertical = 4.dp),
         headlineContent = { Text(title, fontWeight = FontWeight.Bold) },
         supportingContent = { Text(subtitle) },
-        leadingContent = { Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
+        leadingContent = { Icon(icon, contentDescription = null, tint = GradientStart) },
         trailingContent = {
-            if (onClick != {}) {
-                TextButton(onClick = onClick) {
-                    Text("Edit")
+            if (onClick != null) {
+                IconButton(onClick = onClick) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary)
                 }
+            }
+        }
+    )
+}
+
+@Composable
+fun SettingsDialog(
+    title: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    onConfirm: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(title) },
+        text = {
+            AuthTextField(
+                value = value,
+                onValueChange = onValueChange,
+                label = "Enter value"
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onConfirm) {
+                Text(stringResource(R.string.save))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
             }
         }
     )

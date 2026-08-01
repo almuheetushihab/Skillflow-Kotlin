@@ -7,10 +7,7 @@ import com.example.skillflow.data.remote.SkillApi
 import com.example.skillflow.domain.model.CareerPath
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.domain.repository.SkillRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -32,55 +29,52 @@ class SkillRepositoryImpl @Inject constructor(
 
     private val mockNuggets = mapOf(
         "android" to listOf(
-            KnowledgeNugget("a1", "Clean Architecture", "Separating concerns into layers (Data, Domain, Presentation) for testability. Data layer handles networking and DB, Domain holds business logic (UseCases), and Presentation manages UI state.", null, "android", false, false, ""),
-            KnowledgeNugget("a2", "Hilt Dependency Injection", "Dagger-based dependency injection for Android that reduces boilerplate. It provides a standard way to use DI in your application by providing containers for every Android class.", null, "android", false, false, ""),
-            KnowledgeNugget("a3", "Jetpack Compose", "Modern toolkit for building native UI with a declarative approach. It simplifies and accelerates UI development on Android with less code and powerful tools.", null, "android", false, false, ""),
-            KnowledgeNugget("a4", "Coroutines & Flow", "Managing asynchronous tasks and reactive data streams effectively. Coroutines are light-weight threads, and Flow is a stream of data that can be computed asynchronously.", null, "android", false, false, ""),
-            KnowledgeNugget("a5", "Material 3", "Latest evolution of Material Design for adaptive and beautiful UIs. It includes updated components, typography, and color systems for a more expressive look.", null, "android", false, false, ""),
-            KnowledgeNugget("a6", "Retrofit Networking", "A type-safe HTTP client for Android and Java. It turns your HTTP API into a Java interface using annotations to describe the requests.", null, "android", false, false, ""),
-            KnowledgeNugget("a7", "Room Database", "The Room persistence library provides an abstraction layer over SQLite to allow fluent database access while leveraging the full power of SQLite.", null, "android", false, false, ""),
-            KnowledgeNugget("a8", "ViewModel & State", "The ViewModel class is designed to store and manage UI-related data in a lifecycle-conscious way. It allows data to survive configuration changes such as screen rotations.", null, "android", false, false, ""),
-            KnowledgeNugget("a9", "Navigation Component", "Navigation refers to the interactions that allow users to navigate across, into, and back out from the different pieces of content within your app.", null, "android", false, false, ""),
-            KnowledgeNugget("a10", "WorkManager", "WorkManager is the recommended solution for persistent work. Persistent work is scheduled even if the app restarts or the device reboots.", null, "android", false, false, ""),
-            KnowledgeNugget("a11", "Unit Testing", "The goal of unit testing is to isolate each part of the program and show that the individual parts are correct. Use JUnit and Mockito for Android.", null, "android", false, false, ""),
-            KnowledgeNugget("a12", "Performance Profiling", "Use Android Studio Profiler to inspect how your app uses CPU, memory, network, and battery resources in real-time.", null, "android", false, false, "")
+            KnowledgeNugget("a1", "Kotlin Fundamentals", "Kotlin is a modern, statically typed language. Key features include null safety, extension functions, and higher-order functions which make Android development more concise and robust.", null, "android", false, false, ""),
+            KnowledgeNugget("a2", "Jetpack Compose Basics", "Compose is Android's modern toolkit for building native UI. It simplifies UI development with a declarative approach, allowing you to describe your UI and let Compose handle the rendering.", null, "android", false, false, ""),
+            KnowledgeNugget("a3", "Clean Architecture", "Separating concerns into Data, Domain, and Presentation layers. This makes your code more testable, maintainable, and independent of external frameworks or databases.", null, "android", false, false, ""),
+            KnowledgeNugget("a4", "Hilt Dependency Injection", "Hilt provides a standard way to use Dagger DI in your Android app. It simplifies the setup and manages the lifecycle of dependencies automatically.", null, "android", false, false, ""),
+            KnowledgeNugget("a5", "Coroutines & Flow", "Managing background tasks efficiently without blocking the main thread. Flow provides a reactive stream of data that can be observed in the UI.", null, "android", false, false, ""),
+            KnowledgeNugget("a6", "Retrofit Networking", "The most popular HTTP client for Android. It turns your API into a Java interface using annotations, making network calls type-safe and easy.", null, "android", false, false, ""),
+            KnowledgeNugget("a7", "Room Database", "The recommended way to persist data locally. It provides an abstraction layer over SQLite and allows compile-time verification of queries.", null, "android", false, false, ""),
+            KnowledgeNugget("a8", "ViewModel & State", "Storing and managing UI-related data in a lifecycle-conscious way. ViewModels survive configuration changes like screen rotations.", null, "android", false, false, ""),
+            KnowledgeNugget("a9", "Navigation Component", "Simplifying navigation between screens. It handles the back stack and argument passing in a consistent way.", null, "android", false, false, ""),
+            KnowledgeNugget("a10", "WorkManager", "For tasks that need to run even if the app exits or the device reboots. Perfect for syncing data or uploading logs.", null, "android", false, false, ""),
+            KnowledgeNugget("a11", "Unit Testing with Mockito", "Ensuring your business logic works as expected. Mockito helps you mock dependencies and isolate the code under test.", null, "android", false, false, ""),
+            KnowledgeNugget("a12", "Performance Profiling", "Using Android Studio Profiler to find memory leaks and CPU bottlenecks. Crucial for creating smooth, high-quality apps.", null, "android", false, false, ""),
+            KnowledgeNugget("a13", "Material 3 Design", "Implementing the latest Material Design system. Use dynamic colors and updated components for a modern look.", null, "android", false, false, ""),
+            KnowledgeNugget("a14", "Deep Linking", "Allowing users to navigate to specific screens in your app from external URLs or notifications.", null, "android", false, false, ""),
+            KnowledgeNugget("a15", "App Modularization", "Breaking down a large app into smaller, independent modules. Improves build times and code organization.", null, "android", false, false, "")
         ),
         "uiux" to listOf(
-            KnowledgeNugget("u1", "Typography Hierarchy", "Hierarchy, contrast, and spacing are key to readable interfaces. Use different font sizes and weights to guide the user\'s eye to the most important info.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u2", "Color Psychology", "Understanding how colors interact and influence user emotions. Blue conveys trust, red creates urgency, and green represents growth and success.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u3", "Grid Systems", "Using layout grids to maintain consistency and alignment. Grids help in creating a structured layout that works across different screen sizes.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u4", "Accessibility (a11y)", "Designing for everyone, including those with visual impairments. Use high contrast colors and provide alternative text for images.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u5", "Micro-interactions", "Subtle animations that provide feedback and delight users. They make the UI feel alive and responsive to user actions.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u6", "User Research", "The process of understanding user needs, behaviors, and motivations through various qualitative and quantitative methods.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u7", "Wireframing", "A low-fidelity way to show the structure of a page or app. It focuses on the layout of content rather than the visual design.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u8", "Prototyping", "Creating an interactive model of the final product to test and validate design ideas before full-scale development.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u9", "Visual Hierarchy", "Arranging elements to imply importance. Use size, color, and whitespace to create a clear path for the user to follow.", null, "uiux", false, false, ""),
-            KnowledgeNugget("u10", "Usability Testing", "Testing the product with real users to identify any friction points or areas for improvement in the user experience.", null, "uiux", false, false, "")
-        ),
-        "backend" to listOf(
-            KnowledgeNugget("b1", "RESTful APIs", "A standardized way to build web services that allow different systems to communicate over HTTP using methods like GET, POST, PUT, DELETE.", null, "backend", false, false, ""),
-            KnowledgeNugget("b2", "SQL vs NoSQL", "Relational databases use SQL and schemas (PostgreSQL, MySQL), while NoSQL databases are schema-less and flexible (MongoDB, Redis).", null, "backend", false, false, ""),
-            KnowledgeNugget("b3", "Authentication (JWT)", "JSON Web Tokens are an open standard for securely transmitting information between parties as a JSON object. Used for stateless auth.", null, "backend", false, false, ""),
-            KnowledgeNugget("b4", "Microservices", "An architectural style that structures an application as a collection of small autonomous services modeled around a business domain.", null, "backend", false, false, ""),
-            KnowledgeNugget("b5", "Docker & Containers", "Packaging applications and their dependencies into containers to ensure they run consistently across different environments.", null, "backend", false, false, ""),
-            KnowledgeNugget("b6", "Message Queues (Kafka)", "Using systems like Kafka or RabbitMQ to enable asynchronous communication between different parts of a system.", null, "backend", false, false, ""),
-            KnowledgeNugget("b7", "Caching (Redis)", "Storing frequently accessed data in memory to reduce latency and load on the primary database.", null, "backend", false, false, "")
-        ),
-        "data" to listOf(
-            KnowledgeNugget("d1", "Python for Data", "Python is the most popular language for data science due to libraries like Pandas, NumPy, and Scikit-Learn.", null, "data", false, false, ""),
-            KnowledgeNugget("d2", "Machine Learning Basics", "Teaching computers to learn from data without being explicitly programmed. Includes Supervised and Unsupervised learning.", null, "data", false, false, ""),
-            KnowledgeNugget("d3", "Data Visualization", "Representing data graphically using charts, plots, and maps to identify patterns and trends (Matplotlib, Seaborn).", null, "data", false, false, ""),
-            KnowledgeNugget("d4", "Feature Engineering", "The process of selecting, manipulating, and transforming raw data into features that can be used in supervised learning.", null, "data", false, false, ""),
-            KnowledgeNugget("d5", "Natural Language Processing", "A branch of AI that gives computers the ability to understand, interpret, and generate human language.", null, "data", false, false, "")
+            KnowledgeNugget("u1", "Typography Hierarchy", "Using different font sizes and weights to guide the user's attention. Good hierarchy makes content easy to scan.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u2", "Color Theory", "Understanding how colors interact and influence emotions. Blue builds trust, while red creates a sense of urgency.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u3", "Grid Systems", "Maintaining consistency and alignment using layout grids. Grids help in creating balanced and responsive designs.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u4", "Accessibility (a11y)", "Designing for everyone, including users with visual or motor impairments. High contrast and large tap targets are key.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u5", "Micro-interactions", "Subtle animations that provide feedback and make the app feel alive and responsive.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u6", "User Research", "The process of understanding user needs and behaviors through interviews, surveys, and usability testing.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u7", "Wireframing", "Creating low-fidelity blueprints of your UI. Focuses on structure and layout without worrying about visual details.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u8", "Design Systems", "A collection of reusable components and standards that guide design and development for consistency.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u9", "Heuristic Evaluation", "Reviewing a UI against established usability principles to find potential issues early in the design phase.", null, "uiux", false, false, ""),
+            KnowledgeNugget("u10", "Figma Prototyping", "Connecting frames in Figma to create interactive models of your app. Essential for testing user flows.", null, "uiux", false, false, "")
         )
     )
 
     override fun getDailyNuggets(careerPathId: String): Flow<List<KnowledgeNugget>> = flow {
         val today = dateFormatter.format(Date())
-        val nuggets = (mockNuggets[careerPathId] ?: mockNuggets["android"]!!)
-            .take(3) // Only 3 per day as per SRS
-            .map { it.copy(date = today) }
-        emit(nuggets)
+        val path = if (careerPathId.isEmpty()) "android" else careerPathId
+        
+        // 1. Collect from DB first
+        dao.getDailyNuggets(path, today).collect { localNuggets ->
+            if (localNuggets.isNotEmpty()) {
+                emit(localNuggets.map { it.toDomain() })
+            } else {
+                // 2. If empty, sync from mock and insert
+                val mockList = mockNuggets[path] ?: mockNuggets["android"]!!
+                val todayNuggets = mockList.take(3).map { it.copy(date = today) }
+                dao.insertNuggets(todayNuggets.map { it.toEntity() })
+                // The flow from DAO will automatically emit the new data
+            }
+        }
     }
 
     override fun searchNuggets(query: String): Flow<List<KnowledgeNugget>> = flow {
@@ -96,6 +90,12 @@ class SkillRepositoryImpl @Inject constructor(
     }
 
     override suspend fun toggleSaveNugget(nuggetId: String) {
+        // Ensure the nugget exists in DB before toggling (it might be from search or initial load)
+        val allMock = mockNuggets.values.flatten()
+        val nugget = allMock.find { it.id == nuggetId }
+        if (nugget != null) {
+            dao.insertNuggets(listOf(nugget.toEntity()))
+        }
         dao.toggleSaveNugget(nuggetId)
     }
 
@@ -105,16 +105,5 @@ class SkillRepositoryImpl @Inject constructor(
 
     override fun getCareerPaths(): Flow<List<CareerPath>> = flow {
         emit(mockCareerPaths)
-        /*
-        val localPaths = dao.getCareerPaths().first()
-        if (localPaths.isNotEmpty()) emit(localPaths.map { it.toDomain() })
-
-        try {
-            val remotePaths = api.getCareerPaths()
-            dao.insertCareerPaths(remotePaths.map { it.toEntity() })
-            val updatedLocal = dao.getCareerPaths().first()
-            emit(updatedLocal.map { it.toDomain() })
-        } catch (e: Exception) {}
-        */
     }
 }

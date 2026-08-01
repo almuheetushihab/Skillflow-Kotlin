@@ -88,6 +88,7 @@ class SettingsRepositoryImpl @Inject constructor(
         val LEARNING_TIME = intPreferencesKey("learning_time") // Store in minutes
         val USER_EMAIL = stringPreferencesKey("user_email")
         val USER_NAME = stringPreferencesKey("user_name")
+        val PROFILE_PICTURE_URI = stringPreferencesKey("profile_picture_uri")
     }
 
     override fun getLanguage(): Flow<String> = dataStore.data.map { it[NewPreferencesKeys.LANGUAGE] ?: "en" }
@@ -115,6 +116,12 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun setUserName(name: String) {
         dataStore.edit { it[NewPreferencesKeys.USER_NAME] = name }
+    }
+
+    override fun getProfilePictureUri(): Flow<String?> = dataStore.data.map { it[NewPreferencesKeys.PROFILE_PICTURE_URI] }
+
+    override suspend fun setProfilePictureUri(uri: String) {
+        dataStore.edit { it[NewPreferencesKeys.PROFILE_PICTURE_URI] = uri }
     }
 
     override suspend fun clearSession() {

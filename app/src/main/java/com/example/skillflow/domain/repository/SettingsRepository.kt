@@ -23,5 +23,7 @@ interface SettingsRepository {
     suspend fun setUserEmail(email: String)
     fun getUserName(): Flow<String?>
     suspend fun setUserName(name: String)
+    fun getProfilePictureUri(): Flow<String?>
+    suspend fun setProfilePictureUri(uri: String)
     suspend fun clearSession()
 }
