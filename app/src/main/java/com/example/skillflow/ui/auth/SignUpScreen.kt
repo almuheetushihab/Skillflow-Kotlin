@@ -41,6 +41,7 @@ fun SignUpScreen(
     val state by viewModel.state.collectAsState()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var isPasswordVisible by remember { mutableStateOf(false) }
 
@@ -54,13 +55,15 @@ fun SignUpScreen(
         state = state,
         name = name,
         email = email,
+        phone = phone,
         password = password,
         isPasswordVisible = isPasswordVisible,
         onNameChange = { name = it },
         onEmailChange = { email = it },
+        onPhoneChange = { phone = it },
         onPasswordChange = { password = it },
         onTogglePasswordVisibility = { isPasswordVisible = !isPasswordVisible },
-        onSignUpClick = { viewModel.signUp(name, email, password) },
+        onSignUpClick = { viewModel.signUp(name, email, phone, password) },
         onNavigateToLogin = onNavigateToLogin
     )
 }
@@ -70,10 +73,12 @@ fun SignUpContent(
     state: AuthState,
     name: String,
     email: String,
+    phone: String,
     password: String,
     isPasswordVisible: Boolean,
     onNameChange: (String) -> Unit,
     onEmailChange: (String) -> Unit,
+    onPhoneChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
     onSignUpClick: () -> Unit,
@@ -103,7 +108,8 @@ fun SignUpContent(
             AuthTextField(
                 value = name,
                 onValueChange = onNameChange,
-                label = stringResource(R.string.name)
+                label = stringResource(R.string.name),
+                error = state.nameError
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
@@ -111,7 +117,17 @@ fun SignUpContent(
                 value = email,
                 onValueChange = onEmailChange,
                 label = stringResource(R.string.email),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                error = state.emailError
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+            AuthTextField(
+                value = phone,
+                onValueChange = onPhoneChange,
+                label = "Phone Number",
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                error = state.phoneError
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
@@ -121,6 +137,7 @@ fun SignUpContent(
                 label = stringResource(R.string.password),
                 visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                error = state.passwordError,
                 trailingIcon = {
                     IconButton(onClick = onTogglePasswordVisibility) {
                         Icon(
@@ -175,10 +192,12 @@ fun SignUpContentPreview() {
             state = AuthState(),
             name = "",
             email = "",
+            phone = "",
             password = "",
             isPasswordVisible = false,
             onNameChange = {},
             onEmailChange = {},
+            onPhoneChange = {},
             onPasswordChange = {},
             onTogglePasswordVisibility = {},
             onSignUpClick = {},

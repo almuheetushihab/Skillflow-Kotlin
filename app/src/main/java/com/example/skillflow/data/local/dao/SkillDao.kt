@@ -19,6 +19,12 @@ interface SkillDao {
     @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND isDone = 1 ORDER BY date DESC LIMIT 10")
     fun getRecentlyCompletedNuggets(careerPathId: String): Flow<List<NuggetEntity>>
 
+    @Query("SELECT * FROM nuggets WHERE id = :id")
+    fun getNuggetById(id: String): Flow<NuggetEntity?>
+
+    @Query("SELECT * FROM nuggets WHERE id = :id")
+    suspend fun getNuggetByIdSync(id: String): NuggetEntity?
+
     @Query("SELECT * FROM nuggets WHERE isSaved = 1")
     fun getSavedNuggets(): Flow<List<NuggetEntity>>
 

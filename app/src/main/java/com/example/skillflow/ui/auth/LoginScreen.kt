@@ -109,7 +109,8 @@ fun LoginContent(
                 value = email,
                 onValueChange = onEmailChange,
                 label = stringResource(R.string.email),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                error = state.emailError
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
@@ -119,6 +120,7 @@ fun LoginContent(
                 label = stringResource(R.string.password),
                 visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                error = state.passwordError,
                 trailingIcon = {
                     IconButton(onClick = onTogglePasswordVisibility) {
                         Icon(
