@@ -127,7 +127,10 @@ fun SettingsScreen(
                 
                 LanguageToggleButton(
                     currentLanguage = state.language,
-                    onToggle = { viewModel.setLanguage(if (state.language == "bn") "en" else "bn") }
+                    onToggle = { 
+                        val nextLang = if (state.language == "bn") "en" else "bn"
+                        viewModel.setLanguage(nextLang)
+                    }
                 )
             }
 

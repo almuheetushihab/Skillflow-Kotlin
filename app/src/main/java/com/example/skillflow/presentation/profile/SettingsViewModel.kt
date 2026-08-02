@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skillflow.domain.repository.SettingsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -51,6 +52,10 @@ class SettingsViewModel @Inject constructor(
 
     fun setLanguage(lang: String) {
         viewModelScope.launch {
+            // Update local state immediately for smooth animation
+            _state.update { it.copy(language = lang) }
+            // Delay the repository update which triggers activity recreation
+            delay(400) 
             settingsRepository.setLanguage(lang)
         }
     }
