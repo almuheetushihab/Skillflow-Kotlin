@@ -25,5 +25,7 @@ interface SettingsRepository {
     suspend fun setUserName(name: String)
     fun getProfilePictureUri(): Flow<String?>
     suspend fun setProfilePictureUri(uri: String)
+    fun isRememberMe(): Flow<Boolean>
+    suspend fun setRememberMe(remember: Boolean)
     suspend fun clearSession()
 }

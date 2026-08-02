@@ -18,6 +18,10 @@
     <string name="reset_password_hint">পাসওয়ার্ড রিসেট লিঙ্ক পেতে আপনার ইমেল লিখুন।</string>
     <string name="reset_link_sent">%1$s এ রিসেট লিঙ্ক পাঠানো হয়েছে!</string>
     <string name="back_to_login">লগইনে ফিরে যান</string>
+    <string name="remember_me">মনে রাখুন</string>
+    <string name="show_password">পাসওয়ার্ড দেখান</string>
+    <string name="hide_password">পাসওয়ার্ড লুকান</string>
+    <string name="password_visibility">পাসওয়ার্ড দৃশ্যমানতা</string>
 
     <!-- Onboarding -->
     <string name="welcome_to_skillflow">স্কিলফ্লোতে স্বাগতম</string>

@@ -149,6 +149,14 @@ fun ProfileContent(
                     Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_profile), modifier = Modifier.size(18.dp))
                 }
             }
+
+            if (state.userEmail.isNotEmpty()) {
+                Text(
+                    text = state.userEmail,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
             
             Surface(
                 shape = RoundedCornerShape(12.dp),

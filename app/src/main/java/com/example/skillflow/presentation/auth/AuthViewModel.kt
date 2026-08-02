@@ -14,7 +14,8 @@ data class AuthState(
     val email: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isLoggedIn: Boolean = false
+    val isLoggedIn: Boolean = false,
+    val isRememberMe: Boolean = false
 )
 
 @HiltViewModel
@@ -25,12 +26,30 @@ class AuthViewModel @Inject constructor(
     private val _state = MutableStateFlow(AuthState())
     val state = _state.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            settingsRepository.isRememberMe().collect { remember ->
+                _state.update { it.copy(isRememberMe = remember) }
+            }
+        }
+    }
+
+    fun toggleRememberMe() {
+        viewModelScope.launch {
+            val next = !state.value.isRememberMe
+            settingsRepository.setRememberMe(next)
+        }
+    }
+
     fun login(email: String, pass: String) {
         _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
             kotlinx.coroutines.delay(1000)
             if (email.contains("@") && pass.length >= 6) {
                 settingsRepository.setLoggedIn(true)
+                settingsRepository.setUserEmail(email)
+                // In a real app, we might get the name from a server
+                settingsRepository.setUserName(email.substringBefore("@").replaceFirstChar { it.uppercase() })
                 _state.update { it.copy(isLoading = false, isLoggedIn = true) }
             } else {
                 _state.update { it.copy(isLoading = false, error = "Invalid email or password") }
@@ -44,6 +63,8 @@ class AuthViewModel @Inject constructor(
             kotlinx.coroutines.delay(1000)
             if (email.contains("@") && pass.length >= 6) {
                 settingsRepository.setLoggedIn(true)
+                settingsRepository.setUserName(name)
+                settingsRepository.setUserEmail(email)
                 _state.update { it.copy(isLoading = false, isLoggedIn = true) }
             } else {
                 _state.update { it.copy(isLoading = false, error = "Registration failed") }

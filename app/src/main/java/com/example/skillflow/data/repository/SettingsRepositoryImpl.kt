@@ -89,6 +89,7 @@ class SettingsRepositoryImpl @Inject constructor(
         val USER_EMAIL = stringPreferencesKey("user_email")
         val USER_NAME = stringPreferencesKey("user_name")
         val PROFILE_PICTURE_URI = stringPreferencesKey("profile_picture_uri")
+        val IS_REMEMBER_ME = booleanPreferencesKey("is_remember_me")
     }
 
     override fun getLanguage(): Flow<String> = dataStore.data.map { it[NewPreferencesKeys.LANGUAGE] ?: "en" }
@@ -122,6 +123,12 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun setProfilePictureUri(uri: String) {
         dataStore.edit { it[NewPreferencesKeys.PROFILE_PICTURE_URI] = uri }
+    }
+
+    override fun isRememberMe(): Flow<Boolean> = dataStore.data.map { it[NewPreferencesKeys.IS_REMEMBER_ME] ?: false }
+
+    override suspend fun setRememberMe(remember: Boolean) {
+        dataStore.edit { it[NewPreferencesKeys.IS_REMEMBER_ME] = remember }
     }
 
     override suspend fun clearSession() {

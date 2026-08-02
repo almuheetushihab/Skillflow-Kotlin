@@ -26,6 +26,7 @@ fun AuthTextField(
     modifier: Modifier = Modifier,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    trailingIcon: @Composable (() -> Unit)? = null,
     error: String? = null
 ) {
     Column(modifier = modifier) {
@@ -37,6 +38,7 @@ fun AuthTextField(
             shape = RoundedCornerShape(16.dp),
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
+            trailingIcon = trailingIcon,
             isError = error != null,
             singleLine = true,
             colors = OutlinedTextFieldDefaults.colors(

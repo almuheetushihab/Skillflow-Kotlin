@@ -3,7 +3,10 @@ package com.example.skillflow.ui.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,11 +22,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
 import com.example.skillflow.presentation.auth.AuthState
 import com.example.skillflow.presentation.auth.AuthViewModel
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import com.example.skillflow.ui.common.AuthButton
 import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
+import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
 fun LoginScreen(
@@ -35,6 +42,7 @@ fun LoginScreen(
     val state by viewModel.state.collectAsState()
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
 
     if (state.isLoggedIn) {
         LaunchedEffect(Unit) {
@@ -46,8 +54,11 @@ fun LoginScreen(
         state = state,
         email = email,
         password = password,
+        isPasswordVisible = isPasswordVisible,
         onEmailChange = { email = it },
         onPasswordChange = { password = it },
+        onTogglePasswordVisibility = { isPasswordVisible = !isPasswordVisible },
+        onToggleRememberMe = { viewModel.toggleRememberMe() },
         onLoginClick = { viewModel.login(email, password) },
         onNavigateToSignUp = onNavigateToSignUp,
         onNavigateToForgotPassword = onNavigateToForgotPassword
@@ -59,8 +70,11 @@ fun LoginContent(
     state: AuthState,
     email: String,
     password: String,
+    isPasswordVisible: Boolean,
     onEmailChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
+    onTogglePasswordVisibility: () -> Unit,
+    onToggleRememberMe: () -> Unit,
     onLoginClick: () -> Unit,
     onNavigateToSignUp: () -> Unit,
     onNavigateToForgotPassword: () -> Unit
@@ -78,7 +92,8 @@ fun LoginContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(MaterialTheme.spacing.large),
+                .padding(MaterialTheme.spacing.large)
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -102,19 +117,47 @@ fun LoginContent(
                 value = password,
                 onValueChange = onPasswordChange,
                 label = stringResource(R.string.password),
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
+                visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                trailingIcon = {
+                    IconButton(onClick = onTogglePasswordVisibility) {
+                        Icon(
+                            imageVector = if (isPasswordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                            contentDescription = stringResource(if (isPasswordVisible) R.string.hide_password else R.string.show_password),
+                            tint = GradientStart
+                        )
+                    }
+                }
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-
-            Text(
-                text = stringResource(R.string.forgot_password),
+            
+            Row(
                 modifier = Modifier
-                    .align(Alignment.End)
-                    .clickable(onClick = onNavigateToForgotPassword),
-                color = GradientStart,
-                style = MaterialTheme.typography.bodyMedium
-            )
+                    .fillMaxWidth()
+                    .padding(top = MaterialTheme.spacing.small),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(
+                        checked = state.isRememberMe,
+                        onCheckedChange = { onToggleRememberMe() },
+                        colors = CheckboxDefaults.colors(checkedColor = GradientStart)
+                    )
+                    Text(
+                        text = stringResource(R.string.remember_me),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.clickable { onToggleRememberMe() }
+                    )
+                }
+
+                Text(
+                    text = stringResource(R.string.forgot_password),
+                    modifier = Modifier.clickable(onClick = onNavigateToForgotPassword),
+                    color = GradientStart,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
@@ -124,21 +167,28 @@ fun LoginContent(
                 isLoading = state.isLoading
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
             Text(
                 text = stringResource(R.string.dont_have_account),
                 modifier = Modifier.clickable(onClick = onNavigateToSignUp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = MaterialTheme.typography.bodyLarge
             )
 
             if (state.error != null) {
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-                Text(
-                    text = state.error,
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Surface(
+                    color = MaterialTheme.colorScheme.errorContainer,
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    Text(
+                        text = state.error,
+                        color = MaterialTheme.colorScheme.onErrorContainer,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                    )
+                }
             }
         }
     }
@@ -152,8 +202,11 @@ fun LoginContentPreview() {
             state = AuthState(),
             email = "",
             password = "",
+            isPasswordVisible = false,
             onEmailChange = {},
             onPasswordChange = {},
+            onTogglePasswordVisibility = {},
+            onToggleRememberMe = {},
             onLoginClick = {},
             onNavigateToSignUp = {},
             onNavigateToForgotPassword = {}

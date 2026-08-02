@@ -14,6 +14,7 @@ import javax.inject.Inject
 
 data class ProfileState(
     val userName: String = "",
+    val userEmail: String = "",
     val profilePictureUri: String? = null,
     val careerPathId: String? = null,
     val streakCount: Int = 0,
@@ -63,6 +64,11 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             settingsRepository.getUserName().collect { name ->
                 _state.update { it.copy(userName = name ?: "") }
+            }
+        }
+        viewModelScope.launch {
+            settingsRepository.getUserEmail().collect { email ->
+                _state.update { it.copy(userEmail = email ?: "") }
             }
         }
     }
