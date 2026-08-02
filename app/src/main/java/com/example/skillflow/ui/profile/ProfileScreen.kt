@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.TrendingUp
+import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -31,6 +32,7 @@ import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
+import java.util.Locale
 
 @Composable
 fun ProfileScreen(
@@ -90,43 +92,50 @@ fun ProfileContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(MaterialTheme.spacing.large)
+                .padding(horizontal = MaterialTheme.spacing.large)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
             Box(
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface)
-                    .border(3.dp, GradientStart, CircleShape)
-                    .clickable { onChangePhoto() },
-                contentAlignment = Alignment.Center
+                modifier = Modifier.size(120.dp),
+                contentAlignment = Alignment.BottomEnd
             ) {
-                if (state.profilePictureUri != null) {
-                    AsyncImage(
-                        model = state.profilePictureUri,
-                        contentDescription = stringResource(R.string.profile_photo),
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
-                        modifier = Modifier.size(60.dp),
-                        tint = GradientStart.copy(alpha = 0.6f)
-                    )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surface)
+                        .border(3.dp, GradientStart, CircleShape)
+                        .clickable { onChangePhoto() },
+                    contentAlignment = Alignment.Center
+                ) {
+                    if (state.profilePictureUri != null) {
+                        AsyncImage(
+                            model = state.profilePictureUri,
+                            contentDescription = stringResource(R.string.profile_photo),
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Person,
+                            contentDescription = null,
+                            modifier = Modifier.size(60.dp),
+                            tint = GradientStart.copy(alpha = 0.6f)
+                        )
+                    }
                 }
                 
                 Surface(
                     modifier = Modifier
                         .size(36.dp)
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 4.dp, end = 4.dp),
+                        .clickable { onChangePhoto() },
                     shape = CircleShape,
                     color = GradientStart,
-                    tonalElevation = 4.dp
+                    tonalElevation = 6.dp,
+                    shadowElevation = 4.dp
                 ) {
                     Icon(
                         Icons.Default.CameraAlt,
@@ -175,7 +184,44 @@ fun ProfileContent(
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-            // Level and Progress Stats
+            // Quiz Stats
+            Text(
+                text = "Quiz Statistics",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+            ) {
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Quizzes Taken",
+                    value = state.quizCount.toString(),
+                    icon = Icons.AutoMirrored.Filled.Assignment,
+                    color = Color(0xFF2196F3)
+                )
+                StatCard(
+                    modifier = Modifier.weight(1f),
+                    title = "Avg. Score",
+                    value = String.format(Locale.getDefault(), "%.1f", state.averageScore),
+                    icon = Icons.Default.Assessment,
+                    color = Color(0xFF9C27B0)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+
+            // Progress Stats
+            Text(
+                text = "Learning Progress",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)

@@ -1,0 +1,156 @@
+[
+  {
+    "id": "a1",
+    "title": "Kotlin Fundamentals",
+    "content": "Kotlin is a modern, statically typed language. Key features include null safety, extension functions, and higher-order functions which make Android development more concise and robust.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a2",
+    "title": "Jetpack Compose Basics",
+    "content": "Compose is Android's modern toolkit for building native UI. It simplifies UI development with a declarative approach, allowing you to describe your UI and let Compose handle the rendering.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a3",
+    "title": "Clean Architecture",
+    "content": "Separating concerns into Data, Domain, and Presentation layers. This makes your code more testable, maintainable, and independent of external frameworks or databases.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a4",
+    "title": "Hilt Dependency Injection",
+    "content": "Hilt provides a standard way to use Dagger DI in your Android app. It simplifies the setup and manages the lifecycle of dependencies automatically.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a5",
+    "title": "Coroutines & Flow",
+    "content": "Managing background tasks efficiently without blocking the main thread. Flow provides a reactive stream of data that can be observed in the UI.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a6",
+    "title": "Retrofit Networking",
+    "content": "The most popular HTTP client for Android. It turns your API into a Java interface using annotations, making network calls type-safe and easy.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a7",
+    "title": "Room Database",
+    "content": "The recommended way to persist data locally. It provides an abstraction layer over SQLite and allows compile-time verification of queries.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a8",
+    "title": "ViewModel & State",
+    "content": "Storing and managing UI-related data in a lifecycle-conscious way. ViewModels survive configuration changes like screen rotations.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a9",
+    "title": "Navigation Component",
+    "content": "Simplifying navigation between screens. It handles the back stack and argument passing in a consistent way.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "a10",
+    "title": "WorkManager",
+    "content": "For tasks that need to run even if the app exits or the device reboots. Perfect for syncing data or uploading logs.",
+    "careerPathId": "android",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "i1",
+    "title": "Swift Fundamentals",
+    "content": "Swift is a powerful and intuitive programming language for iOS, macOS, tvOS, and watchOS. It's safe, fast, and interactive, with features like optionals and type inference.",
+    "careerPathId": "ios",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "i2",
+    "title": "SwiftUI Essentials",
+    "content": "SwiftUI helps you build great-looking apps across all Apple platforms with the power of Swift. Build user interfaces for any Apple device using just one set of tools and APIs.",
+    "careerPathId": "ios",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "i3",
+    "title": "ARC & Memory Management",
+    "content": "Automatic Reference Counting (ARC) handles memory management for you in Swift. Understanding strong, weak, and unowned references is key to avoiding retain cycles.",
+    "careerPathId": "ios",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "b1",
+    "title": "RESTful API Design",
+    "content": "REST (Representational State Transfer) is an architectural style for providing standards between computer systems on the web, making it easier for systems to communicate with each other.",
+    "careerPathId": "backend",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "b2",
+    "title": "Microservices Architecture",
+    "content": "Microservices are an architectural and organizational approach to software development where software is composed of small independent services that communicate over well-defined APIs.",
+    "careerPathId": "backend",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "b3",
+    "title": "SQL vs NoSQL",
+    "content": "Relational databases (SQL) use structured schemas and are great for complex queries. NoSQL databases are more flexible and scale horizontally, ideal for large volumes of unstructured data.",
+    "careerPathId": "backend",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "f1",
+    "title": "React Hooks",
+    "content": "Hooks allow you to use state and other React features without writing a class. They let you split one component into smaller functions based on what pieces are related.",
+    "careerPathId": "frontend",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "f2",
+    "title": "CSS Flexbox",
+    "content": "Flexbox is a one-dimensional layout method for arranging items in rows or columns. Items flex to fill additional space and shrink to fit into smaller spaces.",
+    "careerPathId": "frontend",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "u1",
+    "title": "Typography Hierarchy",
+    "content": "Using different font sizes and weights to guide the user's attention. Good hierarchy makes content easy to scan and understand.",
+    "careerPathId": "uiux",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "u2",
+    "title": "Color Theory",
+    "content": "Understanding how colors interact and influence emotions. Choosing the right color palette is crucial for establishing brand identity and mood.",
+    "careerPathId": "uiux",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "d1",
+    "title": "Python for Data Science",
+    "content": "Python is the most popular language for data science due to its simplicity and powerful libraries like Pandas, NumPy, and Scikit-learn.",
+    "careerPathId": "data",
+    "date": "2026-08-03"
+  },
+  {
+    "id": "d2",
+    "title": "Machine Learning Basics",
+    "content": "Machine learning is a type of artificial intelligence (AI) that allows software applications to become more accurate at predicting outcomes without being explicitly programmed.",
+    "careerPathId": "data",
+    "date": "2026-08-03"
+  }
+]

@@ -11,6 +11,7 @@ interface SkillRepository {
     suspend fun markNuggetAsDone(nuggetId: String)
     fun getCareerPaths(): Flow<List<CareerPath>>
     fun searchNuggets(query: String): Flow<List<KnowledgeNugget>>
+    fun getNuggetById(id: String): Flow<KnowledgeNugget?>
     fun getDailyProgress(careerPathId: String, date: String): Flow<Pair<Int, Int>>
     fun getRecentlyLearnedTopics(careerPathId: String): Flow<List<String>>
 }

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "android",
+    "name": "Android Developer",
+    "description": "Master modern mobile app development with Kotlin and Jetpack Compose.",
+    "iconUrl": ""
+  },
+  {
+    "id": "ios",
+    "name": "iOS Developer",
+    "description": "Build premium mobile experiences using Swift and SwiftUI.",
+    "iconUrl": ""
+  },
+  {
+    "id": "backend",
+    "name": "Backend Engineer",
+    "description": "Design and build scalable server-side systems and APIs.",
+    "iconUrl": ""
+  },
+  {
+    "id": "frontend",
+    "name": "Frontend Developer",
+    "description": "Create engaging web interfaces using React, Vue, or Angular.",
+    "iconUrl": ""
+  },
+  {
+    "id": "uiux",
+    "name": "UI/UX Designer",
+    "description": "Craft beautiful, intuitive, and accessible user experiences.",
+    "iconUrl": ""
+  },
+  {
+    "id": "data",
+    "name": "Data Scientist",
+    "description": "Extract actionable insights from complex data sets using AI and ML.",
+    "iconUrl": ""
+  }
+]

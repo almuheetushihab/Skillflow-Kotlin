@@ -27,5 +27,9 @@ interface SettingsRepository {
     suspend fun setProfilePictureUri(uri: String)
     fun isRememberMe(): Flow<Boolean>
     suspend fun setRememberMe(remember: Boolean)
+    fun getQuizCount(): Flow<Int>
+    suspend fun incrementQuizCount()
+    fun getTotalQuizScore(): Flow<Int>
+    suspend fun addToTotalQuizScore(score: Int)
     suspend fun clearSession()
 }

@@ -90,6 +90,8 @@ class SettingsRepositoryImpl @Inject constructor(
         val USER_NAME = stringPreferencesKey("user_name")
         val PROFILE_PICTURE_URI = stringPreferencesKey("profile_picture_uri")
         val IS_REMEMBER_ME = booleanPreferencesKey("is_remember_me")
+        val QUIZ_COUNT = intPreferencesKey("quiz_count")
+        val TOTAL_QUIZ_SCORE = intPreferencesKey("total_quiz_score")
     }
 
     override fun getLanguage(): Flow<String> = dataStore.data.map { it[NewPreferencesKeys.LANGUAGE] ?: "en" }
@@ -129,6 +131,24 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun setRememberMe(remember: Boolean) {
         dataStore.edit { it[NewPreferencesKeys.IS_REMEMBER_ME] = remember }
+    }
+
+    override fun getQuizCount(): Flow<Int> = dataStore.data.map { it[NewPreferencesKeys.QUIZ_COUNT] ?: 0 }
+
+    override suspend fun incrementQuizCount() {
+        dataStore.edit { 
+            val current = it[NewPreferencesKeys.QUIZ_COUNT] ?: 0
+            it[NewPreferencesKeys.QUIZ_COUNT] = current + 1
+        }
+    }
+
+    override fun getTotalQuizScore(): Flow<Int> = dataStore.data.map { it[NewPreferencesKeys.TOTAL_QUIZ_SCORE] ?: 0 }
+
+    override suspend fun addToTotalQuizScore(score: Int) {
+        dataStore.edit { 
+            val current = it[NewPreferencesKeys.TOTAL_QUIZ_SCORE] ?: 0
+            it[NewPreferencesKeys.TOTAL_QUIZ_SCORE] = current + score
+        }
     }
 
     override suspend fun clearSession() {

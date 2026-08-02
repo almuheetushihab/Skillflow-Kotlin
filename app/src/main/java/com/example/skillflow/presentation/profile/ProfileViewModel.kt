@@ -22,7 +22,9 @@ data class ProfileState(
     val todayLearned: Int = 0,
     val todayTotal: Int = 0,
     val profileLevel: Int = 1,
-    val learnedTopics: List<String> = emptyList()
+    val learnedTopics: List<String> = emptyList(),
+    val quizCount: Int = 0,
+    val averageScore: Float = 0f
 )
 
 @HiltViewModel
@@ -69,6 +71,17 @@ class ProfileViewModel @Inject constructor(
         viewModelScope.launch {
             settingsRepository.getUserEmail().collect { email ->
                 _state.update { it.copy(userEmail = email ?: "") }
+            }
+        }
+        viewModelScope.launch {
+            combine(
+                settingsRepository.getQuizCount(),
+                settingsRepository.getTotalQuizScore()
+            ) { count, totalScore ->
+                count to totalScore
+            }.collect { (count, totalScore) ->
+                val avg = if (count > 0) totalScore.toFloat() / count else 0f
+                _state.update { it.copy(quizCount = count, averageScore = avg) }
             }
         }
     }

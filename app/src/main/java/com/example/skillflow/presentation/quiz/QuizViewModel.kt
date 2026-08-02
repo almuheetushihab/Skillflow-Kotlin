@@ -2,10 +2,13 @@ package com.example.skillflow.presentation.quiz
 
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.skillflow.R
+import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.domain.repository.SkillRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class QuizQuestion(
@@ -28,7 +31,8 @@ data class QuizState(
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
-    private val skillRepository: SkillRepository
+    private val skillRepository: SkillRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(QuizState())
@@ -99,6 +103,14 @@ class QuizViewModel @Inject constructor(
             }
         } else {
             _state.update { it.copy(isFinished = true) }
+            saveQuizResults()
+        }
+    }
+
+    private fun saveQuizResults() {
+        viewModelScope.launch {
+            settingsRepository.incrementQuizCount()
+            settingsRepository.addToTotalQuizScore(_state.value.score)
         }
     }
 }

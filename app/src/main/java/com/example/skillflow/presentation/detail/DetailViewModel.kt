@@ -37,16 +37,12 @@ class DetailViewModel @Inject constructor(
     private fun loadNugget() {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            repository.getDailyNuggets("") 
-                .collect { nuggets ->
-                    val nugget = nuggets.find { it.id == nuggetId }
+            repository.getNuggetById(nuggetId)
+                .collect { nugget ->
                     if (nugget != null) {
                         _state.update { it.copy(isLoading = false, nugget = nugget) }
                     } else {
-                        repository.getSavedNuggets().collect { saved ->
-                            val savedNugget = saved.find { it.id == nuggetId }
-                            _state.update { it.copy(isLoading = false, nugget = savedNugget) }
-                        }
+                        _state.update { it.copy(isLoading = false, error = "Nugget not found") }
                     }
                 }
         }
