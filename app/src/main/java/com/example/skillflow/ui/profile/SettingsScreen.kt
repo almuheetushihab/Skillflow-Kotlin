@@ -1,5 +1,6 @@
 package com.example.skillflow.ui.profile
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,8 +12,10 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -24,6 +27,7 @@ import com.example.skillflow.presentation.profile.SettingsViewModel
 import com.example.skillflow.ui.common.AuthButton
 import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.common.SkillflowTopAppBar
+import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.spacing
 
@@ -172,38 +176,60 @@ fun LanguageToggleButton(
     currentLanguage: String,
     onToggle: () -> Unit
 ) {
+    val horizontalBias by animateFloatAsState(
+        targetValue = if (currentLanguage == "en") -1f else 1f,
+        label = "LanguageThumbBias"
+    )
+
     Surface(
         onClick = onToggle,
-        shape = RoundedCornerShape(20.dp),
-        color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f),
-        modifier = Modifier.height(40.dp).width(100.dp)
+        shape = RoundedCornerShape(24.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+        modifier = Modifier
+            .height(40.dp)
+            .width(100.dp)
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
             Row(
-                modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp),
+                modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
-                Text("EN", style = MaterialTheme.typography.labelSmall)
-                Text("BN", style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = "EN",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
+                Text(
+                    text = "BN",
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                )
             }
-            
-            // Thumb
+
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .width(50.dp)
-                    .align(if (currentLanguage == "en") Alignment.CenterStart else Alignment.CenterEnd)
-                    .padding(2.dp)
-                    .clip(RoundedCornerShape(18.dp))
-                    .background(GradientStart),
+                    .width(46.dp)
+                    .align(BiasAlignment(horizontalBias, 0f))
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(
+                        Brush.linearGradient(listOf(GradientStart, GradientEnd))
+                    ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = if (currentLanguage == "en") "EN" else "BN",
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.ExtraBold
                 )
             }
         }

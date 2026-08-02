@@ -21,17 +21,20 @@ fun SkillflowTopAppBar(
     navigationIcon: ImageVector? = null,
     onNavigationClick: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
-    useGradient: Boolean = false
+    useGradient: Boolean = false,
+    colors: TopAppBarColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+        containerColor = Color.Transparent,
+        scrolledContainerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)
+    )
 ) {
-    val containerColor = if (useGradient) Color.Transparent else MaterialTheme.colorScheme.background
-    
     Box(
         modifier = modifier
             .fillMaxWidth()
             .then(
                 if (useGradient) Modifier.background(Brush.horizontalGradient(listOf(GradientStart, GradientEnd)))
-                else Modifier
+                else Modifier.background(MaterialTheme.colorScheme.background.copy(alpha = 0.95f))
             )
+            .statusBarsPadding()
     ) {
         CenterAlignedTopAppBar(
             title = {
@@ -54,9 +57,8 @@ fun SkillflowTopAppBar(
                 }
             },
             actions = actions,
-            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = containerColor
-            )
+            colors = colors,
+            windowInsets = WindowInsets(0)
         )
     }
 }

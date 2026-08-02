@@ -69,7 +69,12 @@ fun LoginContent(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(backgroundGradient)) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(backgroundGradient)
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

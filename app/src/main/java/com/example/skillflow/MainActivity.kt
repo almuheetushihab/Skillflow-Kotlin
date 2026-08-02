@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.*
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -16,6 +18,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -50,7 +53,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 @AndroidEntryPoint
-class MainActivity : androidx.appcompat.app.AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var settingsRepository: SettingsRepository
@@ -71,11 +74,16 @@ class MainActivity : androidx.appcompat.app.AppCompatActivity() {
         }
 
         setContent {
-            val language by settingsRepository.getLanguage().collectAsState(initial = "en")
+            val language by settingsRepository.getLanguage().collectAsState(
+                initial = AppCompatDelegate.getApplicationLocales().toLanguageTags().ifEmpty { "en" }
+            )
             
             LaunchedEffect(language) {
-                val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
-                AppCompatDelegate.setApplicationLocales(appLocale)
+                val currentLocales = AppCompatDelegate.getApplicationLocales()
+                if (currentLocales.toLanguageTags() != language) {
+                    val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(language)
+                    AppCompatDelegate.setApplicationLocales(appLocale)
+                }
             }
 
             SkillflowTheme {
@@ -100,6 +108,7 @@ fun SkillFlowAppContent(startDestination: String) {
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        contentWindowInsets = WindowInsets(0),
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar(
@@ -107,12 +116,13 @@ fun SkillFlowAppContent(startDestination: String) {
                     tonalElevation = 8.dp
                 ) {
                     val items = listOf(
-                        Triple(Screen.Home, "Home", Icons.Default.Home),
-                        Triple(Screen.Roadmap, "Roadmap", Icons.Default.Route),
-                        Triple(Screen.Bookmarks, "Saved", Icons.Default.Bookmark),
-                        Triple(Screen.Profile, "Profile", Icons.Default.Person)
+                        Triple(Screen.Home, R.string.nav_home, Icons.Default.Home),
+                        Triple(Screen.Roadmap, R.string.nav_roadmap, Icons.Default.Route),
+                        Triple(Screen.Bookmarks, R.string.nav_saved, Icons.Default.Bookmark),
+                        Triple(Screen.Profile, R.string.nav_profile, Icons.Default.Person)
                     )
-                    items.forEach { (screen, label, icon) ->
+                    items.forEach { (screen, labelRes, icon) ->
+                        val label = stringResource(labelRes)
                         NavigationBarItem(
                             icon = { Icon(icon, contentDescription = label) },
                             label = { Text(label, style = MaterialTheme.typography.labelMedium) },

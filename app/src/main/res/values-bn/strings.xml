@@ -76,6 +76,12 @@
     <string name="reset_learning_goal">ক্যারিয়ার লক্ষ্য পরিবর্তন করুন</string>
     <string name="settings">অ্যাপ সেটিংস</string>
 
+    <!-- Navigation -->
+    <string name="nav_home">হোম</string>
+    <string name="nav_roadmap">রোডম্যাপ</string>
+    <string name="nav_saved">সংরক্ষিত</string>
+    <string name="nav_profile">প্রোফাইল</string>
+
     <!-- Quiz -->
     <string name="daily_quiz">দৈনিক কুইজ</string>
     <string name="question_count">প্রশ্ন %1$d</string>

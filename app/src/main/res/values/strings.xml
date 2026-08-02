@@ -76,6 +76,12 @@
     <string name="reset_learning_goal">Reset Learning Goal</string>
     <string name="settings">App Settings</string>
 
+    <!-- Navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_roadmap">Roadmap</string>
+    <string name="nav_saved">Saved</string>
+    <string name="nav_profile">Profile</string>
+
     <!-- Quiz -->
     <string name="daily_quiz">Daily Quiz</string>
     <string name="question_count">Question %1$d</string>
