@@ -2,6 +2,7 @@ package com.example.skillflow.domain.repository
 
 import com.example.skillflow.domain.model.CareerPath
 import com.example.skillflow.domain.model.KnowledgeNugget
+import com.example.skillflow.domain.model.QuizQuestion
 import kotlinx.coroutines.flow.Flow
 
 interface SkillRepository {
@@ -14,4 +15,5 @@ interface SkillRepository {
     fun getNuggetById(id: String): Flow<KnowledgeNugget?>
     fun getDailyProgress(careerPathId: String, date: String): Flow<Pair<Int, Int>>
     fun getRecentlyLearnedTopics(careerPathId: String): Flow<List<String>>
+    fun getQuizQuestions(careerPathId: String): Flow<List<QuizQuestion>>
 }

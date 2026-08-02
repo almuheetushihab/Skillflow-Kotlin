@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
-import com.example.skillflow.presentation.quiz.QuizQuestion
+import com.example.skillflow.domain.model.QuizQuestion
 import com.example.skillflow.presentation.quiz.QuizState
 import com.example.skillflow.presentation.quiz.QuizViewModel
 import com.example.skillflow.ui.common.SkillflowTopAppBar
@@ -99,7 +99,7 @@ fun QuizContent(
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
             Text(
-                text = stringResource(question.textRes),
+                text = question.text,
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
@@ -107,7 +107,7 @@ fun QuizContent(
             
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
 
-            question.optionsRes.forEachIndexed { index, optionRes ->
+            question.options.forEachIndexed { index, option ->
                 val isSelected = state.selectedOption == index
                 val isCorrect = index == question.correctAnswerIndex
                 
@@ -145,7 +145,7 @@ fun QuizContent(
                         )
                         Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
                         Text(
-                            text = stringResource(optionRes),
+                            text = option,
                             style = MaterialTheme.typography.bodyLarge,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
                         )
@@ -178,7 +178,7 @@ fun QuizContent(
                             color = GradientStart
                         )
                         Text(
-                            text = stringResource(question.explanationRes),
+                            text = question.explanation,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
@@ -291,7 +291,7 @@ fun QuizResultScreen(
                     Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
                         Row(verticalAlignment = Alignment.Top) {
                             Text(text = "${index + 1}. ", fontWeight = FontWeight.Bold)
-                            Text(text = stringResource(question.textRes), modifier = Modifier.weight(1f))
+                            Text(text = question.text, modifier = Modifier.weight(1f))
                             Icon(
                                 imageVector = if (isCorrect) Icons.Default.CheckCircle else Icons.Default.Cancel,
                                 contentDescription = null,
@@ -299,7 +299,7 @@ fun QuizResultScreen(
                             )
                         }
                         Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-                        val answerText = if (userAnswer != null) stringResource(question.optionsRes[userAnswer]) else stringResource(R.string.skipped)
+                        val answerText = if (userAnswer != null) question.options[userAnswer] else stringResource(R.string.skipped)
                         Text(
                             text = stringResource(R.string.your_answer, answerText),
                             style = MaterialTheme.typography.bodySmall,
@@ -307,7 +307,7 @@ fun QuizResultScreen(
                         )
                         if (!isCorrect) {
                             Text(
-                                text = stringResource(R.string.correct_answer, stringResource(question.optionsRes[question.correctAnswerIndex])),
+                                text = stringResource(R.string.correct_answer, question.options[question.correctAnswerIndex]),
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF2E7D32)
@@ -341,10 +341,11 @@ fun QuizContentPreview() {
                 questions = listOf(
                     QuizQuestion(
                         "1",
-                        R.string.q1_text,
-                        listOf(R.string.q1_o1, R.string.q1_o2, R.string.q1_o3),
+                        "android",
+                        "Sample question?",
+                        listOf("Option 1", "Option 2", "Option 3"),
                         0,
-                        R.string.q1_exp
+                        "Sample explanation"
                     )
                 )
             ),

@@ -1,0 +1,122 @@
+[
+  {
+    "id": "a1",
+    "careerPathId": "android",
+    "text": "What is the primary language recommended by Google for Android development?",
+    "options": ["Java", "Kotlin", "C++", "Python"],
+    "correctAnswerIndex": 1,
+    "explanation": "Kotlin is now the preferred language for Android development due to its modern features and safety."
+  },
+  {
+    "id": "a2",
+    "careerPathId": "android",
+    "text": "Which component is used to manage UI-related data in a lifecycle-conscious way?",
+    "options": ["Activity", "Service", "ViewModel", "Fragment"],
+    "correctAnswerIndex": 2,
+    "explanation": "ViewModel is designed to store and manage UI-related data so that the data survives configuration changes."
+  },
+  {
+    "id": "a3",
+    "careerPathId": "android",
+    "text": "In Jetpack Compose, how do you keep state across recompositions?",
+    "options": ["val state = 0", "remember { mutableStateOf(0) }", "static int state = 0", "MutableLiveData()"],
+    "correctAnswerIndex": 1,
+    "explanation": "remember is used to store an object in the composition."
+  },
+  {
+    "id": "i1",
+    "careerPathId": "ios",
+    "text": "Which framework is used for modern declarative UI in iOS?",
+    "options": ["UIKit", "SwiftUI", "Cocoa Touch", "Flutter"],
+    "correctAnswerIndex": 1,
+    "explanation": "SwiftUI is Apple's modern declarative framework for building user interfaces across all their platforms."
+  },
+  {
+    "id": "i2",
+    "careerPathId": "ios",
+    "text": "What does ARC stand for in Swift?",
+    "options": ["Automatic Resource Counting", "Automatic Reference Counting", "Advanced Runtime Control", "Apple Resource Container"],
+    "correctAnswerIndex": 1,
+    "explanation": "ARC stands for Automatic Reference Counting, which manages memory by tracking object references."
+  },
+  {
+    "id": "i3",
+    "careerPathId": "ios",
+    "text": "What keyword is used to define a constant in Swift?",
+    "options": ["var", "const", "let", "val"],
+    "correctAnswerIndex": 2,
+    "explanation": "In Swift, 'let' is used to define constants and 'var' is used for variables."
+  },
+  {
+    "id": "b1",
+    "careerPathId": "backend",
+    "text": "What does REST stand for?",
+    "options": ["Representational State Transfer", "Remote State Transfer", "Relational System Transfer", "Routing Environment State"],
+    "correctAnswerIndex": 0,
+    "explanation": "REST stands for Representational State Transfer, a standard architectural style for web services."
+  },
+  {
+    "id": "b2",
+    "careerPathId": "backend",
+    "text": "Which database type is better for horizontal scaling and unstructured data?",
+    "options": ["SQL", "NoSQL", "Relational", "Excel"],
+    "correctAnswerIndex": 1,
+    "explanation": "NoSQL databases are designed to scale out and handle diverse data formats more efficiently than traditional SQL databases."
+  },
+  {
+    "id": "b3",
+    "careerPathId": "backend",
+    "text": "What is the purpose of Docker in backend development?",
+    "options": ["Database management", "Containerization", "Code editing", "Version control"],
+    "correctAnswerIndex": 1,
+    "explanation": "Docker is used for containerization, allowing applications to run consistently across different environments."
+  },
+  {
+    "id": "f1",
+    "careerPathId": "frontend",
+    "text": "Which hook is used to handle side effects in React?",
+    "options": ["useState", "useContext", "useEffect", "useMemo"],
+    "correctAnswerIndex": 2,
+    "explanation": "useEffect allows you to perform side effects (like data fetching or DOM manipulation) in functional components."
+  },
+  {
+    "id": "f2",
+    "careerPathId": "frontend",
+    "text": "What does CSS stand for?",
+    "options": ["Cascading Style Sheets", "Creative Style Sheets", "Computer Style Sheets", "Colorful Style Sheets"],
+    "correctAnswerIndex": 0,
+    "explanation": "CSS stands for Cascading Style Sheets, used for styling web pages."
+  },
+  {
+    "id": "u1",
+    "careerPathId": "uiux",
+    "text": "What is the main goal of heuristic evaluation?",
+    "options": ["User testing", "Reviewing UI against usability principles", "Designing icons", "A/B testing"],
+    "correctAnswerIndex": 1,
+    "explanation": "Heuristic evaluation is a usability inspection method where experts review a UI against established 'heuristics' or rules of thumb."
+  },
+  {
+    "id": "u2",
+    "careerPathId": "uiux",
+    "text": "What does UX stand for?",
+    "options": ["User Experience", "User Extreme", "Universal Experience", "User Extension"],
+    "correctAnswerIndex": 0,
+    "explanation": "UX stands for User Experience, focusing on the overall feel of the interaction."
+  },
+  {
+    "id": "d1",
+    "careerPathId": "data",
+    "text": "Which Python library is most commonly used for data manipulation and analysis?",
+    "options": ["Pandas", "Matplotlib", "PyTorch", "Flask"],
+    "correctAnswerIndex": 0,
+    "explanation": "Pandas is the go-to library for handling structured data (dataframes) in Python."
+  },
+  {
+    "id": "d2",
+    "careerPathId": "data",
+    "text": "In Machine Learning, what is 'Supervised Learning'?",
+    "options": ["Learning without labels", "Learning with labeled data", "Learning through rewards", "Learning from robots"],
+    "correctAnswerIndex": 1,
+    "explanation": "Supervised learning uses a known dataset (labeled data) to train algorithms to classify data or predict outcomes."
+  }
+]

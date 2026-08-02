@@ -7,6 +7,7 @@ import com.example.skillflow.data.local.entity.toEntity
 import com.example.skillflow.data.remote.SkillApi
 import com.example.skillflow.domain.model.CareerPath
 import com.example.skillflow.domain.model.KnowledgeNugget
+import com.example.skillflow.domain.model.QuizQuestion
 import com.example.skillflow.domain.repository.SkillRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.*
@@ -62,6 +63,20 @@ class SkillRepositoryImpl @Inject constructor(
                 KnowledgeNugget("a5", "Coroutines & Flow", "Managing background tasks efficiently without blocking the main thread. Flow provides a reactive stream of data that can be observed in the UI.", null, "android", false, false, "2026-08-03"),
                 KnowledgeNugget("i1", "Swift Fundamentals", "Swift is a powerful and intuitive programming language for iOS, macOS, tvOS, and watchOS.", null, "ios", false, false, "2026-08-03"),
                 KnowledgeNugget("b1", "RESTful API Design", "REST is an architectural style for providing standards between computer systems on the web.", null, "backend", false, false, "2026-08-03")
+            )
+        }
+    }
+
+    private val allQuizQuestions by lazy {
+        try {
+            val content = context.assets.open("quizzes.json").bufferedReader().use { it.readText() }
+            val list = json.decodeFromString<List<QuizQuestion>>(content)
+            if (list.isEmpty()) throw Exception("Empty quiz list")
+            list
+        } catch (e: Exception) {
+            listOf(
+                QuizQuestion("a1", "android", "What is the primary language for Android?", listOf("Java", "Kotlin"), 1, "Kotlin is preferred."),
+                QuizQuestion("a2", "android", "What manages UI data?", listOf("Activity", "ViewModel"), 1, "ViewModel survives rotation.")
             )
         }
     }
@@ -149,6 +164,17 @@ class SkillRepositoryImpl @Inject constructor(
         val path = if (careerPathId.isEmpty()) "android" else careerPathId
         return dao.getRecentlyCompletedNuggets(path).map { list ->
             list.map { it.title }
+        }
+    }
+
+    override fun getQuizQuestions(careerPathId: String): Flow<List<QuizQuestion>> = flow {
+        val path = if (careerPathId.isEmpty()) "android" else careerPathId
+        val pathQuestions = allQuizQuestions.filter { it.careerPathId == path }
+        // Fallback to Android if path has no questions
+        if (pathQuestions.isEmpty()) {
+            emit(allQuizQuestions.filter { it.careerPathId == "android" })
+        } else {
+            emit(pathQuestions)
         }
     }
 }
