@@ -75,6 +75,17 @@
     <string name="daily_reminders">Daily Reminders</string>
     <string name="reset_learning_goal">Reset Learning Goal</string>
     <string name="settings">App Settings</string>
+    <string name="profile_level">Profile Level</string>
+    <string name="level_format">Lvl %1$d</string>
+    <string name="daily_progress_format">%1$d/%2$d</string>
+    <string name="todays_summary">Today\'s Summary</string>
+    <string name="no_topics_learned">You haven\'t learned any topics today yet. Start your journey!</string>
+    <string name="learned_topics_format">Today you learned about: %1$s</string>
+    <string name="daily_knowledge_quiz">Daily Knowledge Quiz</string>
+    <string name="quiz_subtitle">Test your skills with 20 MCQs</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="full_name">Full Name</string>
+    <string name="email_address">Email Address</string>
 
     <!-- Navigation -->
     <string name="nav_home">Home</string>
@@ -87,4 +98,135 @@
     <string name="question_count">Question %1$d</string>
     <string name="submit">Submit</string>
     <string name="finish_quiz">Finish Quiz</string>
+    <string name="explanation_label">Explanation:</string>
+    <string name="next_question">Next Question</string>
+    <string name="quiz_results">Quiz Results</string>
+    <string name="correct_count">%1$d/%2$d Correct</string>
+    <string name="great_job">Great Job! 🎉</string>
+    <string name="keep_learning">Keep Learning! 💪</string>
+    <string name="detailed_feedback">Detailed Feedback</string>
+    <string name="your_answer">Your Answer: %1$s</string>
+    <string name="correct_answer">Correct Answer: %1$s</string>
+    <string name="skipped">Skipped</string>
+    <string name="back_to_profile">Back to Profile</string>
+    <!-- Quiz Questions -->
+    <string name="q1_text">What is the entry point of an Android app?</string>
+    <string name="q1_o1">MainActivity</string>
+    <string name="q1_o2">AndroidManifest.xml</string>
+    <string name="q1_o3">Application Class</string>
+    <string name="q1_exp">AndroidManifest.xml declares the entry points like activities, services, etc.</string>
+
+    <string name="q2_text">Which component is used for background tasks that need to survive app death?</string>
+    <string name="q2_o1">Service</string>
+    <string name="q2_o2">WorkManager</string>
+    <string name="q2_o3">IntentService</string>
+    <string name="q2_exp">WorkManager is the recommended solution for persistent work.</string>
+
+    <string name="q3_text">In Jetpack Compose, how do you keep state across recompositions?</string>
+    <string name="q3_o1">remember</string>
+    <string name="q3_o2">mutableStateOf</string>
+    <string name="q3_o3">remember { mutableStateOf(...) }</string>
+    <string name="q3_exp">remember is used to store an object in the composition.</string>
+
+    <string name="q4_text">What does \'val\' mean in Kotlin?</string>
+    <string name="q4_o1">Variable</string>
+    <string name="q4_o2">Value (Immutable)</string>
+    <string name="q4_o3">Volatile</string>
+    <string name="q4_exp">val is used to declare read-only variables.</string>
+
+    <string name="q5_text">Which layout is best for flat hierarchies and complex constraints?</string>
+    <string name="q5_o1">LinearLayout</string>
+    <string name="q5_o2">FrameLayout</string>
+    <string name="q5_o3">ConstraintLayout</string>
+    <string name="q5_exp">ConstraintLayout allows you to create large and complex layouts with a flat view hierarchy.</string>
+
+    <string name="q6_text">What is the default launch mode of an Activity?</string>
+    <string name="q6_o1">standard</string>
+    <string name="q6_o2">singleTop</string>
+    <string name="q6_o3">singleTask</string>
+    <string name="q6_exp">Standard is the default launch mode.</string>
+
+    <string name="q7_text">How do you handle long-running operations in Kotlin?</string>
+    <string name="q7_o1">Threads</string>
+    <string name="q7_o2">Coroutines</string>
+    <string name="q7_o3">Callbacks</string>
+    <string name="q7_exp">Coroutines provide a way to write asynchronous code sequentially.</string>
+
+    <string name="q8_text">What is Hilt used for?</string>
+    <string name="q8_o1">Networking</string>
+    <string name="q8_o2">Database</string>
+    <string name="q8_o3">Dependency Injection</string>
+    <string name="q8_exp">Hilt is a DI library for Android that reduces boilerplate.</string>
+
+    <string name="q9_text">What is the purpose of a ViewModel?</string>
+    <string name="q9_o1">Handle UI logic</string>
+    <string name="q9_o2">Store and manage UI-related data</string>
+    <string name="q9_o3">Network calls</string>
+    <string name="q9_exp">ViewModels are designed to store and manage UI-related data in a lifecycle-conscious way.</string>
+
+    <string name="q10_text">Which function is used to create a Flow in Kotlin?</string>
+    <string name="q10_o1">flowOf()</string>
+    <string name="q10_o2">mutableFlowOf()</string>
+    <string name="q10_o3">emit()</string>
+    <string name="q10_exp">flowOf() creates a flow from a fixed set of values.</string>
+
+    <string name="q11_text">What is the role of the \'by\' keyword in Kotlin?</string>
+    <string name="q11_o1">Inheritance</string>
+    <string name="q11_o2">Delegation</string>
+    <string name="q11_o3">Extension</string>
+    <string name="q11_exp">The \'by\' keyword is used for property and class delegation.</string>
+
+    <string name="q12_text">Which Compose modifier is used to add padding?</string>
+    <string name="q12_o1">Modifier.padding()</string>
+    <string name="q12_o2">Modifier.margin()</string>
+    <string name="q12_o3">Modifier.space()</string>
+    <string name="q12_exp">Modifier.padding() is used for both internal and external spacing in Compose.</string>
+
+    <string name="q13_text">What is a \'sealed class\' in Kotlin?</string>
+    <string name="q13_o1">A class that cannot be inherited</string>
+    <string name="q13_o2">A class with a restricted hierarchy</string>
+    <string name="q13_o3">A private class</string>
+    <string name="q13_exp">Sealed classes represent restricted class hierarchies.</string>
+
+    <string name="q14_text">How do you trigger a recomposition in Compose?</string>
+    <string name="q14_o1">Call invalidate()</string>
+    <string name="q14_o2">Change a state object observed by Compose</string>
+    <string name="q14_o3">Restart the activity</string>
+    <string name="q14_exp">Recomposition is triggered when the state observed by a Composable changes.</string>
+
+    <string name="q15_text">What is the primary benefit of Room over SQLite?</string>
+    <string name="q15_o1">Speed</string>
+    <string name="q15_o2">Compile-time query verification</string>
+    <string name="q15_o3">Cloud sync</string>
+    <string name="q15_exp">Room provides an abstraction layer over SQLite and verifies queries at compile time.</string>
+
+    <string name="q16_text">What does the \'suspend\' keyword indicate?</string>
+    <string name="q16_o1">The function is slow</string>
+    <string name="q16_o2">The function can be paused and resumed</string>
+    <string name="q16_o3">The function runs on a background thread</string>
+    <string name="q16_exp">Suspend functions can be suspended without blocking the current thread.</string>
+
+    <string name="q17_text">Which scope is used for coroutines in a ViewModel?</string>
+    <string name="q17_o1">GlobalScope</string>
+    <string name="q17_o2">lifecycleScope</string>
+    <string name="q17_o3">viewModelScope</string>
+    <string name="q17_exp">viewModelScope is tied to the ViewModel\'s lifecycle.</string>
+
+    <string name="q18_text">What is the purpose of Retrofit?</string>
+    <string name="q18_o1">Image loading</string>
+    <string name="q18_o2">JSON parsing</string>
+    <string name="q18_o3">Type-safe HTTP client</string>
+    <string name="q18_exp">Retrofit is a type-safe HTTP client for Android and Java.</string>
+
+    <string name="q19_text">In Compose, what is \'Lifting State\'?</string>
+    <string name="q19_o1">Moving state to a higher level Composable</string>
+    <string name="q19_o2">Storing state in a database</string>
+    <string name="q19_o3">Removing state from the app</string>
+    <string name="q19_exp">State lifting makes Composables stateless and more reusable.</string>
+
+    <string name="q20_text">What is the use of \'DataStore\'?</string>
+    <string name="q20_o1">SQL Database</string>
+    <string name="q20_o2">Key-value pair storage</string>
+    <string name="q20_o3">Image cache</string>
+    <string name="q20_exp">Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with Protocol Buffers.</string>
 </resources>

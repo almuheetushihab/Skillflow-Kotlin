@@ -39,6 +39,7 @@ import com.example.skillflow.ui.navigation.Screen
 import com.example.skillflow.ui.onboarding.OnboardingScreen
 import com.example.skillflow.ui.profile.ProfileScreen
 import com.example.skillflow.ui.profile.SettingsScreen
+import com.example.skillflow.ui.quiz.QuizScreen
 import com.example.skillflow.ui.roadmap.RoadmapScreen
 import com.example.skillflow.ui.theme.SkillflowTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -210,6 +211,9 @@ fun SkillFlowAppContent(startDestination: String) {
                     },
                     onNavigateToSettings = {
                         navController.navigate(Screen.Settings.route)
+                    },
+                    onNavigateToQuiz = {
+                        navController.navigate(Screen.Quiz.route)
                     }
                 )
             }
@@ -222,6 +226,9 @@ fun SkillFlowAppContent(startDestination: String) {
                         }
                     }
                 )
+            }
+            composable(Screen.Quiz.route) {
+                QuizScreen(onFinish = { navController.popBackStack() })
             }
         }
     }

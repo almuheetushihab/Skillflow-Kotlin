@@ -10,6 +10,15 @@ interface SkillDao {
     @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND date = :date")
     fun getDailyNuggets(careerPathId: String, date: String): Flow<List<NuggetEntity>>
 
+    @Query("SELECT COUNT(*) FROM nuggets WHERE careerPathId = :careerPathId AND date = :date AND isDone = 1")
+    fun getCompletedNuggetsCount(careerPathId: String, date: String): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM nuggets WHERE careerPathId = :careerPathId AND date = :date")
+    fun getTotalNuggetsCount(careerPathId: String, date: String): Flow<Int>
+
+    @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND isDone = 1 ORDER BY date DESC LIMIT 10")
+    fun getRecentlyCompletedNuggets(careerPathId: String): Flow<List<NuggetEntity>>
+
     @Query("SELECT * FROM nuggets WHERE isSaved = 1")
     fun getSavedNuggets(): Flow<List<NuggetEntity>>
 

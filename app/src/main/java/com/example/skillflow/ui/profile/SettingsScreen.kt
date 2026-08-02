@@ -38,10 +38,6 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    var showEmailDialog by remember { mutableStateOf(false) }
-    var newEmail by remember { mutableStateOf("") }
-    var showNameDialog by remember { mutableStateOf(false) }
-    var newName by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -60,49 +56,27 @@ fun SettingsScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
+                text = stringResource(R.string.edit_profile),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+            AuthTextField(
+                value = state.name,
+                onValueChange = { viewModel.updateName(it) },
+                label = stringResource(R.string.full_name)
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            AuthTextField(
+                value = state.email,
+                onValueChange = { viewModel.updateEmail(it) },
+                label = stringResource(R.string.email_address)
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Text(
                 text = stringResource(R.string.account_details),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-            SettingsItem(
-                icon = Icons.Default.Person,
-                title = stringResource(R.string.name),
-                subtitle = state.name.ifEmpty { "Not set" },
-                onClick = {
-                    newName = state.name
-                    showNameDialog = true
-                }
-            )
-            SettingsItem(
-                icon = Icons.Default.Email,
-                title = stringResource(R.string.email),
-                subtitle = state.email.ifEmpty { "Not set" },
-                onClick = { 
-                    newEmail = state.email
-                    showEmailDialog = true 
-                }
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-            Text(
-                text = stringResource(R.string.learning_stats),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-            
-            SettingsItem(
-                icon = Icons.Default.Timer,
-                title = "Study Time",
-                subtitle = stringResource(R.string.minutes_learned, state.learningTime),
-                onClick = null
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-            Text(
-                text = "Preferences",
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -119,7 +93,7 @@ fun SettingsScreen(
                     Icon(Icons.Default.Language, contentDescription = null, tint = GradientStart)
                     Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
                     Text(
-                        text = stringResource(R.string.language_toggle, if (state.language == "bn") "বাংলা" else "English"),
+                        text = stringResource(R.string.language_toggle, if (state.language == "bn") stringResource(R.string.bengali) else stringResource(R.string.english)),
                         style = MaterialTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -145,32 +119,6 @@ fun SettingsScreen(
                 modifier = Modifier.padding(vertical = MaterialTheme.spacing.large)
             )
         }
-    }
-
-    if (showEmailDialog) {
-        SettingsDialog(
-            title = stringResource(R.string.update_email),
-            value = newEmail,
-            onValueChange = { newEmail = it },
-            onConfirm = {
-                viewModel.updateEmail(newEmail)
-                showEmailDialog = false
-            },
-            onDismiss = { showEmailDialog = false }
-        )
-    }
-
-    if (showNameDialog) {
-        SettingsDialog(
-            title = "Update Name",
-            value = newName,
-            onValueChange = { newName = it },
-            onConfirm = {
-                viewModel.updateName(newName)
-                showNameDialog = false
-            },
-            onDismiss = { showNameDialog = false }
-        )
     }
 }
 
@@ -237,57 +185,4 @@ fun LanguageToggleButton(
             }
         }
     }
-}
-
-@Composable
-fun SettingsItem(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    title: String,
-    subtitle: String,
-    onClick: (() -> Unit)?
-) {
-    ListItem(
-        modifier = Modifier.padding(vertical = 4.dp),
-        headlineContent = { Text(title, fontWeight = FontWeight.Bold) },
-        supportingContent = { Text(subtitle) },
-        leadingContent = { Icon(icon, contentDescription = null, tint = GradientStart) },
-        trailingContent = {
-            if (onClick != null) {
-                IconButton(onClick = onClick) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit", tint = MaterialTheme.colorScheme.primary)
-                }
-            }
-        }
-    )
-}
-
-@Composable
-fun SettingsDialog(
-    title: String,
-    value: String,
-    onValueChange: (String) -> Unit,
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(title) },
-        text = {
-            AuthTextField(
-                value = value,
-                onValueChange = onValueChange,
-                label = "Enter value"
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(stringResource(R.string.save))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(stringResource(R.string.cancel))
-            }
-        }
-    )
 }

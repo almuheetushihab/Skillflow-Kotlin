@@ -106,4 +106,21 @@ class SkillRepositoryImpl @Inject constructor(
     override fun getCareerPaths(): Flow<List<CareerPath>> = flow {
         emit(mockCareerPaths)
     }
+
+    override fun getDailyProgress(careerPathId: String, date: String): Flow<Pair<Int, Int>> {
+        val path = if (careerPathId.isEmpty()) "android" else careerPathId
+        return combine(
+            dao.getCompletedNuggetsCount(path, date),
+            dao.getTotalNuggetsCount(path, date)
+        ) { completed, total ->
+            completed to total
+        }
+    }
+
+    override fun getRecentlyLearnedTopics(careerPathId: String): Flow<List<String>> {
+        val path = if (careerPathId.isEmpty()) "android" else careerPathId
+        return dao.getRecentlyCompletedNuggets(path).map { list ->
+            list.map { it.title }
+        }
+    }
 }
