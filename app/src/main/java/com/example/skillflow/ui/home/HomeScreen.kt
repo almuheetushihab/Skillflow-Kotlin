@@ -96,20 +96,36 @@ fun HomeContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(MaterialTheme.spacing.large)
+                .padding(horizontal = MaterialTheme.spacing.large)
         ) {
-            // Search Bar
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            
+            // Search Bar with proper placeholder and styling
             OutlinedTextField(
                 value = state.searchQuery,
                 onValueChange = onSearchQueryChange,
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text(stringResource(R.string.search_hint)) },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                shape = RoundedCornerShape(16.dp),
+                placeholder = { 
+                    Text(
+                        text = stringResource(R.string.search_hint),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                    ) 
+                },
+                leadingIcon = { 
+                    Icon(
+                        Icons.Default.Search, 
+                        contentDescription = null,
+                        tint = GradientStart
+                    ) 
+                },
+                shape = RoundedCornerShape(24.dp),
                 singleLine = true,
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = GradientStart,
-                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant
+                    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    focusedContainerColor = MaterialTheme.colorScheme.surface,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surface
                 )
             )
 
@@ -158,7 +174,8 @@ fun HomeContent(
                 } else {
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-                        modifier = Modifier.fillMaxSize()
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 24.dp)
                     ) {
                         itemsIndexed(state.dailyNuggets) { index, nugget ->
                             AnimatedEntrance(index = index) {
@@ -187,18 +204,6 @@ fun HomeContentPreview() {
                     KnowledgeNugget("2", "Compose Layouts", "Full content of layouts", null, "android", true, false, "2026-08-02")
                 )
             ),
-            onSearchQueryChange = {},
-            onNavigateToDetail = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeContentLoadingPreview() {
-    SkillflowTheme {
-        HomeContent(
-            state = HomeState(isLoading = true),
             onSearchQueryChange = {},
             onNavigateToDetail = {}
         )
