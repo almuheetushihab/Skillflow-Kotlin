@@ -29,6 +29,7 @@ import com.example.skillflow.R
 import com.example.skillflow.presentation.profile.ProfileState
 import com.example.skillflow.presentation.profile.ProfileViewModel
 import com.example.skillflow.ui.common.SkillflowTopAppBar
+import com.example.skillflow.ui.profile.components.StatCard
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
@@ -39,6 +40,7 @@ fun ProfileScreen(
     onResetOnboarding: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToQuiz: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -58,7 +60,8 @@ fun ProfileScreen(
             viewModel.resetOnboarding()
             onResetOnboarding()
         },
-        onChangePhoto = { launcher.launch("image/*") }
+        onChangePhoto = { launcher.launch("image/*") },
+        modifier = modifier
     )
 }
 
@@ -69,14 +72,15 @@ fun ProfileContent(
     onNavigateToSettings: () -> Unit,
     onNavigateToQuiz: () -> Unit,
     onResetOnboarding: () -> Unit,
-    onChangePhoto: () -> Unit
+    onChangePhoto: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
 
     Scaffold(
-        modifier = Modifier.background(backgroundGradient),
+        modifier = modifier.background(backgroundGradient),
         topBar = {
             SkillflowTopAppBar(
                 title = stringResource(R.string.my_profile),
@@ -186,7 +190,7 @@ fun ProfileContent(
 
             // Quiz Stats
             Text(
-                text = "Quiz Statistics",
+                text = stringResource(R.string.quiz_stats),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
@@ -198,14 +202,14 @@ fun ProfileContent(
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    title = "Quizzes Taken",
+                    title = stringResource(R.string.quizzes_taken),
                     value = state.quizCount.toString(),
                     icon = Icons.AutoMirrored.Filled.Assignment,
                     color = Color(0xFF2196F3)
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    title = "Avg. Score",
+                    title = stringResource(R.string.avg_score),
                     value = String.format(Locale.getDefault(), "%.1f", state.averageScore),
                     icon = Icons.Default.Assessment,
                     color = Color(0xFF9C27B0)
@@ -216,7 +220,7 @@ fun ProfileContent(
 
             // Progress Stats
             Text(
-                text = "Learning Progress",
+                text = stringResource(R.string.learning_progress),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
@@ -357,32 +361,6 @@ fun ProfileContent(
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-        }
-    }
-}
-
-@Composable
-fun StatCard(
-    modifier: Modifier = Modifier,
-    title: String,
-    value: String,
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    color: Color
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.1f)),
-        border = BorderStroke(1.dp, color.copy(alpha = 0.2f))
-    ) {
-        Column(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(icon, contentDescription = null, tint = color)
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            Text(text = value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
-            Text(text = title, style = MaterialTheme.typography.labelMedium, color = color.copy(alpha = 0.8f))
         }
     }
 }

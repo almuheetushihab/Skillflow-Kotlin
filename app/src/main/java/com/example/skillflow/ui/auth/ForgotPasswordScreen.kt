@@ -24,7 +24,8 @@ import com.example.skillflow.ui.theme.spacing
 
 @Composable
 fun ForgotPasswordScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     var email by remember { mutableStateOf("") }
     var isSubmitted by remember { mutableStateOf(false) }
@@ -34,7 +35,8 @@ fun ForgotPasswordScreen(
         isSubmitted = isSubmitted,
         onEmailChange = { email = it },
         onSubmit = { isSubmitted = true },
-        onNavigateBack = onNavigateBack
+        onNavigateBack = onNavigateBack,
+        modifier = modifier
     )
 }
 
@@ -44,13 +46,19 @@ fun ForgotPasswordContent(
     isSubmitted: Boolean,
     onEmailChange: (String) -> Unit,
     onSubmit: () -> Unit,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(backgroundGradient)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundGradient)
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()

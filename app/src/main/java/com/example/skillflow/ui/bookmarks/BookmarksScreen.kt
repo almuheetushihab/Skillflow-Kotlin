@@ -29,20 +29,23 @@ import com.example.skillflow.ui.theme.spacing
 @Composable
 fun BookmarksScreen(
     onNavigateToDetail: (String) -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: BookmarksViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
     
     BookmarksContent(
         state = state,
-        onNavigateToDetail = onNavigateToDetail
+        onNavigateToDetail = onNavigateToDetail,
+        modifier = modifier
     )
 }
 
 @Composable
 fun BookmarksContent(
     state: BookmarksState,
-    onNavigateToDetail: (String) -> Unit
+    onNavigateToDetail: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(
@@ -52,7 +55,7 @@ fun BookmarksContent(
     )
 
     Scaffold(
-        modifier = Modifier.background(backgroundGradient),
+        modifier = modifier.background(backgroundGradient),
         topBar = {
             SkillflowTopAppBar(title = stringResource(R.string.saved_nuggets))
         }

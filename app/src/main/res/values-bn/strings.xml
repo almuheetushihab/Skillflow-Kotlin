@@ -15,6 +15,7 @@
     <string name="welcome_back">স্বাগতম!</string>
     <string name="create_account">অ্যাকাউন্ট তৈরি করুন</string>
     <string name="name">নাম</string>
+    <string name="phone_number">ফোন নম্বর</string>
     <string name="reset_password_hint">পাসওয়ার্ড রিসেট লিঙ্ক পেতে আপনার ইমেল লিখুন।</string>
     <string name="reset_link_sent">%1$s এ রিসেট লিঙ্ক পাঠানো হয়েছে!</string>
     <string name="back_to_login">লগইনে ফিরে যান</string>
@@ -24,10 +25,21 @@
     <string name="password_visibility">পাসওয়ার্ড দৃশ্যমানতা</string>
 
     <!-- Onboarding -->
-    <string name="welcome_to_skillflow">স্কিলফ্লোতে স্বাগতম</string>
-    <string name="micro_learning_subtitle">ক্ষুদ্র শিক্ষা, বিশাল উন্নতি।</string>
-    <string name="select_career_goal">আপনার ক্যারিয়ার পথ নির্বাচন করুন</string>
-    <string name="begin_journey">আমার যাত্রা শুরু করি</string>
+    <string name="welcome_to_skillflow">স্কিলফ্লো-তে স্বাগতম</string>
+    <string name="onboarding_welcome_title">নতুন দক্ষতা দ্রুত শিখুন</string>
+    <string name="onboarding_welcome_desc">মাইক্রো-লার্নিংয়ের মাধ্যমে আপনার ক্যারিয়ার বৃদ্ধির জন্য ব্যক্তিগত গাইড। যখন যা প্রয়োজন, তাই শিখুন।</string>
+    <string name="onboarding_micro_title">মাইক্রো-লার্নিং পদ্ধতি</string>
+    <string name="onboarding_micro_desc">আমরা জটিল বিষয়গুলোকে ছোট ছোট "নলেজ নাগেট"-এ ভাগ করি। দিনে ৫ মিনিটই যথেষ্ট।</string>
+    <string name="onboarding_goal_title">আপনার জন্য তৈরি</string>
+    <string name="onboarding_goal_desc">আপনার ক্যারিয়ারের পথ বেছে নিন এবং আমরা আপনার জন্য একটি কাস্টম রোডম্যাপ তৈরি করব।</string>
+    <string name="onboarding_ready_title">শুরু করতে প্রস্তুত?</string>
+    <string name="onboarding_ready_desc">আপনি আপনার ক্যারিয়ার পরিবর্তনের এক ধাপ দূরে আছেন। চলুন প্রথম লেসনে ঝাঁপিয়ে পড়ি!</string>
+    <string name="micro_learning_subtitle">মাইক্রো-লার্নিং, সর্বোচ্চ বৃদ্ধি।</string>
+    <string name="select_career_goal">আপনার ক্যারিয়ার পথ বেছে নিন</string>
+    <string name="begin_journey">আমার যাত্রা শুরু করুন</string>
+    <string name="next">পরবর্তী</string>
+    <string name="skip">এড়িয়ে যান</string>
+    <string name="get_started">শুরু করুন</string>
     <string name="please_select_goal">দয়া করে একটি ক্যারিয়ার লক্ষ্য নির্বাচন করুন</string>
 
     <!-- Home -->
@@ -61,6 +73,17 @@
 
     <!-- Profile -->
     <string name="my_profile">আমার প্রোফাইল</string>
+    <string name="privacy_policy">গোপনীয়তা নীতি</string>
+    <string name="privacy_policy_title">গোপনীয়তা নীতি</string>
+    <string name="privacy_policy_content">এই গোপনীয়তা নীতি বর্ণনা করে যে আপনি যখন আমাদের মোবাইল অ্যাপ্লিকেশন ব্যবহার করেন তখন কীভাবে স্কিলফ্লো আপনার ব্যক্তিগত তথ্য সংগ্রহ করে, ব্যবহার করে এবং শেয়ার করে। আমরা আপনার গোপনীয়তা রক্ষা করতে এবং একটি নিরাপদ শিক্ষার পরিবেশ নিশ্চিত করতে প্রতিশ্রুতিবদ্ধ।\n\n১. তথ্য সংগ্রহ: আপনি যখন অ্যাকাউন্ট তৈরি করেন তখন আমরা আপনার সরাসরি প্রদান করা তথ্য সংগ্রহ করি, যেমন আপনার নাম এবং ইমেল ঠিকানা।\n\n২. তথ্যের ব্যবহার: আমরা সংগৃহীত তথ্য আমাদের পরিষেবা প্রদান, রক্ষণাবেক্ষণ এবং উন্নত করতে এবং আপনার শেখার অভিজ্ঞতাকে ব্যক্তিগতকৃত করতে ব্যবহার করি।\n\n৩. ডেটা সুরক্ষা: আপনার ডেটা রক্ষা করতে আমরা ইন্ডাস্ট্রি-স্ট্যান্ডার্ড সুরক্ষা ব্যবস্থা প্রয়োগ করি। আপনার অ্যাকাউন্টের তথ্য নিরাপদে সংরক্ষণ করা হয়।\n\n৪. আপনার অধিকার: আপনার যেকোনো সময় আপনার ব্যক্তিগত তথ্য অ্যাক্সেস, আপডেট বা মুছে ফেলার অধিকার রয়েছে। আমাদের সিস্টেম থেকে আপনার সমস্ত ডেটা সরাতে আপনি সেটিংসে "অ্যাকাউন্ট মুছুন" অপশনটি ব্যবহার করতে পারেন।\n\n৫. আমাদের সাথে যোগাযোগ করুন: এই গোপনীয়তা নীতি সম্পর্কে আপনার যদি কোনো প্রশ্ন থাকে, তবে অনুগ্রহ করে support@skillflow.app এ আমাদের সাথে যোগাযোগ করুন।</string>
+    <string name="about_app">স্কিলফ্লো সম্পর্কে</string>
+    <string name="app_version">ভার্সন %1$s</string>
+    <string name="developer_info">স্কিলফ্লো টিম দ্বারা ডেভেলপ করা হয়েছে</string>
+    <string name="contact_support">সাপোর্টের সাথে যোগাযোগ করুন</string>
+    <string name="delete_account">অ্যাকাউন্ট মুছুন</string>
+    <string name="delete_account_title">অ্যাকাউন্ট মুছবেন?</string>
+    <string name="delete_account_message">আপনি কি নিশ্চিত যে আপনি আপনার অ্যাকাউন্টটি মুছে ফেলতে চান? এই কাজটি স্থায়ী এবং আপনার সমস্ত প্রগতি হারিয়ে যাবে।</string>
+    <string name="confirm_delete">মুছে ফেলুন</string>
     <string name="learner_profile">শিক্ষার্থীর প্রোফাইল</string>
     <string name="career_goal">ক্যারিয়ার লক্ষ্য: %1$s</string>
     <string name="profile_photo">প্রোফাইল ফটো</string>
@@ -71,6 +94,10 @@
     <string name="bengali">বাংলা</string>
     <string name="logout">লগআউট</string>
     <string name="learning_stats">শেখার পরিসংখ্যান</string>
+    <string name="quiz_stats">কুইজ পরিসংখ্যান</string>
+    <string name="quizzes_taken">অংশ নেওয়া কুইজ</string>
+    <string name="avg_score">গড় স্কোর</string>
+    <string name="learning_progress">শেখার প্রগতি</string>
     <string name="minutes_learned">%1$d মিনিট</string>
     <string name="account_details">অ্যাকাউন্টের বিবরণ</string>
     <string name="update_email">ইমেল আপডেট করুন</string>

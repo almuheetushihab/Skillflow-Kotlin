@@ -37,6 +37,7 @@ fun LoginScreen(
     onNavigateToSignUp: () -> Unit,
     onNavigateToForgotPassword: () -> Unit,
     onLoginSuccess: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -61,7 +62,8 @@ fun LoginScreen(
         onToggleRememberMe = { viewModel.toggleRememberMe() },
         onLoginClick = { viewModel.login(email, password) },
         onNavigateToSignUp = onNavigateToSignUp,
-        onNavigateToForgotPassword = onNavigateToForgotPassword
+        onNavigateToForgotPassword = onNavigateToForgotPassword,
+        modifier = modifier
     )
 }
 
@@ -77,14 +79,15 @@ fun LoginContent(
     onToggleRememberMe: () -> Unit,
     onLoginClick: () -> Unit,
     onNavigateToSignUp: () -> Unit,
-    onNavigateToForgotPassword: () -> Unit
+    onNavigateToForgotPassword: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .background(backgroundGradient)
             .windowInsetsPadding(WindowInsets.safeDrawing)

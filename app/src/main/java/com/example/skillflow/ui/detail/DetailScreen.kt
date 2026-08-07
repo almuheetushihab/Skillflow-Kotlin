@@ -36,6 +36,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun DetailScreen(
     onNavigateBack: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -46,7 +47,8 @@ fun DetailScreen(
         onToggleSave = viewModel::toggleSave,
         onFlipCard = viewModel::flipCard,
         onMarkAsDone = viewModel::markAsDone,
-        onTrackTime = { viewModel.trackLearningTime(it) }
+        onTrackTime = { viewModel.trackLearningTime(it) },
+        modifier = modifier
     )
 }
 
@@ -57,7 +59,8 @@ fun DetailContent(
     onToggleSave: () -> Unit,
     onFlipCard: () -> Unit,
     onMarkAsDone: () -> Unit,
-    onTrackTime: (Long) -> Unit
+    onTrackTime: (Long) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val nugget = state.nugget
 
@@ -78,7 +81,7 @@ fun DetailContent(
     )
 
     Scaffold(
-        modifier = Modifier.background(backgroundGradient),
+        modifier = modifier.background(backgroundGradient),
         topBar = {
             SkillflowTopAppBar(
                 title = stringResource(R.string.knowledge_nugget),

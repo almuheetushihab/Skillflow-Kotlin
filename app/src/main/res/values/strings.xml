@@ -15,6 +15,7 @@
     <string name="welcome_back">Welcome Back!</string>
     <string name="create_account">Create Account</string>
     <string name="name">Name</string>
+    <string name="phone_number">Phone Number</string>
     <string name="reset_password_hint">Enter your email to receive a password reset link.</string>
     <string name="reset_link_sent">Reset link sent to %1$s!</string>
     <string name="back_to_login">Back to Login</string>
@@ -25,9 +26,20 @@
 
     <!-- Onboarding -->
     <string name="welcome_to_skillflow">Welcome to SkillFlow</string>
+    <string name="onboarding_welcome_title">Master New Skills Faster</string>
+    <string name="onboarding_welcome_desc">Your personal guide to career growth through micro-learning. Learn what matters, when it matters.</string>
+    <string name="onboarding_micro_title">Micro-learning Method</string>
+    <string name="onboarding_micro_desc">We break down complex topics into bite-sized "Knowledge Nuggets". 5 minutes a day is all you need.</string>
+    <string name="onboarding_goal_title">Tailored for You</string>
+    <string name="onboarding_goal_desc">Select your career path and we will generate a custom roadmap just for you.</string>
+    <string name="onboarding_ready_title">Ready to Start?</string>
+    <string name="onboarding_ready_desc">You are one step away from transforming your career. Let\'s dive into your first lesson!</string>
     <string name="micro_learning_subtitle">Micro-learning, Maximum Growth.</string>
     <string name="select_career_goal">Select your career path</string>
     <string name="begin_journey">Begin My Journey</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="get_started">Get Started</string>
     <string name="please_select_goal">Please select a career goal</string>
 
     <!-- Home -->
@@ -61,6 +73,17 @@
 
     <!-- Profile -->
     <string name="my_profile">My Profile</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_title">Privacy Policy</string>
+    <string name="privacy_policy_content">This Privacy Policy describes how Skillflow collects, uses, and shares your personal information when you use our mobile application. We are committed to protecting your privacy and ensuring a safe learning environment.\n\n1. Information Collection: We collect information you provide directly to us, such as your name and email address when you create an account.\n\n2. Use of Information: We use the information we collect to provide, maintain, and improve our services, and to personalize your learning experience.\n\n3. Data Safety: We implement industry-standard security measures to protect your data. Your account information is stored securely.\n\n4. Your Rights: You have the right to access, update, or delete your personal information at any time. You can use the "Delete Account" option in the settings to remove all your data from our systems.\n\n5. Contact Us: If you have any questions about this Privacy Policy, please contact us at support@skillflow.app</string>
+    <string name="about_app">About Skillflow</string>
+    <string name="app_version">Version %1$s</string>
+    <string name="developer_info">Developed by Skillflow Team</string>
+    <string name="contact_support">Contact Support</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="delete_account_title">Delete Account?</string>
+    <string name="delete_account_message">Are you sure you want to delete your account? This action is permanent and all your progress will be lost.</string>
+    <string name="confirm_delete">Delete</string>
     <string name="learner_profile">Learner Profile</string>
     <string name="career_goal">Career Goal: %1$s</string>
     <string name="profile_photo">Profile Photo</string>
@@ -71,6 +94,10 @@
     <string name="bengali">Bengali</string>
     <string name="logout">Logout</string>
     <string name="learning_stats">Learning Stats</string>
+    <string name="quiz_stats">Quiz Statistics</string>
+    <string name="quizzes_taken">Quizzes Taken</string>
+    <string name="avg_score">Avg. Score</string>
+    <string name="learning_progress">Learning Progress</string>
     <string name="minutes_learned">%1$d minutes</string>
     <string name="account_details">Account Details</string>
     <string name="update_email">Update Email</string>

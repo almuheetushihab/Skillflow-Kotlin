@@ -17,7 +17,9 @@ import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
-fun RoadmapScreen() {
+fun RoadmapScreen(
+    modifier: Modifier = Modifier
+) {
     // In a real app, this would come from a ViewModel
     val steps = listOf(
         "Introduction to Android & Tools",
@@ -33,14 +35,16 @@ fun RoadmapScreen() {
 
     RoadmapContent(
         steps = steps,
-        currentStepIndex = currentStepIndex
+        currentStepIndex = currentStepIndex,
+        modifier = modifier
     )
 }
 
 @Composable
 fun RoadmapContent(
     steps: List<String>,
-    currentStepIndex: Int
+    currentStepIndex: Int,
+    modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(
@@ -50,7 +54,7 @@ fun RoadmapContent(
     )
 
     Scaffold(
-        modifier = Modifier.background(backgroundGradient),
+        modifier = modifier.background(backgroundGradient),
         topBar = {
             SkillflowTopAppBar(title = stringResource(R.string.my_journey))
         }

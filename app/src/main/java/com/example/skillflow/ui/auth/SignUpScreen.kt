@@ -3,7 +3,13 @@ package com.example.skillflow.ui.auth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,29 +19,24 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
 import com.example.skillflow.presentation.auth.AuthState
 import com.example.skillflow.presentation.auth.AuthViewModel
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import com.example.skillflow.ui.common.AuthButton
 import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 
 @Composable
 fun SignUpScreen(
     onNavigateToLogin: () -> Unit,
     onSignUpSuccess: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -64,7 +65,8 @@ fun SignUpScreen(
         onPasswordChange = { password = it },
         onTogglePasswordVisibility = { isPasswordVisible = !isPasswordVisible },
         onSignUpClick = { viewModel.signUp(name, email, phone, password) },
-        onNavigateToLogin = onNavigateToLogin
+        onNavigateToLogin = onNavigateToLogin,
+        modifier = modifier
     )
 }
 
@@ -82,13 +84,19 @@ fun SignUpContent(
     onPasswordChange: (String) -> Unit,
     onTogglePasswordVisibility: () -> Unit,
     onSignUpClick: () -> Unit,
-    onNavigateToLogin: () -> Unit
+    onNavigateToLogin: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(backgroundGradient)) {
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(backgroundGradient)
+            .windowInsetsPadding(WindowInsets.safeDrawing)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -125,7 +133,7 @@ fun SignUpContent(
             AuthTextField(
                 value = phone,
                 onValueChange = onPhoneChange,
-                label = "Phone Number",
+                label = stringResource(R.string.phone_number),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 error = state.phoneError
             )

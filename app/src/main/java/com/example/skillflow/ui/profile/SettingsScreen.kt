@@ -1,10 +1,7 @@
 package com.example.skillflow.ui.profile
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -12,34 +9,33 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
-import com.example.skillflow.presentation.profile.SettingsState
 import com.example.skillflow.presentation.profile.SettingsViewModel
 import com.example.skillflow.ui.common.AuthButton
 import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.common.SkillflowTopAppBar
-import com.example.skillflow.ui.theme.GradientEnd
-import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.profile.components.LanguageToggleButton
+import com.example.skillflow.ui.profile.components.SettingsItem
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
     onLogout: () -> Unit,
+    onNavigateToPrivacy: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         topBar = {
             SkillflowTopAppBar(
                 title = stringResource(R.string.settings),
@@ -75,6 +71,8 @@ fun SettingsScreen(
             )
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            
+            // Preferences Section
             Text(
                 text = stringResource(R.string.account_details),
                 style = MaterialTheme.typography.titleLarge,
@@ -82,107 +80,103 @@ fun SettingsScreen(
             )
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(Icons.Default.Language, contentDescription = null, tint = GradientStart)
-                    Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
-                    Text(
-                        text = stringResource(R.string.language_toggle, if (state.language == "bn") stringResource(R.string.bengali) else stringResource(R.string.english)),
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.SemiBold
+            SettingsItem(
+                title = stringResource(R.string.language_toggle, if (state.language == "bn") stringResource(R.string.bengali) else stringResource(R.string.english)),
+                icon = Icons.Default.Language,
+                trailing = {
+                    LanguageToggleButton(
+                        currentLanguage = state.language,
+                        onToggle = { 
+                            val nextLang = if (state.language == "bn") "en" else "bn"
+                            viewModel.setLanguage(nextLang)
+                        }
                     )
                 }
-                
-                LanguageToggleButton(
-                    currentLanguage = state.language,
-                    onToggle = { 
-                        val nextLang = if (state.language == "bn") "en" else "bn"
-                        viewModel.setLanguage(nextLang)
-                    }
-                )
+            )
+
+            SettingsItem(
+                title = stringResource(R.string.privacy_policy),
+                icon = Icons.Default.PrivacyTip,
+                onClick = onNavigateToPrivacy
+            )
+
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            
+            // About Section
+            Text(
+                text = stringResource(R.string.about_app),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            
+            Text(
+                text = stringResource(R.string.app_version, "1.0.0"),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = stringResource(R.string.developer_info),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            
+            TextButton(
+                onClick = { /* Handle support click */ },
+                contentPadding = PaddingValues(0.dp)
+            ) {
+                Text(text = stringResource(R.string.contact_support))
             }
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
             
             AuthButton(
                 text = stringResource(R.string.logout),
                 onClick = {
                     viewModel.logout()
                     onLogout()
-                },
-                modifier = Modifier.padding(vertical = MaterialTheme.spacing.large)
+                }
             )
+            
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            
+            TextButton(
+                onClick = { showDeleteDialog = true },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text(
+                    text = stringResource(R.string.delete_account),
+                    fontWeight = FontWeight.Bold
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
         }
     }
-}
 
-@Composable
-fun LanguageToggleButton(
-    currentLanguage: String,
-    onToggle: () -> Unit
-) {
-    val horizontalBias by animateFloatAsState(
-        targetValue = if (currentLanguage == "en") -1f else 1f,
-        label = "LanguageThumbBias"
-    )
-
-    Surface(
-        onClick = onToggle,
-        shape = RoundedCornerShape(24.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-        modifier = Modifier
-            .height(40.dp)
-            .width(100.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(4.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                Text(
-                    text = "EN",
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
-                Text(
-                    text = "BN",
-                    style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                )
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text(text = stringResource(R.string.delete_account_title)) },
+            text = { Text(text = stringResource(R.string.delete_account_message)) },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        viewModel.logout() // In a real app, call a delete account API
+                        onLogout()
+                        showDeleteDialog = false
+                    },
+                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text(text = stringResource(R.string.confirm_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(text = stringResource(R.string.cancel))
+                }
             }
-
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(46.dp)
-                    .align(BiasAlignment(horizontalBias, 0f))
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(
-                        Brush.linearGradient(listOf(GradientStart, GradientEnd))
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = if (currentLanguage == "en") "EN" else "BN",
-                    color = Color.White,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.ExtraBold
-                )
-            }
-        }
+        )
     }
 }

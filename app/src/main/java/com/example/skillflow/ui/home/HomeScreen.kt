@@ -35,6 +35,7 @@ import com.example.skillflow.ui.theme.spacing
 @Composable
 fun HomeScreen(
     onNavigateToDetail: (String) -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -42,7 +43,8 @@ fun HomeScreen(
     HomeContent(
         state = state,
         onSearchQueryChange = viewModel::onSearchQueryChange,
-        onNavigateToDetail = onNavigateToDetail
+        onNavigateToDetail = onNavigateToDetail,
+        modifier = modifier
     )
 }
 
@@ -51,12 +53,13 @@ fun HomeScreen(
 fun HomeContent(
     state: HomeState,
     onSearchQueryChange: (String) -> Unit,
-    onNavigateToDetail: (String) -> Unit
+    onNavigateToDetail: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = {

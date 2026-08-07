@@ -32,22 +32,24 @@ import com.example.skillflow.ui.theme.spacing
 @Composable
 fun QuizScreen(
     onFinish: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: QuizViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
 
     if (state.isFinished) {
-        QuizResultScreen(state = state, onFinish = onFinish)
+        QuizResultScreen(state = state, onFinish = onFinish, modifier = modifier)
     } else if (state.questions.isNotEmpty()) {
         QuizContent(
             state = state,
             onOptionSelected = viewModel::onOptionSelected,
             onSubmit = viewModel::submitAnswer,
             onNext = viewModel::nextQuestion,
-            onFinish = onFinish
+            onFinish = onFinish,
+            modifier = modifier
         )
     } else {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
     }
@@ -59,11 +61,13 @@ fun QuizContent(
     onOptionSelected: (Int) -> Unit,
     onSubmit: () -> Unit,
     onNext: () -> Unit,
-    onFinish: () -> Unit
+    onFinish: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val question = state.questions[state.currentIndex]
 
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         topBar = {
             SkillflowTopAppBar(
                 title = stringResource(R.string.daily_quiz),
@@ -220,9 +224,11 @@ fun QuizContent(
 @Composable
 fun QuizResultScreen(
     state: QuizState,
-    onFinish: () -> Unit
+    onFinish: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         topBar = { SkillflowTopAppBar(title = stringResource(R.string.quiz_results)) }
     ) { padding ->
         Column(

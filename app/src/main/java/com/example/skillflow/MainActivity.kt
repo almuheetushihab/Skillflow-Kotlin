@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -37,6 +39,7 @@ import com.example.skillflow.ui.detail.DetailScreen
 import com.example.skillflow.ui.home.HomeScreen
 import com.example.skillflow.ui.navigation.Screen
 import com.example.skillflow.ui.onboarding.OnboardingScreen
+import com.example.skillflow.ui.profile.PrivacyPolicyScreen
 import com.example.skillflow.ui.profile.ProfileScreen
 import com.example.skillflow.ui.profile.SettingsScreen
 import com.example.skillflow.ui.quiz.QuizScreen
@@ -60,6 +63,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var settingsRepository: SettingsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -91,6 +95,22 @@ class MainActivity : AppCompatActivity() {
                 SkillFlowAppContent(startDestination)
             }
         }
+    }
+}
+
+private fun navigateToBottomDestination(navController: NavHostController, screen: Screen) {
+    navController.navigate(screen.route) {
+        // Pop up to the start destination of the graph to
+        // avoid building up a large stack of destinations
+        // on the back stack as users select items
+        popUpTo(navController.graph.findStartDestination().id) {
+            saveState = true
+        }
+        // Avoid multiple copies of the same destination when
+        // reselecting the same item
+        launchSingleTop = true
+        // Restore state when reselecting a previously selected item
+        restoreState = true
     }
 }
 
@@ -129,13 +149,7 @@ fun SkillFlowAppContent(startDestination: String) {
                             label = { Text(label, style = MaterialTheme.typography.labelMedium) },
                             selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                             onClick = {
-                                navController.navigate(screen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                                navigateToBottomDestination(navController, screen)
                             }
                         )
                     }
@@ -146,7 +160,7 @@ fun SkillFlowAppContent(startDestination: String) {
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier.padding(innerPadding),
+            modifier = Modifier.fillMaxSize(), // Removed padding from here
             enterTransition = { slideInHorizontally { it } + fadeIn() },
             exitTransition = { slideOutHorizontally { -it } + fadeOut() },
             popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
@@ -160,7 +174,8 @@ fun SkillFlowAppContent(startDestination: String) {
                         navController.navigate(Screen.Onboarding.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
-                    }
+                    },
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(Screen.SignUp.route) {
@@ -170,37 +185,53 @@ fun SkillFlowAppContent(startDestination: String) {
                         navController.navigate(Screen.Onboarding.route) {
                             popUpTo(Screen.Login.route) { inclusive = true }
                         }
-                    }
+                    },
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(Screen.ForgotPassword.route) {
-                ForgotPasswordScreen(onNavigateBack = { navController.popBackStack() })
+                ForgotPasswordScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
             composable(Screen.Onboarding.route) {
-                OnboardingScreen(onNavigateToHome = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Onboarding.route) { inclusive = true }
-                    }
-                })
+                OnboardingScreen(
+                    onNavigateToHome = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Onboarding.route) { inclusive = true }
+                        }
+                    },
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
             composable(Screen.Home.route) {
-                HomeScreen(onNavigateToDetail = { id ->
-                    navController.navigate(Screen.Detail.createRoute(id))
-                })
+                HomeScreen(
+                    onNavigateToDetail = { id ->
+                        navController.navigate(Screen.Detail.createRoute(id))
+                    },
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
             composable(
                 route = Screen.Detail.route,
                 arguments = listOf(navArgument("nuggetId") { type = NavType.StringType })
             ) {
-                DetailScreen(onNavigateBack = { navController.popBackStack() })
+                DetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
             composable(Screen.Roadmap.route) {
-                RoadmapScreen()
+                RoadmapScreen(modifier = Modifier.padding(innerPadding))
             }
             composable(Screen.Bookmarks.route) {
-                BookmarksScreen(onNavigateToDetail = { id ->
-                    navController.navigate(Screen.Detail.createRoute(id))
-                })
+                BookmarksScreen(
+                    onNavigateToDetail = { id ->
+                        navController.navigate(Screen.Detail.createRoute(id))
+                    },
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
             composable(Screen.Profile.route) {
                 ProfileScreen(
@@ -214,7 +245,8 @@ fun SkillFlowAppContent(startDestination: String) {
                     },
                     onNavigateToQuiz = {
                         navController.navigate(Screen.Quiz.route)
-                    }
+                    },
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(Screen.Settings.route) {
@@ -224,11 +256,24 @@ fun SkillFlowAppContent(startDestination: String) {
                         navController.navigate(Screen.Login.route) {
                             popUpTo(0) { inclusive = true }
                         }
-                    }
+                    },
+                    onNavigateToPrivacy = {
+                        navController.navigate(Screen.PrivacyPolicy.route)
+                    },
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
+            composable(Screen.PrivacyPolicy.route) {
+                PrivacyPolicyScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
             composable(Screen.Quiz.route) {
-                QuizScreen(onFinish = { navController.popBackStack() })
+                QuizScreen(
+                    onFinish = { navController.popBackStack() },
+                    modifier = Modifier.padding(innerPadding)
+                )
             }
         }
     }
