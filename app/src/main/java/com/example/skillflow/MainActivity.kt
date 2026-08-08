@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.ui.auth.ForgotPasswordScreen
 import com.example.skillflow.ui.auth.LoginScreen
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var settingsRepository: SettingsRepository
 
     @Inject
+    lateinit var authRepository: AuthRepository
+
+    @Inject
     lateinit var playStoreManager: PlayStoreManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,11 +78,12 @@ class MainActivity : AppCompatActivity() {
         playStoreManager.checkForUpdates(this)
 
         val startDestination = runBlocking {
-            val isLoggedIn = settingsRepository.isLoggedIn().first()
+            val isFirebaseUserLoggedIn = authRepository.getCurrentUserEmail() != null
+            val isSessionActive = settingsRepository.isLoggedIn().first()
             val isOnboardingCompleted = settingsRepository.isOnboardingCompleted().first()
             
             when {
-                !isLoggedIn -> Screen.Login.route
+                !isFirebaseUserLoggedIn || !isSessionActive -> Screen.Login.route
                 !isOnboardingCompleted -> Screen.Onboarding.route
                 else -> Screen.Home.route
             }

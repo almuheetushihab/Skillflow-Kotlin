@@ -10,11 +10,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
+import com.example.skillflow.presentation.profile.SettingsState
+import com.example.skillflow.presentation.profile.SettingsUiEvent
 import com.example.skillflow.presentation.profile.SettingsViewModel
 import com.example.skillflow.ui.common.AuthButton
 import com.example.skillflow.ui.common.AuthTextField
@@ -22,6 +25,7 @@ import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.profile.components.LanguageToggleButton
 import com.example.skillflow.ui.profile.components.SettingsItem
 import com.example.skillflow.ui.theme.spacing
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun SettingsScreen(
@@ -32,7 +36,21 @@ fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
     var showDeleteDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.eventFlow.collectLatest { event ->
+            when (event) {
+                is SettingsUiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+                is SettingsUiEvent.LogoutSuccess -> {
+                    onLogout()
+                }
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
@@ -42,7 +60,8 @@ fun SettingsScreen(
                 navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
                 onNavigationClick = onNavigateBack
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -134,8 +153,8 @@ fun SettingsScreen(
                 text = stringResource(R.string.logout),
                 onClick = {
                     viewModel.logout()
-                    onLogout()
-                }
+                },
+                isLoading = state.isLoading && !showDeleteDialog
             )
             
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
@@ -163,8 +182,7 @@ fun SettingsScreen(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.logout() // In a real app, call a delete account API
-                        onLogout()
+                        viewModel.deleteAccount()
                         showDeleteDialog = false
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
@@ -178,5 +196,11 @@ fun SettingsScreen(
                 }
             }
         )
+    }
+
+    if (state.isLoading) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
     }
 }

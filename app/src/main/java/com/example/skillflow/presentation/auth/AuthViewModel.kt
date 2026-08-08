@@ -2,11 +2,11 @@ package com.example.skillflow.presentation.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
+import com.example.skillflow.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,13 +23,22 @@ data class AuthState(
     val nameError: String? = null
 )
 
+sealed class AuthUiEvent {
+    data class ShowSnackbar(val message: String) : AuthUiEvent()
+    object NavigateToOnboarding : AuthUiEvent()
+}
+
 @HiltViewModel
 class AuthViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AuthState())
     val state = _state.asStateFlow()
+
+    private val _eventFlow = MutableSharedFlow<AuthUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     init {
         viewModelScope.launch {
@@ -49,17 +58,29 @@ class AuthViewModel @Inject constructor(
     fun login(email: String, pass: String) {
         if (!validateLogin(email, pass)) return
 
-        _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            kotlinx.coroutines.delay(1000)
-            // Mock login logic - allow any valid format for now but check common failure
-            if (email.contains("fail")) {
-                _state.update { it.copy(isLoading = false, error = "Account not found. Please sign up first.") }
-            } else {
-                settingsRepository.setLoggedIn(true)
-                settingsRepository.setUserEmail(email)
-                settingsRepository.setUserName(email.substringBefore("@").replaceFirstChar { it.uppercase() })
-                _state.update { it.copy(isLoading = false, isLoggedIn = true) }
+            authRepository.login(email, pass).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        val userEmail = authRepository.getCurrentUserEmail() ?: email
+                        val userName = authRepository.getCurrentUserName() 
+                            ?: userEmail.substringBefore("@").replaceFirstChar { it.uppercase() }
+                            
+                        settingsRepository.setLoggedIn(true)
+                        settingsRepository.setUserEmail(userEmail)
+                        settingsRepository.setUserName(userName)
+                        
+                        _state.update { it.copy(isLoading = false, isLoggedIn = true) }
+                        _eventFlow.emit(AuthUiEvent.NavigateToOnboarding)
+                    }
+                    is Resource.Error -> {
+                        _state.update { it.copy(isLoading = false, error = result.message) }
+                        _eventFlow.emit(AuthUiEvent.ShowSnackbar(result.message ?: "Login failed"))
+                    }
+                    is Resource.Loading -> {
+                        _state.update { it.copy(isLoading = true, error = null) }
+                    }
+                }
             }
         }
     }
@@ -67,13 +88,25 @@ class AuthViewModel @Inject constructor(
     fun signUp(name: String, email: String, phone: String, pass: String) {
         if (!validateSignUp(name, email, phone, pass)) return
 
-        _state.update { it.copy(isLoading = true, error = null) }
         viewModelScope.launch {
-            kotlinx.coroutines.delay(1000)
-            settingsRepository.setLoggedIn(true)
-            settingsRepository.setUserName(name)
-            settingsRepository.setUserEmail(email)
-            _state.update { it.copy(isLoading = false, isLoggedIn = true) }
+            authRepository.signUp(name, email, phone, pass).collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        settingsRepository.setLoggedIn(true)
+                        settingsRepository.setUserName(name)
+                        settingsRepository.setUserEmail(email)
+                        _state.update { it.copy(isLoading = false, isLoggedIn = true) }
+                        _eventFlow.emit(AuthUiEvent.NavigateToOnboarding)
+                    }
+                    is Resource.Error -> {
+                        _state.update { it.copy(isLoading = false, error = result.message) }
+                        _eventFlow.emit(AuthUiEvent.ShowSnackbar(result.message ?: "Signup failed"))
+                    }
+                    is Resource.Loading -> {
+                        _state.update { it.copy(isLoading = true, error = null) }
+                    }
+                }
+            }
         }
     }
 
@@ -85,7 +118,7 @@ class AuthViewModel @Inject constructor(
             _state.update { it.copy(emailError = "Please enter your email") }
             isValid = false
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _state.update { it.copy(emailError = "Invalid email format (e.g., user@example.com)") }
+            _state.update { it.copy(emailError = "Invalid email format") }
             isValid = false
         }
 
