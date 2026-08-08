@@ -30,6 +30,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.skillflow.domain.analytics.AnalyticsHelper
 import com.example.skillflow.domain.manager.PlayStoreManager
 import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
@@ -64,6 +65,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var playStoreManager: PlayStoreManager
 
+    @Inject
+    lateinit var analyticsHelper: AnalyticsHelper
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -97,7 +101,17 @@ class MainActivity : AppCompatActivity() {
             }
 
             SkillflowTheme {
-                SkillFlowAppContent(startDestination, playStoreManager)
+                val navController = rememberNavController()
+                
+                // Track screen views
+                LaunchedEffect(navController) {
+                    navController.currentBackStackEntryFlow.collect { entry ->
+                        val routeName = entry.destination.route?.substringAfterLast('.') ?: "Unknown"
+                        analyticsHelper.logScreenView(routeName, routeName)
+                    }
+                }
+
+                SkillFlowAppContent(startDestination, playStoreManager, navController)
             }
         }
     }
@@ -121,9 +135,9 @@ private fun navigateToBottomDestination(navController: NavHostController, screen
 @Composable
 fun SkillFlowAppContent(
     startDestination: Any,
-    playStoreManager: PlayStoreManager
+    playStoreManager: PlayStoreManager,
+    navController: NavHostController
 ) {
-    val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 

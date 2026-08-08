@@ -33,7 +33,7 @@ fun BookmarksScreen(
     viewModel: BookmarksViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
-    
+
     BookmarksContent(
         state = state,
         onNavigateToDetail = onNavigateToDetail,
@@ -74,7 +74,10 @@ fun BookmarksContent(
                     .padding(padding)
                     .padding(horizontal = MaterialTheme.spacing.large),
                 verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-                contentPadding = PaddingValues(top = MaterialTheme.spacing.medium, bottom = MaterialTheme.spacing.medium)
+                contentPadding = PaddingValues(
+                    top = MaterialTheme.spacing.medium,
+                    bottom = MaterialTheme.spacing.medium
+                )
             ) {
                 itemsIndexed(state.savedNuggets) { index, nugget ->
                     AnimatedEntrance(index = index) {
@@ -96,7 +99,14 @@ fun BookmarksContentPreview() {
         BookmarksContent(
             state = BookmarksState(
                 savedNuggets = listOf(
-                    KnowledgeNugget("1", "Kotlin Coroutines", "Full content", null, "android", false, true, "2026-08-02")
+                    KnowledgeNugget(
+                        "1", "Kotlin Coroutines",
+                        "Full content", null,
+                        "android",
+                        false,
+                        true,
+                        "2026-08-02"
+                    )
                 )
             ),
             onNavigateToDetail = {}

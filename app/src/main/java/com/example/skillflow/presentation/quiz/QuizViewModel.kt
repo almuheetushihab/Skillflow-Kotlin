@@ -2,6 +2,7 @@ package com.example.skillflow.presentation.quiz
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.skillflow.domain.analytics.AnalyticsHelper
 import com.example.skillflow.domain.model.QuizQuestion
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.domain.repository.SkillRepository
@@ -28,7 +29,8 @@ sealed class QuizUiEvent {
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val skillRepository: SkillRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val analyticsHelper: AnalyticsHelper
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(QuizState())
@@ -109,6 +111,7 @@ class QuizViewModel @Inject constructor(
             if (percentage >= 70) {
                 _events.emit(QuizUiEvent.RequestReview)
             }
+            analyticsHelper.logQuizFinished(_state.value.score, _state.value.questions.size)
         }
     }
 }
