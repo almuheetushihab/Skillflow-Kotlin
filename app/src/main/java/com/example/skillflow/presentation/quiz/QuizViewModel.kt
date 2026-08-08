@@ -21,6 +21,10 @@ data class QuizState(
     val isLoading: Boolean = false
 )
 
+sealed class QuizUiEvent {
+    object RequestReview : QuizUiEvent()
+}
+
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val skillRepository: SkillRepository,
@@ -29,6 +33,9 @@ class QuizViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(QuizState())
     val state = _state.asStateFlow()
+
+    private val _events = MutableSharedFlow<QuizUiEvent>()
+    val events = _events.asSharedFlow()
 
     init {
         loadQuiz()
@@ -93,6 +100,15 @@ class QuizViewModel @Inject constructor(
         viewModelScope.launch {
             settingsRepository.incrementQuizCount()
             settingsRepository.addToTotalQuizScore(_state.value.score)
+            
+            // Trigger review if score is good (e.g. > 70%)
+            val percentage = if (_state.value.questions.isNotEmpty()) {
+                (_state.value.score.toFloat() / _state.value.questions.size) * 100
+            } else 0f
+            
+            if (percentage >= 70) {
+                _events.emit(QuizUiEvent.RequestReview)
+            }
         }
     }
 }

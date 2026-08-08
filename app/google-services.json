@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738933023894",
+    "project_id": "skillflow-65c45",
+    "storage_bucket": "skillflow-65c45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738933023894:android:b5680aeb38968af09a0eb7",
+        "android_client_info": {
+          "package_name": "com.example.skillflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmN2C_5hg8r9hgk4XXiQxwbpNHU2f1nuw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

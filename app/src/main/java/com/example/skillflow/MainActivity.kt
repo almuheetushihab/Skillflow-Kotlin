@@ -55,6 +55,7 @@ import androidx.core.os.LocaleListCompat
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import com.example.skillflow.domain.manager.PlayStoreManager
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -62,10 +63,15 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var settingsRepository: SettingsRepository
 
+    @Inject
+    lateinit var playStoreManager: PlayStoreManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        playStoreManager.checkForUpdates(this)
 
         val startDestination = runBlocking {
             val isLoggedIn = settingsRepository.isLoggedIn().first()
@@ -92,9 +98,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             SkillflowTheme {
-                SkillFlowAppContent(startDestination)
+                SkillFlowAppContent(startDestination, playStoreManager)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        playStoreManager.resumeUpdate(this)
     }
 }
 
@@ -115,7 +126,10 @@ private fun navigateToBottomDestination(navController: NavHostController, screen
 }
 
 @Composable
-fun SkillFlowAppContent(startDestination: String) {
+fun SkillFlowAppContent(
+    startDestination: String,
+    playStoreManager: PlayStoreManager
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -272,6 +286,7 @@ fun SkillFlowAppContent(startDestination: String) {
             composable(Screen.Quiz.route) {
                 QuizScreen(
                     onFinish = { navController.popBackStack() },
+                    playStoreManager = playStoreManager,
                     modifier = Modifier.padding(innerPadding)
                 )
             }
