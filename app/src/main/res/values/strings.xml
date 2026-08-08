@@ -60,6 +60,8 @@
     <string name="knowledge_mastered">Knowledge Mastered</string>
     <string name="tap_to_reveal_answer">Tap to reveal answer</string>
     <string name="nugget_not_found">Oops! Content not found.</string>
+    <string name="save_nugget">Save Nugget</string>
+    <string name="back">Back</string>
 
     <!-- Roadmap -->
     <string name="my_journey">My Journey</string>

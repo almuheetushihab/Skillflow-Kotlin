@@ -13,9 +13,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.skillflow.R
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.roadmap.components.RoadmapStepItem
+import com.example.skillflow.ui.roadmap.components.RoadmapStepSkeleton
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
+/**
+ * Screen displaying the user's career roadmap.
+ */
 @Composable
 fun RoadmapScreen(
     modifier: Modifier = Modifier
@@ -32,18 +36,29 @@ fun RoadmapScreen(
         "Release & Deployment Strategy"
     )
     val currentStepIndex = 3
+    var isLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        kotlinx.coroutines.delay(1500)
+        isLoading = false
+    }
 
     RoadmapContent(
         steps = steps,
         currentStepIndex = currentStepIndex,
+        isLoading = isLoading,
         modifier = modifier
     )
 }
 
+/**
+ * The content of the Roadmap screen.
+ */
 @Composable
 fun RoadmapContent(
     steps: List<String>,
     currentStepIndex: Int,
+    isLoading: Boolean,
     modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
@@ -66,13 +81,19 @@ fun RoadmapContent(
                 .padding(horizontal = MaterialTheme.spacing.large),
             contentPadding = PaddingValues(top = MaterialTheme.spacing.large, bottom = MaterialTheme.spacing.large)
         ) {
-            itemsIndexed(steps) { index, step ->
-                RoadmapStepItem(
-                    title = step,
-                    isCompleted = index < currentStepIndex,
-                    isCurrent = index == currentStepIndex,
-                    isLast = index == steps.size - 1
-                )
+            if (isLoading) {
+                items(8) {
+                    RoadmapStepSkeleton()
+                }
+            } else {
+                itemsIndexed(steps) { index, step ->
+                    RoadmapStepItem(
+                        title = step,
+                        isCompleted = index < currentStepIndex,
+                        isCurrent = index == currentStepIndex,
+                        isLast = index == steps.size - 1
+                    )
+                }
             }
         }
     }
@@ -84,7 +105,20 @@ fun RoadmapContentPreview() {
     SkillflowTheme {
         RoadmapContent(
             steps = listOf("Step 1", "Step 2", "Step 3"),
-            currentStepIndex = 1
+            currentStepIndex = 1,
+            isLoading = false
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RoadmapLoadingPreview() {
+    SkillflowTheme {
+        RoadmapContent(
+            steps = emptyList(),
+            currentStepIndex = 0,
+            isLoading = true
         )
     }
 }

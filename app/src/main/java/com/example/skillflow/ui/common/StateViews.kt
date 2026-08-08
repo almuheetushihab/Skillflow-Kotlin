@@ -5,11 +5,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
+/**
+ * A reusable loading view with a centered progress indicator.
+ */
 @Composable
 fun LoadingView(modifier: Modifier = Modifier) {
     Box(
@@ -20,6 +27,9 @@ fun LoadingView(modifier: Modifier = Modifier) {
     }
 }
 
+/**
+ * A reusable error view with a message and retry button.
+ */
 @Composable
 fun ErrorView(
     message: String,
@@ -46,6 +56,9 @@ fun ErrorView(
     }
 }
 
+/**
+ * A reusable empty state view with a descriptive message.
+ */
 @Composable
 fun EmptyView(
     message: String,
@@ -62,5 +75,17 @@ fun EmptyView(
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(MaterialTheme.spacing.large)
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun StateViewsPreview() {
+    SkillflowTheme {
+        Column {
+            LoadingView(modifier = Modifier.height(100.dp))
+            ErrorView(message = "Connection timeout", onRetry = {}, modifier = Modifier.height(100.dp))
+            EmptyView(message = "No data found", modifier = Modifier.height(100.dp))
+        }
     }
 }

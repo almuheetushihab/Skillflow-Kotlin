@@ -60,6 +60,8 @@
     <string name="knowledge_mastered">শিক্ষা সম্পন্ন হয়েছে</string>
     <string name="tap_to_reveal_answer">উত্তর দেখতে ট্যাপ করুন</string>
     <string name="nugget_not_found">দুঃখিত! কন্টেন্ট পাওয়া যায়নি।</string>
+    <string name="save_nugget">নাগেট সংরক্ষণ করুন</string>
+    <string name="back">ফিরে যান</string>
 
     <!-- Roadmap -->
     <string name="my_journey">আমার যাত্রা</string>

@@ -92,7 +92,7 @@ fun DetailContent(
                         IconButton(onClick = onToggleSave) {
                             Icon(
                                 imageVector = if (nugget.isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                                contentDescription = "Save",
+                                contentDescription = stringResource(R.string.save_nugget),
                                 tint = if (nugget.isSaved) GradientStart else MaterialTheme.colorScheme.onSurface
                             )
                         }

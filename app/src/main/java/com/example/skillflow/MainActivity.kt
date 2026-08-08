@@ -1,11 +1,10 @@
 package com.example.skillflow
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,20 +15,22 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Route
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.os.LocaleListCompat
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
+import com.example.skillflow.domain.manager.PlayStoreManager
 import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.ui.auth.ForgotPasswordScreen
@@ -51,13 +52,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.os.LocaleListCompat
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import com.example.skillflow.domain.manager.PlayStoreManager
-
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
@@ -77,15 +71,15 @@ class MainActivity : AppCompatActivity() {
 
         playStoreManager.checkForUpdates(this)
 
-        val startDestination = runBlocking {
+        val startDestination: Any = runBlocking {
             val isFirebaseUserLoggedIn = authRepository.getCurrentUserEmail() != null
             val isSessionActive = settingsRepository.isLoggedIn().first()
             val isOnboardingCompleted = settingsRepository.isOnboardingCompleted().first()
             
             when {
-                !isFirebaseUserLoggedIn || !isSessionActive -> Screen.Login.route
-                !isOnboardingCompleted -> Screen.Onboarding.route
-                else -> Screen.Home.route
+                !isFirebaseUserLoggedIn || !isSessionActive -> Screen.Login
+                !isOnboardingCompleted -> Screen.Onboarding
+                else -> Screen.Home
             }
         }
 
@@ -115,36 +109,30 @@ class MainActivity : AppCompatActivity() {
 }
 
 private fun navigateToBottomDestination(navController: NavHostController, screen: Screen) {
-    navController.navigate(screen.route) {
-        // Pop up to the start destination of the graph to
-        // avoid building up a large stack of destinations
-        // on the back stack as users select items
+    navController.navigate(screen) {
         popUpTo(navController.graph.findStartDestination().id) {
             saveState = true
         }
-        // Avoid multiple copies of the same destination when
-        // reselecting the same item
         launchSingleTop = true
-        // Restore state when reselecting a previously selected item
         restoreState = true
     }
 }
 
 @Composable
 fun SkillFlowAppContent(
-    startDestination: String,
+    startDestination: Any,
     playStoreManager: PlayStoreManager
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    val showBottomBar = currentDestination?.route in listOf(
-        Screen.Home.route,
-        Screen.Roadmap.route,
-        Screen.Bookmarks.route,
-        Screen.Profile.route
-    )
+    val showBottomBar = currentDestination?.let { dest ->
+        dest.hasRoute<Screen.Home>() ||
+        dest.hasRoute<Screen.Roadmap>() ||
+        dest.hasRoute<Screen.Bookmarks>() ||
+        dest.hasRoute<Screen.Profile>()
+    } ?: false
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -166,7 +154,7 @@ fun SkillFlowAppContent(
                         NavigationBarItem(
                             icon = { Icon(icon, contentDescription = label) },
                             label = { Text(label, style = MaterialTheme.typography.labelMedium) },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                            selected = currentDestination?.hierarchy?.any { it.hasRoute(screen::class) } == true,
                             onClick = {
                                 navigateToBottomDestination(navController, screen)
                             }
@@ -179,116 +167,114 @@ fun SkillFlowAppContent(
         NavHost(
             navController = navController,
             startDestination = startDestination,
-            modifier = Modifier.fillMaxSize(), // Removed padding from here
+            modifier = Modifier.fillMaxSize(),
             enterTransition = { slideInHorizontally { it } + fadeIn() },
             exitTransition = { slideOutHorizontally { -it } + fadeOut() },
             popEnterTransition = { slideInHorizontally { -it } + fadeIn() },
             popExitTransition = { slideOutHorizontally { it } + fadeOut() }
         ) {
-            composable(Screen.Login.route) {
+            composable<Screen.Login> {
                 LoginScreen(
-                    onNavigateToSignUp = { navController.navigate(Screen.SignUp.route) },
-                    onNavigateToForgotPassword = { navController.navigate(Screen.ForgotPassword.route) },
+                    onNavigateToSignUp = { navController.navigate(Screen.SignUp) },
+                    onNavigateToForgotPassword = { navController.navigate(Screen.ForgotPassword) },
                     onLoginSuccess = { 
-                        navController.navigate(Screen.Onboarding.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
+                        navController.navigate(Screen.Onboarding) {
+                            popUpTo(Screen.Login) { inclusive = true }
                         }
                     },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.SignUp.route) {
+            composable<Screen.SignUp> {
                 SignUpScreen(
                     onNavigateToLogin = { navController.popBackStack() },
                     onSignUpSuccess = {
-                        navController.navigate(Screen.Onboarding.route) {
-                            popUpTo(Screen.Login.route) { inclusive = true }
+                        navController.navigate(Screen.Onboarding) {
+                            popUpTo(Screen.Login) { inclusive = true }
                         }
                     },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.ForgotPassword.route) {
+            composable<Screen.ForgotPassword> {
                 ForgotPasswordScreen(
                     onNavigateBack = { navController.popBackStack() },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.Onboarding.route) {
+            composable<Screen.Onboarding> {
                 OnboardingScreen(
                     onNavigateToHome = {
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(Screen.Onboarding.route) { inclusive = true }
+                        navController.navigate(Screen.Home) {
+                            popUpTo(Screen.Onboarding) { inclusive = true }
                         }
                     },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.Home.route) {
+            composable<Screen.Home> {
                 HomeScreen(
                     onNavigateToDetail = { id ->
-                        navController.navigate(Screen.Detail.createRoute(id))
+                        navController.navigate(Screen.Detail(nuggetId = id))
                     },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(
-                route = Screen.Detail.route,
-                arguments = listOf(navArgument("nuggetId") { type = NavType.StringType })
-            ) {
+            composable<Screen.Detail> { backStackEntry ->
+                val detail: Screen.Detail = backStackEntry.toRoute()
                 DetailScreen(
                     onNavigateBack = { navController.popBackStack() },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.Roadmap.route) {
+            composable<Screen.Roadmap> {
                 RoadmapScreen(modifier = Modifier.padding(innerPadding))
             }
-            composable(Screen.Bookmarks.route) {
+            composable<Screen.Bookmarks> {
                 BookmarksScreen(
                     onNavigateToDetail = { id ->
-                        navController.navigate(Screen.Detail.createRoute(id))
+                        navController.navigate(Screen.Detail(nuggetId = id))
                     },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.Profile.route) {
+            composable<Screen.Profile> {
                 ProfileScreen(
                     onResetOnboarding = {
-                        navController.navigate(Screen.Login.route) {
+                        navController.navigate(Screen.Login) {
                             popUpTo(0) { inclusive = true }
                         }
                     },
                     onNavigateToSettings = {
-                        navController.navigate(Screen.Settings.route)
+                        navController.navigate(Screen.Settings)
                     },
                     onNavigateToQuiz = {
-                        navController.navigate(Screen.Quiz.route)
+                        navController.navigate(Screen.Quiz)
                     },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.Settings.route) {
+            composable<Screen.Settings> {
                 SettingsScreen(
                     onNavigateBack = { navController.popBackStack() },
                     onLogout = {
-                        navController.navigate(Screen.Login.route) {
+                        navController.navigate(Screen.Login) {
                             popUpTo(0) { inclusive = true }
                         }
                     },
                     onNavigateToPrivacy = {
-                        navController.navigate(Screen.PrivacyPolicy.route)
+                        navController.navigate(Screen.PrivacyPolicy)
                     },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.PrivacyPolicy.route) {
+            composable<Screen.PrivacyPolicy> {
                 PrivacyPolicyScreen(
                     onNavigateBack = { navController.popBackStack() },
                     modifier = Modifier.padding(innerPadding)
                 )
             }
-            composable(Screen.Quiz.route) {
+            composable<Screen.Quiz> {
                 QuizScreen(
                     onFinish = { navController.popBackStack() },
                     playStoreManager = playStoreManager,

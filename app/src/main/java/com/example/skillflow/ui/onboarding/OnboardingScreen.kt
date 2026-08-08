@@ -20,6 +20,9 @@ import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import kotlinx.coroutines.launch
 
+/**
+ * Screen that guides new users through the app's value proposition and career selection.
+ */
 @Composable
 fun OnboardingScreen(
     onNavigateToHome: () -> Unit,
@@ -42,6 +45,9 @@ fun OnboardingScreen(
     )
 }
 
+/**
+ * The internal content of the Onboarding screen using a [HorizontalPager].
+ */
 @Composable
 fun OnboardingContent(
     state: OnboardingState,

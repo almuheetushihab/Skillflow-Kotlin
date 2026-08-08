@@ -23,10 +23,10 @@ import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.presentation.home.HomeState
 import com.example.skillflow.presentation.home.HomeViewModel
 import com.example.skillflow.ui.common.AnimatedEntrance
-import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.NuggetCard
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.home.components.DailyProgressCard
+import com.example.skillflow.ui.home.components.NuggetCardSkeleton
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.SunsetEnd
@@ -186,7 +186,14 @@ fun HomeContent(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
                 if (state.isLoading) {
-                    LoadingView(modifier = Modifier.fillMaxSize())
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(5) {
+                            NuggetCardSkeleton()
+                        }
+                    }
                 } else {
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),

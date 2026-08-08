@@ -8,11 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
 
+/**
+ * A reusable Top App Bar with optional gradient and status bar padding.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SkillflowTopAppBar(
@@ -50,7 +54,7 @@ fun SkillflowTopAppBar(
                     IconButton(onClick = onNavigationClick) {
                         Icon(
                             imageVector = navigationIcon,
-                            contentDescription = "Back",
+                            contentDescription = stringResource(R.string.back),
                             tint = if (useGradient) Color.White else MaterialTheme.colorScheme.primary
                         )
                     }
