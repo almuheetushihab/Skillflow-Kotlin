@@ -34,6 +34,22 @@
     <string name="onboarding_goal_desc">Select your career path and we will generate a custom roadmap just for you.</string>
     <string name="onboarding_ready_title">Ready to Start?</string>
     <string name="onboarding_ready_desc">You are one step away from transforming your career. Let\'s dive into your first lesson!</string>
+    <string name="login_failed">Login failed</string>
+    <string name="signup_failed">Signup failed</string>
+    <string name="error_email_empty">Please enter your email</string>
+    <string name="error_invalid_email">Invalid email format</string>
+    <string name="error_password_empty">Please enter your password</string>
+    <string name="error_name_empty">Please enter your full name</string>
+    <string name="error_phone_empty">Please enter your phone number</string>
+    <string name="error_phone_short">Phone number must be at least 11 digits</string>
+    <string name="error_password_create">Please create a password</string>
+    <string name="error_password_short">Password must be at least 6 characters</string>
+    <string name="error_nugget_not_found">Nugget not found</string>
+    <string name="error_unknown">An unknown error occurred</string>
+    <string name="email_updated">Email updated locally</string>
+    <string name="name_updated">Name updated locally</string>
+    <string name="deletion_failed">Deletion failed</string>
+
     <string name="micro_learning_subtitle">Micro-learning, Maximum Growth.</string>
     <string name="select_career_goal">Select your career path</string>
     <string name="begin_journey">Begin My Journey</string>

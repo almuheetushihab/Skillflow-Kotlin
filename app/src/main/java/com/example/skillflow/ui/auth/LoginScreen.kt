@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -45,6 +46,7 @@ fun LoginScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
     
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -54,7 +56,7 @@ fun LoginScreen(
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
                 is AuthUiEvent.ShowSnackbar -> {
-                    snackbarHostState.showSnackbar(event.message)
+                    snackbarHostState.showSnackbar(event.message.asString(context))
                 }
                 is AuthUiEvent.NavigateToOnboarding -> {
                     onLoginSuccess()
@@ -133,7 +135,7 @@ fun LoginContent(
                     onValueChange = onEmailChange,
                     label = stringResource(R.string.email),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                    error = state.emailError
+                    error = state.emailError?.asString()
                 )
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
@@ -143,7 +145,7 @@ fun LoginContent(
                     label = stringResource(R.string.password),
                     visualTransformation = if (isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                    error = state.passwordError,
+                    error = state.passwordError?.asString(),
                     trailingIcon = {
                         IconButton(onClick = onTogglePasswordVisibility) {
                             Icon(
@@ -208,7 +210,7 @@ fun LoginContent(
                         shape = RoundedCornerShape(8.dp)
                     ) {
                         Text(
-                            text = state.error,
+                            text = state.error.asString(),
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.bodySmall,
                             modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)

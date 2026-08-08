@@ -34,6 +34,22 @@
     <string name="onboarding_goal_desc">আপনার ক্যারিয়ারের পথ বেছে নিন এবং আমরা আপনার জন্য একটি কাস্টম রোডম্যাপ তৈরি করব।</string>
     <string name="onboarding_ready_title">শুরু করতে প্রস্তুত?</string>
     <string name="onboarding_ready_desc">আপনি আপনার ক্যারিয়ার পরিবর্তনের এক ধাপ দূরে আছেন। চলুন প্রথম লেসনে ঝাঁপিয়ে পড়ি!</string>
+    <string name="login_failed">লগইন ব্যর্থ হয়েছে</string>
+    <string name="signup_failed">সাইনআপ ব্যর্থ হয়েছে</string>
+    <string name="error_email_empty">দয়া করে আপনার ইমেল লিখুন</string>
+    <string name="error_invalid_email">ইমেল ফরম্যাট সঠিক নয়</string>
+    <string name="error_password_empty">দয়া করে আপনার পাসওয়ার্ড লিখুন</string>
+    <string name="error_name_empty">দয়া করে আপনার পুরো নাম লিখুন</string>
+    <string name="error_phone_empty">দয়া করে আপনার ফোন নম্বর লিখুন</string>
+    <string name="error_phone_short">ফোন নম্বর কমপক্ষে ১১ ডিজিটের হতে হবে</string>
+    <string name="error_password_create">দয়া করে একটি পাসওয়ার্ড তৈরি করুন</string>
+    <string name="error_password_short">পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে</string>
+    <string name="error_nugget_not_found">নাগেট পাওয়া যায়নি</string>
+    <string name="error_unknown">একটি অজানা ত্রুটি ঘটেছে</string>
+    <string name="email_updated">ইমেল আপডেট করা হয়েছে</string>
+    <string name="name_updated">নাম আপডেট করা হয়েছে</string>
+    <string name="deletion_failed">মুছে ফেলতে ব্যর্থ হয়েছে</string>
+
     <string name="micro_learning_subtitle">মাইক্রো-লার্নিং, সর্বোচ্চ বৃদ্ধি।</string>
     <string name="select_career_goal">আপনার ক্যারিয়ার পথ বেছে নিন</string>
     <string name="begin_journey">আমার যাত্রা শুরু করুন</string>

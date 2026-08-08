@@ -1,0 +1,40 @@
+{
+  "career_paths": [
+    {
+      "id": "android",
+      "title": "Android Developer",
+      "description": "Master modern Android development with Kotlin, Jetpack Compose, and Clean Architecture.",
+      "icon_url": "ic_android",
+      "knowledge_nuggets": [
+        {
+          "id": "n1",
+          "title": "Kotlin Coroutines",
+          "content": "Coroutines are light-weight threads that allow you to write asynchronous code sequentially. They simplify background tasks and prevent blocking the UI thread.",
+          "category_id": "android"
+        },
+        {
+          "id": "n2",
+          "title": "Jetpack Compose Basics",
+          "content": "Compose is Android's modern toolkit for building native UI. It simplifies and accelerates UI development with less code, powerful tools, and intuitive Kotlin APIs.",
+          "category_id": "android"
+        }
+      ],
+      "quiz_questions": []
+    },
+    {
+      "id": "uiux",
+      "title": "UI/UX Designer",
+      "description": "Learn to design beautiful, user-centered mobile and web applications.",
+      "icon_url": "ic_design",
+      "knowledge_nuggets": [
+        {
+          "id": "n3",
+          "title": "Typography in Design",
+          "content": "Typography is more than just picking a font. It's about readability, hierarchy, and creating a visual tone for your application.",
+          "category_id": "uiux"
+        }
+      ],
+      "quiz_questions": []
+    }
+  ]
+}

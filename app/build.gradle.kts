@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -63,6 +64,12 @@ dependencies {
     // Play Store
     implementation(libs.play.review)
     implementation(libs.play.update)
+
+    // WorkManager & Logging
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.work.compiler)
+    implementation(libs.timber)
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
