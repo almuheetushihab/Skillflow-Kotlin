@@ -3,19 +3,37 @@
     {
       "id": "android",
       "title": "Android Developer",
-      "description": "Master modern Android development with Kotlin, Jetpack Compose, and Clean Architecture.",
+      "description": "Master modern Android development.",
       "icon_url": "ic_android",
       "knowledge_nuggets": [
         {
-          "id": "n1",
-          "title": "Kotlin Coroutines",
-          "content": "Coroutines are light-weight threads that allow you to write asynchronous code sequentially. They simplify background tasks and prevent blocking the UI thread.",
+          "id": "a1",
+          "title": "Dependency Injection",
+          "content": "DI (like Hilt) helps in making code modular, testable, and reusable by providing dependencies from outside.",
           "category_id": "android"
         },
         {
-          "id": "n2",
-          "title": "Jetpack Compose Basics",
-          "content": "Compose is Android's modern toolkit for building native UI. It simplifies and accelerates UI development with less code, powerful tools, and intuitive Kotlin APIs.",
+          "id": "a2",
+          "title": "Solid Principles",
+          "content": "5 principles (Single Responsibility, Open-Closed, etc.) that make software designs more understandable and flexible.",
+          "category_id": "android"
+        },
+        {
+          "id": "a3",
+          "title": "Room Migration",
+          "content": "When changing DB schema, Room migrations ensure user data is preserved while updating the database structure.",
+          "category_id": "android"
+        },
+        {
+          "id": "a4",
+          "title": "ViewModel Lifecycle",
+          "content": "ViewModels survive configuration changes (like rotation), ensuring UI data isn't lost during activity recreation.",
+          "category_id": "android"
+        },
+        {
+          "id": "a5",
+          "title": "StateFlow vs SharedFlow",
+          "content": "StateFlow is for state (has a value), SharedFlow is for events (one-time actions like snackbars).",
           "category_id": "android"
         }
       ],
@@ -24,14 +42,116 @@
     {
       "id": "uiux",
       "title": "UI/UX Designer",
-      "description": "Learn to design beautiful, user-centered mobile and web applications.",
+      "description": "Design beautiful, user-centered apps.",
       "icon_url": "ic_design",
       "knowledge_nuggets": [
         {
-          "id": "n3",
-          "title": "Typography in Design",
-          "content": "Typography is more than just picking a font. It's about readability, hierarchy, and creating a visual tone for your application.",
+          "id": "u1",
+          "title": "Color Psychology",
+          "content": "Blue builds trust, Red creates urgency. Choose colors based on the emotion you want users to feel.",
           "category_id": "uiux"
+        },
+        {
+          "id": "u2",
+          "title": "Rule of Thirds",
+          "content": "Place important elements at the intersections of a 3x3 grid to create balance and focus.",
+          "category_id": "uiux"
+        },
+        {
+          "id": "u3",
+          "title": "Visual Hierarchy",
+          "content": "Use size, color, and contrast to guide the user's eye to the most important content first.",
+          "category_id": "uiux"
+        },
+        {
+          "id": "u4",
+          "title": "Micro-interactions",
+          "content": "Small animations (like a button bounce) that provide feedback and make the app feel alive.",
+          "category_id": "uiux"
+        },
+        {
+          "id": "u5",
+          "title": "Negative Space",
+          "content": "Whitespace is not empty; it's a powerful tool to reduce clutter and increase readability.",
+          "category_id": "uiux"
+        }
+      ],
+      "quiz_questions": []
+    },
+    {
+      "id": "backend",
+      "title": "Backend Engineer",
+      "description": "Build scalable and secure systems.",
+      "icon_url": "ic_backend",
+      "knowledge_nuggets": [
+        {
+          "id": "b1",
+          "title": "RESTful APIs",
+          "content": "A standard way for clients and servers to communicate using HTTP methods like GET, POST, PUT, DELETE.",
+          "category_id": "backend"
+        },
+        {
+          "id": "b2",
+          "title": "Database Indexing",
+          "content": "Indexing speeds up data retrieval but slows down writes. Use it on columns frequently used in queries.",
+          "category_id": "backend"
+        },
+        {
+          "id": "b3",
+          "title": "JWT Auth",
+          "content": "JSON Web Tokens provide a stateless way to handle authentication between client and server.",
+          "category_id": "backend"
+        },
+        {
+          "id": "b4",
+          "title": "Microservices",
+          "content": "Breaking a large app into smaller, independent services that communicate over a network.",
+          "category_id": "backend"
+        },
+        {
+          "id": "b5",
+          "title": "ACID Properties",
+          "content": "Atomicity, Consistency, Isolation, Durability: the gold standard for reliable database transactions.",
+          "category_id": "backend"
+        }
+      ],
+      "quiz_questions": []
+    },
+    {
+      "id": "softskills",
+      "title": "Professional Growth",
+      "description": "Essential skills for a successful career.",
+      "icon_url": "ic_growth",
+      "knowledge_nuggets": [
+        {
+          "id": "s1",
+          "title": "Effective Comm.",
+          "content": "Clear communication is about listening as much as speaking. Always confirm understanding with feedback.",
+          "category_id": "softskills"
+        },
+        {
+          "id": "s2",
+          "title": "Time Blocking",
+          "content": "Schedule specific blocks of time for deep work to avoid distractions and increase productivity.",
+          "category_id": "softskills"
+        },
+        {
+          "id": "s3",
+          "title": "Imposter Syndrome",
+          "content": "Even experts feel like frauds sometimes. Focus on your growth and facts rather than feelings.",
+          "category_id": "softskills"
+        },
+        {
+          "id": "s4",
+          "title": "Networking",
+          "content": "Build relationships before you need them. Help others first, and your network will grow naturally.",
+          "category_id": "softskills"
+        },
+        {
+          "id": "s5",
+          "title": "Critical Thinking",
+          "content": "Don't just solve the problem; ask why the problem exists in the first place to find better solutions.",
+          "category_id": "softskills"
         }
       ],
       "quiz_questions": []
