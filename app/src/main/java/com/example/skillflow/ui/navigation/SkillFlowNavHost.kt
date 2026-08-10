@@ -9,13 +9,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import com.example.skillflow.HomeScreen
 import com.example.skillflow.domain.manager.PlayStoreManager
 import com.example.skillflow.ui.auth.ForgotPasswordScreen
 import com.example.skillflow.ui.auth.LoginScreen
 import com.example.skillflow.ui.auth.SignUpScreen
 import com.example.skillflow.ui.bookmarks.BookmarksScreen
 import com.example.skillflow.ui.detail.DetailScreen
-import com.example.skillflow.ui.home.HomeScreen
 import com.example.skillflow.ui.onboarding.OnboardingScreen
 import com.example.skillflow.ui.profile.PrivacyPolicyScreen
 import com.example.skillflow.ui.profile.ProfileScreen

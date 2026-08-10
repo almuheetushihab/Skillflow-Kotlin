@@ -1,74 +1,115 @@
 # 🚀 SkillFlow - Micro-Learning, Maximum Growth
 
-**SkillFlow** is a professional, production-ready Android application built with **Jetpack Compose**. It is designed to help users master career-critical skills through "Knowledge Nuggets"—bite-sized, interactive learning units tailored to their specific career goals.
+SkillFlow is a state-of-the-art Android application designed to empower busy professionals and students through the power of **Micro-learning**. By delivering interactive "Knowledge Nuggets" tailored to specific career paths, SkillFlow transforms learning into a manageable, daily habit.
 
 ---
 
-## 📱 App Flow & Architecture
-The app follows a **Clean Architecture** pattern (Data, Domain, Presentation) combined with **MVVM** and **MVI** principles to ensure scalability, testability, and a smooth user experience.
-
-### **The User Journey**
-1.  **Splash Screen**: Instant branding using the modern Android 12+ Splash API.
-2.  **Onboarding (4-Step Flow)**:
-    *   *Welcome*: Introduction to the platform.
-    *   *Methodology*: Explaining the "Knowledge Nugget" concept.
-    *   *Selection*: Choosing a career path (e.g., Android, Backend, UI/UX).
-    *   *Ready*: Final motivation before the first lesson.
-3.  **Authentication**: Secure Login/SignUp with Email & Phone validation.
-4.  **Main Dashboard**:
-    *   **Home**: Daily streak, search, and 3 personalized nuggets.
-    *   **Roadmap**: Visual journey showing progress in the career path.
-    *   **Bookmarks**: Offline access to saved knowledge.
-    *   **Profile**: Learning statistics, daily summary, and level progress.
-5.  **Learning Loop**:
-    *   Read interactive cards → Flip for details → Mark as Mastered → Earn Level XP → Take the Daily MCQ Quiz.
+## 📑 Table of Contents
+- [Executive Summary](#-executive-summary)
+- [Tech Stack](#-tech-stack)
+- [Architecture](#-architecture)
+- [App Screens & Flow](#-app-screens--flow)
+- [Core Features](#-core-features)
+- [Navigation System](#-navigation-system)
+- [Data Management](#-data-management)
+- [Project Highlights](#-project-highlights)
 
 ---
 
-## 🖼️ Screen Documentation
-
-### **1. Core Screens (13+ Total)**
-| Screen | Purpose | Key Features |
-| :--- | :--- | :--- |
-| **Splash** | Launch Branding | Modern Splash API, Post-launch theme transition. |
-| **Onboarding** | First-time UX | HorizontalPager, Career goal selection, Value prop. |
-| **Auth (3 Screens)** | Security | Login, SignUp (Phone/Email), Forgot Password. |
-| **Home (Dashboard)** | Daily Learning | Streak counter, Search, Daily Nuggets list. |
-| **Detail** | Interactive Learning | 3D Card Flip animation, Time tracking, Save/Master. |
-| **Roadmap** | Progress Visualization | Vertical step-item layout, Milestone tracking. |
-| **Quiz** | Knowledge Testing | MCQ with instant feedback and result breakdown. |
-| **Bookmarks** | Offline Reading | Local Room DB integration, Persistent state. |
-| **Profile** | User Analytics | Quiz stats, Level XP, Daily learning summary. |
-| **Settings** | Configuration | Language (EN/BN), Dark Mode, Edit Profile. |
-| **Privacy Policy** | Policy Compliance | Mandatory viewer for Play Store submission. |
+## 🎯 Executive Summary
+SkillFlow addresses the "Information Overload" problem in professional education. Instead of lengthy courses, it provides short, interactive lessons (Nuggets) and reinforces them through quizzes and visual roadmaps. The goal is to help users stay consistent in their career journey with just 5-10 minutes of daily commitment.
 
 ---
 
-## 🛠️ Technical Excellence & Standards
-
-### **Modern Android Stack**
-*   **UI Architecture**: [Jetpack Compose](https://developer.android.com/jetpack/compose) with Material 3.
-*   **Dependency Injection**: [Hilt](https://dagger.dev/hilt/) for robust modularity.
-*   **Asynchronous Flow**: Kotlin [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html).
-*   **Persistence**: [Room DB](https://developer.android.com/training/data-storage/room) (Local) & [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) (Preferences).
-*   **Networking**: [Retrofit 2](https://square.github.io/retrofit/) + OkHttp 5 + Kotlinx Serialization.
-*   **Image Handling**: [Coil](https://coil-kt.github.io/coil/) for efficient image loading.
-*   **Animations**: [Lottie](https://airbnb.design/lottie/) & Compose Animations for engaging UX.
-
-### **Submission Readiness (Play Store 2024-2026)**
-*   ✅ **Target SDK 37**: Built for the latest Android versions.
-*   ✅ **Localization**: Full support for English and Bengali (BN).
-*   ✅ **Data Privacy**: Mandatory "Delete Account" flow & Privacy Policy.
-*   ✅ **Performance**: Proguard/R8 enabled for code shrinking and obfuscation.
-*   ✅ **Accessibility**: Edge-to-edge support and semantic UI hierarchy.
+## 🛠 Tech Stack
+- **UI Framework**: [Jetpack Compose](https://developer.android.com/jetpack/compose) (100% Declarative UI)
+- **Design System**: Material 3 (M3) with full Dark Mode & Edge-to-Edge support.
+- **Language**: Kotlin + [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html) for reactive programming.
+- **Dependency Injection**: [Hilt](https://dagger.dev/hilt/) (Dagger-based DI).
+- **Local Database**: [Room Persistence Library](https://developer.android.com/training/data-storage/room).
+- **Preferences**: [DataStore](https://developer.android.com/topic/libraries/architecture/datastore) (Type-safe key-value storage).
+- **Networking**: [Retrofit 2](https://square.github.io/retrofit/) & OkHttp 5.
+- **Serialization**: Kotlinx Serialization (Type-safe JSON handling).
+- **Firebase Stack**: Analytics, Crashlytics, Cloud Messaging (FCM), and Authentication.
+- **Image Loading**: [Coil](https://coil-kt.github.io/coil/) (Coroutine-based).
+- **Logging**: [Timber](https://github.com/JakeWharton/timber).
+- **Background Tasks**: [WorkManager](https://developer.android.com/topic/libraries/architecture/workmanager) for data seeding.
 
 ---
 
-## 💎 Coding Standards Followed
-1.  **Deduplication**: Extracted common UI into `ui/common` (StateViews, AuthComponents).
-2.  **No Hard-coding**: 100% `stringResource` and central `Theme` dimensions.
-3.  **Clean Code**: Modifier-first approach, optimized imports, and standard previews.
-4.  **Organized Package Structure**: Screen-specific components nested in local `components` packages.
+## 🏗 Architecture
+SkillFlow strictly follows **Clean Architecture** principles, divided into three main layers:
+
+1.  **Data Layer**:
+    *   **Repositories**: Implementation of domain interfaces.
+    *   **Local**: Room DAO and Database definitions.
+    *   **Remote**: API interfaces and DTOs.
+    *   **Workers**: Background tasks like initial JSON seeding.
+2.  **Domain Layer**:
+    *   **Models**: Pure Kotlin data classes (POJOs).
+    *   **Repositories**: Interface definitions to decouple data logic from UI.
+3.  **Presentation Layer (UI)**:
+    *   Uses **MVVM (Model-View-ViewModel)** pattern.
+    *   **State Management**: `StateFlow` and `SharedFlow` for handling UI states and one-time events.
+    *   **Components**: Extracted reusable UI elements for maintainability.
 
 ---
-*Developed with ❤️ by SkillFlow Team.*
+
+## 📱 App Screens & Flow
+SkillFlow features **13+ professional screens**:
+
+-   **Splash Screen**: Instant branding using the Android 12+ Splash API.
+-   **Onboarding (4 Pages)**: Guides users through value proposition and career selection.
+-   **Authentication (3 Screens)**: Secure Login, SignUp (Email/Phone), and Forgot Password.
+-   **Home (Dashboard)**: Displays Daily Streak, Search, and recommended Knowledge Nuggets.
+-   **Roadmap**: A visual, step-by-step guide showing the user's progress in their career path.
+-   **Detail Screen**: Interactive learning card with **3D Flip Animation** and time tracking.
+-   **Quiz Screen**: MCQ-based assessment with instant feedback and reward logic.
+-   **Bookmarks**: Persistent storage for offline reading of saved nuggets.
+-   **Profile Screen**: User analytics, XP progress, and Level tracking.
+-   **Settings**: Language toggle (EN/BN), Dark Mode, and Edit Profile.
+-   **Privacy Policy**: In-app viewer for policy compliance.
+
+---
+
+## 🌟 Core Features
+
+### 💎 Knowledge Nuggets System
+Data is seeded from a massive `seed_data.json` asset on the first launch using **WorkManager**. Each nugget includes complexity levels (Beginner to Advanced) and linked quiz questions.
+
+### 🎮 Gamification & Rewards
+-   **Streak System**: Tracks consecutive days of learning (Logic verified with Unit Tests).
+-   **XP & Leveling**: Users earn XP by mastering nuggets. Levels increase automatically based on topics learned.
+-   **Quiz Engine**: Reinforces learning with instant feedback and requests for Play Store reviews after high scores.
+
+### 🔒 User Management & Policy
+-   **Firebase Auth**: Robust authentication flow.
+-   **Account Deletion**: Mandatory "Delete Account" flow that wipes both Firebase user data and local Room DB/DataStore for privacy compliance.
+
+### 🚀 Play Store Integration
+-   **In-App Updates**: Prompts for Flexible or Immediate updates to keep the app current.
+-   **In-App Reviews**: Requests user ratings at the perfect "Aha!" moment.
+-   **Shimmer Loading**: Professional skeleton loaders for a smooth perceived performance.
+
+---
+
+## 🗺 Navigation System
+SkillFlow implements **Type-Safe Navigation** using Kotlin Serialization. No more string-based routes; destinations are defined as `@Serializable` objects/classes, preventing runtime crashes and making argument passing effortless.
+
+---
+
+## 💾 Data Management
+-   **Data Seeding**: A dedicated `DataSeedWorker` reads a professional JSON structure and populates the local database.
+-   **Persistence**: Room ensures all learning progress, bookmarks, and streaks are available offline.
+-   **Synchronization**: Firebase Analytics and Crashlytics track app health and user engagement in real-time.
+
+---
+
+## ✨ Project Highlights
+-   **Full Edge-to-Edge**: Optimized UI that utilizes the entire screen, including the area behind status and navigation bars.
+-   **Localization (EN/BN)**: 100% support for English and Bengali languages via `UiText` wrapper.
+-   **Security**: Proguard/R8 rules configured for code shrinking and obfuscation.
+-   **Accessibility**: Full TalkBack support with meaningful `contentDescriptions`.
+
+---
+*Developed with ❤️ by MD. AL-MUHEETU.*
