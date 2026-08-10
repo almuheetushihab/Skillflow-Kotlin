@@ -16,12 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
+/**
+ * A reusable card component to display a Knowledge Nugget summary.
+ */
 @Composable
 fun NuggetCard(
     nugget: KnowledgeNugget,
@@ -107,5 +112,28 @@ fun NuggetCard(
                 tint = MaterialTheme.colorScheme.outline
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NuggetCardPreview() {
+    SkillflowTheme {
+        NuggetCard(
+            nugget = KnowledgeNugget(
+                id = "1", 
+                title = "Kotlin Coroutines", 
+                shortDescription = "Learn async", 
+                content = "Content", 
+                complexity = "Intermediate", 
+                imageUrl = null, 
+                careerPathId = "android", 
+                isDone = false, 
+                isSaved = true, 
+                date = "2026-08-02", 
+                quizzes = emptyList()
+            ),
+            onClick = {}
+        )
     }
 }

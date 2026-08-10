@@ -35,6 +35,9 @@ import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 import java.util.Locale
 
+/**
+ * Screen displaying the user's profile and learning statistics.
+ */
 @Composable
 fun ProfileScreen(
     onResetOnboarding: () -> Unit,
@@ -65,6 +68,9 @@ fun ProfileScreen(
     )
 }
 
+/**
+ * The internal content of the Profile screen.
+ */
 @Composable
 fun ProfileContent(
     state: ProfileState,
@@ -205,14 +211,14 @@ fun ProfileContent(
                     title = stringResource(R.string.quizzes_taken),
                     value = state.quizCount.toString(),
                     icon = Icons.AutoMirrored.Filled.Assignment,
-                    color = Color(0xFF2196F3)
+                    color = MaterialTheme.colorScheme.primary
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
                     title = stringResource(R.string.avg_score),
                     value = String.format(Locale.getDefault(), "%.1f", state.averageScore),
                     icon = Icons.Default.Assessment,
-                    color = Color(0xFF9C27B0)
+                    color = MaterialTheme.colorScheme.secondary
                 )
             }
 
@@ -235,14 +241,14 @@ fun ProfileContent(
                     title = stringResource(R.string.profile_level),
                     value = stringResource(R.string.level_format, state.profileLevel),
                     icon = Icons.Default.Star,
-                    color = Color(0xFFFFB300)
+                    color = MaterialTheme.colorScheme.tertiary
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
                     title = stringResource(R.string.daily_progress),
                     value = stringResource(R.string.daily_progress_format, state.todayLearned, state.todayTotal),
                     icon = Icons.AutoMirrored.Filled.TrendingUp,
-                    color = Color(0xFF4CAF50)
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -349,15 +355,14 @@ fun ProfileContent(
                 onClick = onResetOnboarding,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(28.dp))
-                    .background(Brush.linearGradient(listOf(Color(0xFFFF5252), Color(0xFFFF1744)))),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
+                    .height(56.dp),
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
             ) {
                 Text(
                     text = stringResource(R.string.reset_learning_goal),
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = MaterialTheme.colorScheme.onError
                 )
             }
             Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))

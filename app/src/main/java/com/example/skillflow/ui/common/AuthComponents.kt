@@ -13,11 +13,16 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
+/**
+ * A standardized text field for authentication screens.
+ */
 @Composable
 fun AuthTextField(
     value: String,
@@ -58,6 +63,9 @@ fun AuthTextField(
     }
 }
 
+/**
+ * A standardized gradient button for authentication and primary actions.
+ */
 @Composable
 fun AuthButton(
     text: String,
@@ -93,6 +101,18 @@ fun AuthButton(
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AuthComponentsPreview() {
+    SkillflowTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            AuthTextField(value = "", onValueChange = {}, label = "Email")
+            Spacer(modifier = Modifier.height(16.dp))
+            AuthButton(text = "Login", onClick = {})
         }
     }
 }

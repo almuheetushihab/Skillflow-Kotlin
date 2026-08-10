@@ -1,5 +1,6 @@
 package com.example.skillflow.ui.quiz
 
+import android.app.Activity
 import androidx.compose.animation.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,8 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
+import com.example.skillflow.domain.manager.PlayStoreManager
 import com.example.skillflow.domain.model.QuizQuestion
 import com.example.skillflow.presentation.quiz.QuizState
+import com.example.skillflow.presentation.quiz.QuizUiEvent
 import com.example.skillflow.presentation.quiz.QuizViewModel
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.theme.GradientStart
@@ -32,10 +36,24 @@ import com.example.skillflow.ui.theme.spacing
 @Composable
 fun QuizScreen(
     onFinish: () -> Unit,
+    playStoreManager: PlayStoreManager,
     modifier: Modifier = Modifier,
     viewModel: QuizViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is QuizUiEvent.RequestReview -> {
+                    (context as? Activity)?.let { activity ->
+                        playStoreManager.requestReview(activity)
+                    }
+                }
+            }
+        }
+    }
 
     if (state.isFinished) {
         QuizResultScreen(state = state, onFinish = onFinish, modifier = modifier)
@@ -335,30 +353,5 @@ fun QuizResultScreen(
                 Text(stringResource(R.string.back_to_profile), fontWeight = FontWeight.Bold)
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun QuizContentPreview() {
-    SkillflowTheme {
-        QuizContent(
-            state = QuizState(
-                questions = listOf(
-                    QuizQuestion(
-                        "1",
-                        "android",
-                        "Sample question?",
-                        listOf("Option 1", "Option 2", "Option 3"),
-                        0,
-                        "Sample explanation"
-                    )
-                )
-            ),
-            onOptionSelected = {},
-            onSubmit = {},
-            onNext = {},
-            onFinish = {}
-        )
     }
 }

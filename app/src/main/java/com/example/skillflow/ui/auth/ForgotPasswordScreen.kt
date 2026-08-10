@@ -2,7 +2,9 @@ package com.example.skillflow.ui.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,6 +24,9 @@ import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
+/**
+ * Screen allowing users to request a password reset link.
+ */
 @Composable
 fun ForgotPasswordScreen(
     onNavigateBack: () -> Unit,
@@ -40,6 +45,9 @@ fun ForgotPasswordScreen(
     )
 }
 
+/**
+ * The internal content of the Forgot Password screen.
+ */
 @Composable
 fun ForgotPasswordContent(
     email: String,
@@ -53,62 +61,69 @@ fun ForgotPasswordContent(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(backgroundGradient)
-            .windowInsetsPadding(WindowInsets.safeDrawing)
-    ) {
-        Column(
+    Scaffold(
+        modifier = modifier.fillMaxSize(),
+        containerColor = Color.Transparent
+    ) { padding ->
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(MaterialTheme.spacing.large),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .background(backgroundGradient)
+                .padding(padding)
+                .windowInsetsPadding(WindowInsets.safeDrawing)
         ) {
-            Text(
-                text = stringResource(R.string.reset_password),
-                style = MaterialTheme.typography.headlineLarge,
-                color = GradientStart,
-                fontWeight = FontWeight.ExtraBold
-            )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-            Text(
-                text = stringResource(R.string.reset_password_hint),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
-
-            if (!isSubmitted) {
-                AuthTextField(
-                    value = email,
-                    onValueChange = onEmailChange,
-                    label = stringResource(R.string.email),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
-                )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
-
-                AuthButton(
-                    text = stringResource(R.string.send_reset_link),
-                    onClick = onSubmit,
-                    enabled = email.isNotEmpty()
-                )
-            } else {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(MaterialTheme.spacing.large)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
-                    text = stringResource(R.string.reset_link_sent, email),
-                    color = Color(0xFF4CAF50),
-                    fontWeight = FontWeight.Bold,
+                    text = stringResource(R.string.reset_password),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = GradientStart,
+                    fontWeight = FontWeight.ExtraBold
+                )
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Text(
+                    text = stringResource(R.string.reset_password_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
+
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
-                Button(
-                    onClick = onNavigateBack,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.back_to_login))
+
+                if (!isSubmitted) {
+                    AuthTextField(
+                        value = email,
+                        onValueChange = onEmailChange,
+                        label = stringResource(R.string.email),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
+                    )
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
+
+                    AuthButton(
+                        text = stringResource(R.string.send_reset_link),
+                        onClick = onSubmit,
+                        enabled = email.isNotEmpty()
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.reset_link_sent, email),
+                        color = MaterialTheme.colorScheme.primary, // Fixed hardcoded color
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
+                    Button(
+                        onClick = onNavigateBack,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(stringResource(R.string.back_to_login))
+                    }
                 }
             }
         }

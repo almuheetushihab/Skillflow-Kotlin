@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.home
+package com.example.skillflow
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,10 +23,10 @@ import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.presentation.home.HomeState
 import com.example.skillflow.presentation.home.HomeViewModel
 import com.example.skillflow.ui.common.AnimatedEntrance
-import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.NuggetCard
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.home.components.DailyProgressCard
+import com.example.skillflow.ui.home.components.NuggetCardSkeleton
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.SunsetEnd
@@ -186,7 +186,14 @@ fun HomeContent(
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
 
                 if (state.isLoading) {
-                    LoadingView(modifier = Modifier.fillMaxSize())
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(5) {
+                            NuggetCardSkeleton()
+                        }
+                    }
                 } else {
                     LazyColumn(
                         verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
@@ -216,8 +223,32 @@ fun HomeContentPreview() {
             state = HomeState(
                 streakCount = 5,
                 dailyNuggets = listOf(
-                    KnowledgeNugget("1", "Kotlin Coroutines", "Full content of coroutines", null, "android", false, false, "2026-08-02"),
-                    KnowledgeNugget("2", "Compose Layouts", "Full content of layouts", null, "android", true, false, "2026-08-02")
+                    KnowledgeNugget(
+                        id = "1", 
+                        title = "Kotlin Coroutines", 
+                        shortDescription = "Learn async",
+                        content = "Full content", 
+                        complexity = "Intermediate",
+                        imageUrl = null, 
+                        careerPathId = "android", 
+                        isDone = false, 
+                        isSaved = false, 
+                        date = "2026-08-02",
+                        quizzes = emptyList()
+                    ),
+                    KnowledgeNugget(
+                        id = "2", 
+                        title = "Compose Layouts", 
+                        shortDescription = "Learn UI",
+                        content = "Full content", 
+                        complexity = "Beginner",
+                        imageUrl = null, 
+                        careerPathId = "android", 
+                        isDone = true, 
+                        isSaved = false, 
+                        date = "2026-08-02",
+                        quizzes = emptyList()
+                    )
                 )
             ),
             onSearchQueryChange = {},

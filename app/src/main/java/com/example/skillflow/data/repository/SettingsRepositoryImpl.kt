@@ -6,13 +6,15 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.example.skillflow.data.local.SkillDatabase
 import com.example.skillflow.domain.repository.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class SettingsRepositoryImpl @Inject constructor(
-    private val dataStore: DataStore<Preferences>
+    private val dataStore: DataStore<Preferences>,
+    private val database: SkillDatabase
 ) : SettingsRepository {
 
     private object PreferencesKeys {
@@ -153,5 +155,6 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun clearSession() {
         dataStore.edit { it.clear() }
+        database.clearAllTables()
     }
 }

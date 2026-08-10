@@ -11,11 +11,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.skillflow.R
+import com.example.skillflow.ui.common.ErrorView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.roadmap.components.RoadmapStepItem
+import com.example.skillflow.ui.roadmap.components.RoadmapStepSkeleton
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
+import timber.log.Timber
 
+/**
+ * Screen displaying the user's career roadmap.
+ */
 @Composable
 fun RoadmapScreen(
     modifier: Modifier = Modifier
@@ -32,18 +38,44 @@ fun RoadmapScreen(
         "Release & Deployment Strategy"
     )
     val currentStepIndex = 3
+    var isLoading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        Timber.d("Loading roadmap steps")
+        try {
+            kotlinx.coroutines.delay(1500)
+            isLoading = false
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to load roadmap")
+            error = e.localizedMessage
+            isLoading = false
+        }
+    }
 
     RoadmapContent(
         steps = steps,
         currentStepIndex = currentStepIndex,
+        isLoading = isLoading,
+        error = error,
+        onRetry = {
+            isLoading = true
+            error = null
+        },
         modifier = modifier
     )
 }
 
+/**
+ * The content of the Roadmap screen.
+ */
 @Composable
 fun RoadmapContent(
     steps: List<String>,
     currentStepIndex: Int,
+    isLoading: Boolean,
+    error: String?,
+    onRetry: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val backgroundGradient = Brush.verticalGradient(
@@ -59,20 +91,31 @@ fun RoadmapContent(
             SkillflowTopAppBar(title = stringResource(R.string.my_journey))
         }
     ) { padding ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = MaterialTheme.spacing.large),
-            contentPadding = PaddingValues(top = MaterialTheme.spacing.large, bottom = MaterialTheme.spacing.large)
-        ) {
-            itemsIndexed(steps) { index, step ->
-                RoadmapStepItem(
-                    title = step,
-                    isCompleted = index < currentStepIndex,
-                    isCurrent = index == currentStepIndex,
-                    isLast = index == steps.size - 1
-                )
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            if (error != null) {
+                ErrorView(message = error, onRetry = onRetry)
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = MaterialTheme.spacing.large),
+                    contentPadding = PaddingValues(top = MaterialTheme.spacing.large, bottom = MaterialTheme.spacing.large)
+                ) {
+                    if (isLoading) {
+                        items(8) {
+                            RoadmapStepSkeleton()
+                        }
+                    } else {
+                        itemsIndexed(steps) { index, step ->
+                            RoadmapStepItem(
+                                title = step,
+                                isCompleted = index < currentStepIndex,
+                                isCurrent = index == currentStepIndex,
+                                isLast = index == steps.size - 1
+                            )
+                        }
+                    }
+                }
             }
         }
     }
@@ -84,7 +127,10 @@ fun RoadmapContentPreview() {
     SkillflowTheme {
         RoadmapContent(
             steps = listOf("Step 1", "Step 2", "Step 3"),
-            currentStepIndex = 1
+            currentStepIndex = 1,
+            isLoading = false,
+            error = null,
+            onRetry = {}
         )
     }
 }

@@ -56,13 +56,13 @@ class SkillRepositoryImpl @Inject constructor(
             list
         } catch (e: Exception) {
             listOf(
-                KnowledgeNugget("a1", "Kotlin Fundamentals", "Kotlin is a modern, statically typed language. Key features include null safety, extension functions, and higher-order functions which make Android development more concise and robust.", null, "android", false, false, "2026-08-03"),
-                KnowledgeNugget("a2", "Jetpack Compose Basics", "Compose is Android's modern toolkit for building native UI. It simplifies UI development with a declarative approach, allowing you to describe your UI and let Compose handle the rendering.", null, "android", false, false, "2026-08-03"),
-                KnowledgeNugget("a3", "Clean Architecture", "Separating concerns into Data, Domain, and Presentation layers. This makes your code more testable, maintainable, and independent of external frameworks or databases.", null, "android", false, false, "2026-08-03"),
-                KnowledgeNugget("a4", "Hilt Dependency Injection", "Hilt provides a standard way to use Dagger DI in your Android app. It simplifies the setup and manages the lifecycle of dependencies automatically.", null, "android", false, false, "2026-08-03"),
-                KnowledgeNugget("a5", "Coroutines & Flow", "Managing background tasks efficiently without blocking the main thread. Flow provides a reactive stream of data that can be observed in the UI.", null, "android", false, false, "2026-08-03"),
-                KnowledgeNugget("i1", "Swift Fundamentals", "Swift is a powerful and intuitive programming language for iOS, macOS, tvOS, and watchOS.", null, "ios", false, false, "2026-08-03"),
-                KnowledgeNugget("b1", "RESTful API Design", "REST is an architectural style for providing standards between computer systems on the web.", null, "backend", false, false, "2026-08-03")
+                KnowledgeNugget("a1", "Kotlin Fundamentals", "Short desc", "Content", "Beginner", null, "android", false, false, "2026-08-03", emptyList()),
+                KnowledgeNugget("a2", "Jetpack Compose Basics", "Short desc", "Content", "Beginner", null, "android", false, false, "2026-08-03", emptyList()),
+                KnowledgeNugget("a3", "Clean Architecture", "Short desc", "Content", "Advanced", null, "android", false, false, "2026-08-03", emptyList()),
+                KnowledgeNugget("a4", "Hilt Dependency Injection", "Short desc", "Content", "Intermediate", null, "android", false, false, "2026-08-03", emptyList()),
+                KnowledgeNugget("a5", "Coroutines & Flow", "Short desc", "Content", "Intermediate", null, "android", false, false, "2026-08-03", emptyList()),
+                KnowledgeNugget("i1", "Swift Fundamentals", "Short desc", "Content", "Beginner", null, "ios", false, false, "2026-08-03", emptyList()),
+                KnowledgeNugget("b1", "RESTful API Design", "Short desc", "Content", "Intermediate", null, "backend", false, false, "2026-08-03", emptyList())
             )
         }
     }
@@ -75,8 +75,8 @@ class SkillRepositoryImpl @Inject constructor(
             list
         } catch (e: Exception) {
             listOf(
-                QuizQuestion("a1", "android", "What is the primary language for Android?", listOf("Java", "Kotlin"), 1, "Kotlin is preferred."),
-                QuizQuestion("a2", "android", "What manages UI data?", listOf("Activity", "ViewModel"), 1, "ViewModel survives rotation.")
+                QuizQuestion("q1", "a1", "What is the primary language for Android?", listOf("Java", "Kotlin"), 1, "Kotlin is preferred."),
+                QuizQuestion("q2", "a1", "What manages UI data?", listOf("Activity", "ViewModel"), 1, "ViewModel survives rotation.")
             )
         }
     }
@@ -169,12 +169,16 @@ class SkillRepositoryImpl @Inject constructor(
 
     override fun getQuizQuestions(careerPathId: String): Flow<List<QuizQuestion>> = flow {
         val path = if (careerPathId.isEmpty()) "android" else careerPathId
-        val pathQuestions = allQuizQuestions.filter { it.careerPathId == path }
-        // Fallback to Android if path has no questions
-        if (pathQuestions.isEmpty()) {
-            emit(allQuizQuestions.filter { it.careerPathId == "android" })
-        } else {
-            emit(pathQuestions)
+        // In the new structure, quizzes are inside nuggets. 
+        // For simplicity, we can fetch all nuggets of this path and flatten their quizzes.
+        dao.getDailyNuggets(path, dateFormatter.format(Date())).collect { nuggets ->
+            val quizzes = nuggets.flatMap { it.toDomain().quizzes }
+            if (quizzes.isEmpty()) {
+                // Fallback to all quiz questions if no daily nuggets have quizzes
+                emit(allQuizQuestions)
+            } else {
+                emit(quizzes)
+            }
         }
     }
 }

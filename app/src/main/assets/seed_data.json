@@ -1,0 +1,452 @@
+{
+  "career_paths": [
+    {
+      "id": "android",
+      "title": "Android Developer",
+      "description": "Master modern Android development with Kotlin, Jetpack Compose, and Clean Architecture.",
+      "icon_url": "ic_android",
+      "knowledge_nuggets": [
+        {
+          "id": "a1",
+          "title": "Activity Lifecycle",
+          "short_description": "Understand how Activities are created and destroyed.",
+          "content": "The Activity lifecycle consists of states like onCreate, onStart, onResume, onPause, onStop, and onDestroy. Managing these correctly prevents memory leaks and ensures a smooth user experience when switching apps.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a1_1",
+              "text": "Which method is called first when an Activity is created?",
+              "options": ["onStart", "onResume", "onCreate", "onPause"],
+              "correct_answer_index": 2,
+              "explanation": "onCreate() is the first callback and where you initialize your activity."
+            },
+            {
+              "id": "q_a1_2",
+              "text": "Which state is an Activity in when it is partially obscured but still visible?",
+              "options": ["Paused", "Stopped", "Resumed", "Destroyed"],
+              "correct_answer_index": 0,
+              "explanation": "onPause() is called when the activity is no longer in the foreground but still visible."
+            }
+          ]
+        },
+        {
+          "id": "a2",
+          "title": "ViewModel Pattern",
+          "short_description": "Manage UI data in a lifecycle-aware way.",
+          "content": "ViewModels store and manage UI-related data so it survives configuration changes like screen rotations. They decouple your UI logic from the Activity/Fragment lifecycle.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a2_1",
+              "text": "Does a ViewModel survive a screen rotation?",
+              "options": ["No", "Yes", "Only on old Android versions", "Depends on the Fragment"],
+              "correct_answer_index": 1,
+              "explanation": "Yes, ViewModels are specifically designed to survive configuration changes."
+            }
+          ]
+        },
+        {
+          "id": "a3",
+          "title": "Hilt Dependency Injection",
+          "short_description": "Standardize DI in your Android apps.",
+          "content": "Hilt is a DI library for Android that reduces the boilerplate of manual dependency injection. It is built on top of Dagger and provides a standard way to incorporate DI into your app.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a3_1",
+              "text": "Which annotation is used to mark the Application class for Hilt?",
+              "options": ["@HiltAndroidApp", "@AndroidEntryPoint", "@Inject", "@Module"],
+              "correct_answer_index": 0,
+              "explanation": "@HiltAndroidApp triggers Hilt's code generation."
+            }
+          ]
+        },
+        {
+          "id": "a4",
+          "title": "Retrofit Networking",
+          "short_description": "Connect your app to the internet.",
+          "content": "Retrofit is a type-safe HTTP client for Android. it turns your HTTP API into a Java/Kotlin interface, making network requests easy to handle and test.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a4_1",
+              "text": "Which library is often used with Retrofit for JSON parsing?",
+              "options": ["Glide", "Room", "Gson/Kotlinx Serialization", "Timber"],
+              "correct_answer_index": 2,
+              "explanation": "Converter factories like Gson or Kotlinx Serialization handle JSON mapping."
+            }
+          ]
+        },
+        {
+          "id": "a5",
+          "title": "Room Database",
+          "short_description": "Offline data persistence made easy.",
+          "content": "Room provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite. It handles boilerplate and provides compile-time checks.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a5_1",
+              "text": "What does a DAO stand for in Room?",
+              "options": ["Data Access Object", "Direct Android Object", "Database Access Orgnizer", "Data Action Observer"],
+              "correct_answer_index": 0,
+              "explanation": "DAOs define the methods that access the database."
+            }
+          ]
+        },
+        {
+          "id": "a6",
+          "title": "Jetpack Navigation",
+          "short_description": "Manage app navigation flows.",
+          "content": "The Navigation component helps you implement navigation, from simple button clicks to complex patterns, such as app bars and the navigation drawer.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a6_1",
+              "text": "What is the new recommended way to define routes in Navigation 2.8.0+?",
+              "options": ["Strings", "Integer IDs", "Type-safe Objects/Classes", "XML files"],
+              "correct_answer_index": 2,
+              "explanation": "Navigation now supports type-safe routes using Kotlin Serialization."
+            }
+          ]
+        },
+        {
+          "id": "a7",
+          "title": "Compose State",
+          "short_description": "The heart of reactive UI.",
+          "content": "In Compose, state is any value that can change over time. When state updates, Compose automatically re-executes the functions (recomposition) to reflect the changes in the UI.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a7_1",
+              "text": "Which function is used to keep state across recompositions?",
+              "options": ["remember", "persist", "save", "hold"],
+              "correct_answer_index": 0,
+              "explanation": "remember stores an object in the composition."
+            }
+          ]
+        },
+        {
+          "id": "a8",
+          "title": "Kotlin Coroutines",
+          "short_description": "Simplified asynchronous programming.",
+          "content": "Coroutines allow you to write asynchronous code as if it were synchronous. They are highly efficient and provide built-in cancellation and structured concurrency.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a8_1",
+              "text": "What keyword is used to define a coroutine-friendly function?",
+              "options": ["async", "await", "suspend", "defer"],
+              "correct_answer_index": 2,
+              "explanation": "suspend functions can be paused and resumed without blocking."
+            }
+          ]
+        },
+        {
+          "id": "a9",
+          "title": "Kotlin Flow",
+          "short_description": "Reactive data streams.",
+          "content": "Flow is a stream of data that can be computed asynchronously. It is similar to an Iterator but uses suspend functions for asynchronous values.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a9_1",
+              "text": "Which Flow type is best for representing UI state?",
+              "options": ["SharedFlow", "StateFlow", "Cold Flow", "Channel"],
+              "correct_answer_index": 1,
+              "explanation": "StateFlow is a state-holder observable flow that emits the current and new state updates."
+            }
+          ]
+        },
+        {
+          "id": "a10",
+          "title": "WorkManager",
+          "short_description": "Schedule deferrable background tasks.",
+          "content": "WorkManager is the recommended solution for persistent work. It handles tasks that need to run even if the app exits or the device restarts, like data syncing.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a10_1",
+              "text": "Is WorkManager suitable for immediate, high-priority tasks?",
+              "options": ["Yes", "No, it's for deferrable work", "Only if the app is open", "Only on Wi-Fi"],
+              "correct_answer_index": 1,
+              "explanation": "WorkManager is for tasks that can wait but must eventually run."
+            }
+          ]
+        },
+        {
+          "id": "a11",
+          "title": "DataStore",
+          "short_description": "The modern way to store preferences.",
+          "content": "DataStore is a data storage solution that allows you to store key-value pairs or typed objects with protocol buffers. It uses Coroutines and Flow to store data asynchronously.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a11_1",
+              "text": "What does DataStore replace?",
+              "options": ["Room", "SQLite", "SharedPreferences", "Firebase"],
+              "correct_answer_index": 2,
+              "explanation": "DataStore is the replacement for SharedPreferences."
+            }
+          ]
+        },
+        {
+          "id": "a12",
+          "title": "Clean Architecture",
+          "short_description": "Organize your app for scale.",
+          "content": "Clean Architecture divides the app into layers (Data, Domain, Presentation). The Domain layer contains business logic and is independent of UI or external libraries.",
+          "complexity": "Advanced",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a12_1",
+              "text": "Which layer should NOT know about Android frameworks?",
+              "options": ["Presentation", "Data", "Domain", "Remote"],
+              "correct_answer_index": 2,
+              "explanation": "The Domain layer should be pure Kotlin/Java with no dependencies on the platform."
+            }
+          ]
+        },
+        {
+          "id": "a13",
+          "title": "Solid Principles - SRP",
+          "short_description": "Single Responsibility Principle.",
+          "content": "A class should have only one reason to change. This means a class should only perform one primary task, making it easier to maintain and test.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a13_1",
+              "text": "What happens if you violate SRP?",
+              "options": ["Faster code", "Less files", "God objects and high coupling", "Better UI"],
+              "correct_answer_index": 2,
+              "explanation": "Violating SRP leads to massive classes that are hard to debug."
+            }
+          ]
+        },
+        {
+          "id": "a14",
+          "title": "Testing - JUnit",
+          "short_description": "Write reliable unit tests.",
+          "content": "JUnit is the standard testing framework for Android. Unit tests verify the smallest parts of your app in isolation, usually the business logic in your Domain or ViewModels.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a14_1",
+              "text": "Where do unit tests usually reside in the project structure?",
+              "options": ["androidTest", "test", "main", "res"],
+              "correct_answer_index": 1,
+              "explanation": "Local unit tests run on the JVM and go into the 'test' folder."
+            }
+          ]
+        },
+        {
+          "id": "a15",
+          "title": "Advanced R8/Proguard",
+          "short_description": "Shrink and secure your code.",
+          "content": "R8 is the built-in tool that shrinks, desugars, and obfuscates your code. Obfuscation renames classes and members to make reverse engineering more difficult.",
+          "complexity": "Advanced",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a15_1",
+              "text": "What is the primary goal of obfuscation?",
+              "options": ["Faster execution", "Smaller size", "Make code harder to read for humans", "Fix bugs"],
+              "correct_answer_index": 2,
+              "explanation": "Obfuscation protects intellectual property by making reverse engineering difficult."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "uiux",
+      "title": "UI/UX Designer",
+      "description": "Learn to design beautiful, user-centered mobile and web applications.",
+      "icon_url": "ic_design",
+      "knowledge_nuggets": [
+        {
+          "id": "u1",
+          "title": "Color Theory",
+          "short_description": "The art of mixing colors.",
+          "content": "Color theory involves the color wheel, harmony, and the psychological impact of colors. Warm colors evoke energy, while cool colors suggest calmness.",
+          "complexity": "Beginner",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u1_1",
+              "text": "Which color is often associated with trust and professionalism?",
+              "options": ["Red", "Blue", "Yellow", "Purple"],
+              "correct_answer_index": 1,
+              "explanation": "Blue is widely used in corporate and financial apps to build trust."
+            }
+          ]
+        },
+        {
+          "id": "u2",
+          "title": "Grid Systems",
+          "short_description": "Align your designs for balance.",
+          "content": "Grids provide structure and consistency. A standard 8dp or 4dp grid helps in aligning elements and ensures that the layout looks professional across all screens.",
+          "complexity": "Beginner",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u2_1",
+              "text": "Why use an 8dp grid system?",
+              "options": ["It's a lucky number", "Consistency and divisible by most screen sizes", "Apple requires it", "It saves battery"],
+              "correct_answer_index": 1,
+              "explanation": "An 8dp grid makes scaling across different screen densities easier."
+            }
+          ]
+        },
+        {
+          "id": "u3",
+          "title": "Wireframing",
+          "short_description": "The blueprint of your app.",
+          "content": "Wireframes are low-fidelity sketches that focus on layout and functionality without getting distracted by colors or typography. They are the 'skeleton' of your UI.",
+          "complexity": "Beginner",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u3_1",
+              "text": "What is the main purpose of a wireframe?",
+              "options": ["Pick a font", "Show final colors", "Define structure and flow", "Test performance"],
+              "correct_answer_index": 2,
+              "explanation": "Wireframes define where elements go and how the user moves between screens."
+            }
+          ]
+        },
+        {
+          "id": "u4",
+          "title": "User Research",
+          "short_description": "Understand your target users.",
+          "content": "User research involves interviews, surveys, and testing to understand user needs. Designing without research is like shooting in the dark.",
+          "complexity": "Intermediate",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u4_1",
+              "text": "What is a 'User Persona'?",
+              "options": ["A real person", "A fictional character representing a user segment", "The app developer", "A marketing robot"],
+              "correct_answer_index": 1,
+              "explanation": "Personas help teams empathize with the target audience."
+            }
+          ]
+        },
+        {
+          "id": "u5",
+          "title": "Accessibility (A11y)",
+          "short_description": "Design for everyone.",
+          "content": "Accessibility ensures that people with disabilities can use your app. This includes screen reader support, large touch targets, and high contrast ratios.",
+          "complexity": "Intermediate",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u5_1",
+              "text": "What is the minimum recommended touch target size?",
+              "options": ["24dp", "32dp", "48dp", "100dp"],
+              "correct_answer_index": 2,
+              "explanation": "48x48dp is the minimum size for comfortable tapping."
+            }
+          ]
+        },
+        {
+          "id": "u6",
+          "title": "Contrast Ratio",
+          "short_description": "Legibility is key.",
+          "content": "The contrast ratio measures the difference in brightness between text and background. WCAG 2.1 requires at least 4.5:1 for normal text.",
+          "complexity": "Intermediate",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u6_1",
+              "text": "Which ratio is better for accessibility?",
+              "options": ["1:1", "2:1", "7:1", "3:1"],
+              "correct_answer_index": 2,
+              "explanation": "Higher contrast makes text easier to read for users with low vision."
+            }
+          ]
+        },
+        {
+          "id": "u7",
+          "title": "Visual Hierarchy",
+          "short_description": "Guide the user's eye.",
+          "content": "Visual hierarchy uses size, color, and weight to show importance. It helps users scan a page quickly and find the information they need.",
+          "complexity": "Beginner",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u7_1",
+              "text": "How do you create visual hierarchy?",
+              "options": ["Make everything big", "Use one color", "Vary font weights and sizes", "Avoid images"],
+              "correct_answer_index": 2,
+              "explanation": "Contrast in size and weight tells the user what to read first."
+            }
+          ]
+        },
+        {
+          "id": "u8",
+          "title": "Fitts's Law",
+          "short_description": "The physics of touch.",
+          "content": "Fitts's Law states that the time to move to a target depends on the target's size and distance. In UI, place frequently used buttons close and make them large.",
+          "complexity": "Advanced",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u8_1",
+              "text": "According to Fitts's Law, what makes a target easier to hit?",
+              "options": ["Far distance", "Small size", "Larger size and closer distance", "Invisible borders"],
+              "correct_answer_index": 2,
+              "explanation": "Large, nearby buttons are fastest to interact with."
+            }
+          ]
+        },
+        {
+          "id": "u9",
+          "title": "Micro-interactions",
+          "short_description": "Feedback through motion.",
+          "content": "Micro-interactions are subtle animations that confirm a user's action. Example: A heart icon that pops when liked or a loading bar that moves.",
+          "complexity": "Intermediate",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u9_1",
+              "text": "What do micro-interactions provide?",
+              "options": ["Bugs", "Confusion", "Immediate feedback and delight", "Slower performance"],
+              "correct_answer_index": 2,
+              "explanation": "They make the app feel responsive and human-centric."
+            }
+          ]
+        },
+        {
+          "id": "u10",
+          "title": "Design Systems",
+          "short_description": "Design at scale.",
+          "content": "A design system is a collection of reusable components, guided by clear standards, that can be assembled together to build any number of applications.",
+          "complexity": "Advanced",
+          "category_id": "uiux",
+          "quizzes": [
+            {
+              "id": "q_u10_1",
+              "text": "What is the main benefit of a design system?",
+              "options": ["More CSS", "Faster design and dev alignment", "Random UI colors", "No need for designers"],
+              "correct_answer_index": 1,
+              "explanation": "It ensures consistency and speed across large products."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

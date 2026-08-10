@@ -2,7 +2,9 @@ package com.example.skillflow.presentation.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
+import com.example.skillflow.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -15,16 +17,27 @@ data class SettingsState(
     val name: String = "",
     val learningTime: Long = 0,
     val isLoading: Boolean = false,
-    val message: String? = null
+    val error: String? = null,
+    val isAccountDeleted: Boolean = false,
+    val isLoggedOut: Boolean = false
 )
+
+sealed class SettingsUiEvent {
+    data class ShowSnackbar(val message: String) : SettingsUiEvent()
+    object LogoutSuccess : SettingsUiEvent()
+}
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
     val state = _state.asStateFlow()
+
+    private val _eventFlow = MutableSharedFlow<SettingsUiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     init {
         loadSettings()
@@ -38,7 +51,7 @@ class SettingsViewModel @Inject constructor(
                 settingsRepository.getUserName(),
                 settingsRepository.getLearningTime()
             ) { lang, email, name, time ->
-                SettingsState(
+                _state.value.copy(
                     language = lang,
                     email = email ?: "",
                     name = name ?: "",
@@ -52,9 +65,7 @@ class SettingsViewModel @Inject constructor(
 
     fun setLanguage(lang: String) {
         viewModelScope.launch {
-            // Update local state immediately for smooth animation
             _state.update { it.copy(language = lang) }
-            // Delay the repository update which triggers activity recreation
             delay(400) 
             settingsRepository.setLanguage(lang)
         }
@@ -63,20 +74,47 @@ class SettingsViewModel @Inject constructor(
     fun updateEmail(newEmail: String) {
         viewModelScope.launch {
             settingsRepository.setUserEmail(newEmail)
-            _state.update { it.copy(message = "Email updated successfully") }
+            _eventFlow.emit(SettingsUiEvent.ShowSnackbar("Email updated locally"))
         }
     }
 
     fun updateName(newName: String) {
         viewModelScope.launch {
             settingsRepository.setUserName(newName)
-            _state.update { it.copy(message = "Name updated successfully") }
+            _eventFlow.emit(SettingsUiEvent.ShowSnackbar("Name updated locally"))
         }
     }
 
     fun logout() {
         viewModelScope.launch {
-            settingsRepository.clearSession()
+            authRepository.logout().collect { result ->
+                if (result is Resource.Success) {
+                    settingsRepository.clearSession()
+                    _state.update { it.copy(isLoggedOut = true) }
+                    _eventFlow.emit(SettingsUiEvent.LogoutSuccess)
+                }
+            }
+        }
+    }
+
+    fun deleteAccount() {
+        viewModelScope.launch {
+            authRepository.deleteAccount().collect { result ->
+                when (result) {
+                    is Resource.Success -> {
+                        settingsRepository.clearSession()
+                        _state.update { it.copy(isLoading = false, isAccountDeleted = true) }
+                        _eventFlow.emit(SettingsUiEvent.LogoutSuccess)
+                    }
+                    is Resource.Error -> {
+                        _state.update { it.copy(isLoading = false, error = result.message) }
+                        _eventFlow.emit(SettingsUiEvent.ShowSnackbar(result.message ?: "Deletion failed"))
+                    }
+                    is Resource.Loading -> {
+                        _state.update { it.copy(isLoading = true, error = null) }
+                    }
+                }
+            }
         }
     }
 }
