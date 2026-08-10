@@ -46,16 +46,17 @@ class DataSeedWorker @AssistedInject constructor(
                         id = pathDto.id,
                         name = pathDto.title,
                         description = pathDto.description,
-                        iconUrl = pathDto.iconUrl
+                        iconUrl = pathDto.iconUrl,
+                        isUnlocked = pathDto.id == "android" // Default unlock android
                     )
                 ))
 
                 // Insert Nuggets
-                val nuggetEntities = pathDto.nuggets.map {
-                    val domainQuizzes = it.quizzes.map { q ->
+                val nuggetEntities = pathDto.nuggets.mapIndexed { index, nuggetDto ->
+                    val domainQuizzes = nuggetDto.quizzes.map { q ->
                         QuizQuestion(
                             id = q.id,
-                            nuggetId = it.id,
+                            nuggetId = nuggetDto.id,
                             text = q.text,
                             options = q.options,
                             correctAnswerIndex = q.correctAnswerIndex,
@@ -64,15 +65,18 @@ class DataSeedWorker @AssistedInject constructor(
                     }
                     
                     NuggetEntity(
-                        id = it.id,
-                        title = it.title,
-                        shortDescription = it.shortDescription,
-                        content = it.content,
-                        complexity = it.complexity,
-                        imageUrl = it.imageUrl,
-                        careerPathId = it.categoryId,
+                        id = nuggetDto.id,
+                        title = nuggetDto.title,
+                        shortDescription = nuggetDto.shortDescription,
+                        content = nuggetDto.content,
+                        complexity = nuggetDto.complexity,
+                        imageUrl = nuggetDto.imageUrl,
+                        careerPathId = nuggetDto.categoryId,
                         isDone = false,
                         isSaved = false,
+                        isMastered = false,
+                        completionDate = null,
+                        priority = index,
                         date = today,
                         quizzesJson = Json.encodeToString(domainQuizzes)
                     )

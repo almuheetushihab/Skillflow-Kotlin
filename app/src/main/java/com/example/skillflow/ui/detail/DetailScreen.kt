@@ -175,15 +175,18 @@ fun DetailContentPreview() {
         DetailContent(
             state = DetailState(
                 nugget = KnowledgeNugget(
-                    id = "1", 
-                    title = "Kotlin Coroutines", 
+                    id = "1",
+                    title = "Kotlin Coroutines",
                     shortDescription = "Learn async",
-                    content = "Full content of coroutines", 
+                    content = "Full content of coroutines",
                     complexity = "Intermediate",
-                    imageUrl = null, 
-                    careerPathId = "android", 
-                    isDone = false, 
-                    isSaved = false, 
+                    imageUrl = null,
+                    careerPathId = "android",
+                    isDone = false,
+                    isSaved = false,
+                    isMastered = false,
+                    completionDate = null,
+                    priority = 0,
                     date = "2026-08-02",
                     quizzes = emptyList()
                 )

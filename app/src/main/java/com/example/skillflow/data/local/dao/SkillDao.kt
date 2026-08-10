@@ -3,11 +3,12 @@ package com.example.skillflow.data.local.dao
 import androidx.room.*
 import com.example.skillflow.data.local.entity.CareerPathEntity
 import com.example.skillflow.data.local.entity.NuggetEntity
+import com.example.skillflow.data.local.entity.UserNoteEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SkillDao {
-    @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND date = :date")
+    @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND date = :date ORDER BY priority DESC")
     fun getDailyNuggets(careerPathId: String, date: String): Flow<List<NuggetEntity>>
 
     @Query("SELECT COUNT(*) FROM nuggets WHERE careerPathId = :careerPathId AND date = :date AND isDone = 1")
@@ -37,9 +38,25 @@ interface SkillDao {
     @Query("UPDATE nuggets SET isDone = 1 WHERE id = :nuggetId")
     suspend fun markNuggetAsDone(nuggetId: String)
 
-    @Query("SELECT * FROM career_paths")
+    @Query("UPDATE nuggets SET isMastered = :isMastered, completionDate = :completionDate WHERE id = :nuggetId")
+    suspend fun updateMasteryStatus(nuggetId: String, isMastered: Boolean, completionDate: Long?)
+
+    @Query("SELECT * FROM career_paths ORDER BY isUnlocked DESC, name ASC")
     fun getCareerPaths(): Flow<List<CareerPathEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCareerPaths(paths: List<CareerPathEntity>)
+
+    @Query("UPDATE career_paths SET isUnlocked = :isUnlocked WHERE id = :pathId")
+    suspend fun updatePathUnlockStatus(pathId: String, isUnlocked: Boolean)
+
+    // User Notes
+    @Query("SELECT * FROM user_notes WHERE nuggetId = :nuggetId ORDER BY timestamp DESC")
+    fun getNotesForNugget(nuggetId: String): Flow<List<UserNoteEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertNote(note: UserNoteEntity)
+
+    @Delete
+    suspend fun deleteNote(note: UserNoteEntity)
 }

@@ -18,8 +18,11 @@ data class NuggetEntity(
     val careerPathId: String,
     val isDone: Boolean,
     val isSaved: Boolean,
+    val isMastered: Boolean,
+    val completionDate: Long?,
+    val priority: Int,
     val date: String,
-    val quizzesJson: String // Store quizzes as JSON string for simplicity in Room
+    val quizzesJson: String
 )
 
 fun NuggetEntity.toDomain(): KnowledgeNugget {
@@ -38,6 +41,9 @@ fun NuggetEntity.toDomain(): KnowledgeNugget {
         careerPathId = careerPathId,
         isDone = isDone,
         isSaved = isSaved,
+        isMastered = isMastered,
+        completionDate = completionDate,
+        priority = priority,
         date = date,
         quizzes = quizzes
     )
@@ -54,6 +60,9 @@ fun KnowledgeNugget.toEntity(): NuggetEntity {
         careerPathId = careerPathId,
         isDone = isDone,
         isSaved = isSaved,
+        isMastered = isMastered,
+        completionDate = completionDate,
+        priority = priority,
         date = date,
         quizzesJson = Json.encodeToString(quizzes)
     )

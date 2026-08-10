@@ -38,12 +38,12 @@ class SkillRepositoryImpl @Inject constructor(
             list
         } catch (e: Exception) {
             listOf(
-                CareerPath("android", "Android Developer", "Master modern mobile app development with Kotlin and Jetpack Compose.", ""),
-                CareerPath("ios", "iOS Developer", "Build premium mobile experiences using Swift and SwiftUI.", ""),
-                CareerPath("backend", "Backend Engineer", "Design and build scalable server-side systems and APIs.", ""),
-                CareerPath("frontend", "Frontend Developer", "Create engaging web interfaces using React, Vue, or Angular.", ""),
-                CareerPath("uiux", "UI/UX Designer", "Craft beautiful, intuitive, and accessible user experiences.", ""),
-                CareerPath("data", "Data Scientist", "Extract actionable insights from complex data sets using AI and ML.", "")
+                CareerPath("android", "Android Developer", "Master modern mobile app development with Kotlin and Jetpack Compose.", "", true),
+                CareerPath("ios", "iOS Developer", "Build premium mobile experiences using Swift and SwiftUI.", "", false),
+                CareerPath("backend", "Backend Engineer", "Design and build scalable server-side systems and APIs.", "", false),
+                CareerPath("frontend", "Frontend Developer", "Create engaging web interfaces using React, Vue, or Angular.", "", false),
+                CareerPath("uiux", "UI/UX Designer", "Craft beautiful, intuitive, and accessible user experiences.", "", false),
+                CareerPath("data", "Data Scientist", "Extract actionable insights from complex data sets using AI and ML.", "", false)
             )
         }
     }
@@ -56,15 +56,34 @@ class SkillRepositoryImpl @Inject constructor(
             list
         } catch (e: Exception) {
             listOf(
-                KnowledgeNugget("a1", "Kotlin Fundamentals", "Short desc", "Content", "Beginner", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a2", "Jetpack Compose Basics", "Short desc", "Content", "Beginner", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a3", "Clean Architecture", "Short desc", "Content", "Advanced", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a4", "Hilt Dependency Injection", "Short desc", "Content", "Intermediate", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a5", "Coroutines & Flow", "Short desc", "Content", "Intermediate", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("i1", "Swift Fundamentals", "Short desc", "Content", "Beginner", null, "ios", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("b1", "RESTful API Design", "Short desc", "Content", "Intermediate", null, "backend", false, false, "2026-08-03", emptyList())
+                createNugget("a1", "Kotlin Fundamentals", "android", "Beginner"),
+                createNugget("a2", "Jetpack Compose Basics", "android", "Beginner"),
+                createNugget("a3", "Clean Architecture", "android", "Advanced"),
+                createNugget("a4", "Hilt Dependency Injection", "android", "Intermediate"),
+                createNugget("a5", "Coroutines & Flow", "android", "Intermediate"),
+                createNugget("i1", "Swift Fundamentals", "ios", "Beginner"),
+                createNugget("b1", "RESTful API Design", "backend", "Intermediate")
             )
         }
+    }
+
+    private fun createNugget(id: String, title: String, pathId: String, complexity: String): KnowledgeNugget {
+        return KnowledgeNugget(
+            id = id,
+            title = title,
+            shortDescription = "Learn about $title",
+            content = "Detailed content for $title would go here in a production app.",
+            complexity = complexity,
+            imageUrl = null,
+            careerPathId = pathId,
+            isDone = false,
+            isSaved = false,
+            isMastered = false,
+            completionDate = null,
+            priority = 0,
+            date = "2026-08-03",
+            quizzes = emptyList()
+        )
     }
 
     private val allQuizQuestions by lazy {
@@ -169,12 +188,9 @@ class SkillRepositoryImpl @Inject constructor(
 
     override fun getQuizQuestions(careerPathId: String): Flow<List<QuizQuestion>> = flow {
         val path = if (careerPathId.isEmpty()) "android" else careerPathId
-        // In the new structure, quizzes are inside nuggets. 
-        // For simplicity, we can fetch all nuggets of this path and flatten their quizzes.
         dao.getDailyNuggets(path, dateFormatter.format(Date())).collect { nuggets ->
             val quizzes = nuggets.flatMap { it.toDomain().quizzes }
             if (quizzes.isEmpty()) {
-                // Fallback to all quiz questions if no daily nuggets have quizzes
                 emit(allQuizQuestions)
             } else {
                 emit(quizzes)

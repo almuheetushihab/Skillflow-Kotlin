@@ -7,5 +7,6 @@ data class CareerPath(
     val id: String,
     val name: String,
     val description: String,
-    val iconUrl: String
+    val iconUrl: String,
+    val isUnlocked: Boolean = false
 )
