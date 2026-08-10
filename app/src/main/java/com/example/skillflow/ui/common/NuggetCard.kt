@@ -120,7 +120,19 @@ fun NuggetCard(
 fun NuggetCardPreview() {
     SkillflowTheme {
         NuggetCard(
-            nugget = KnowledgeNugget("1", "Kotlin Coroutines", "Content", null, "android", false, true, "2026-08-02"),
+            nugget = KnowledgeNugget(
+                id = "1", 
+                title = "Kotlin Coroutines", 
+                shortDescription = "Learn async", 
+                content = "Content", 
+                complexity = "Intermediate", 
+                imageUrl = null, 
+                careerPathId = "android", 
+                isDone = false, 
+                isSaved = true, 
+                date = "2026-08-02", 
+                quizzes = emptyList()
+            ),
             onClick = {}
         )
     }

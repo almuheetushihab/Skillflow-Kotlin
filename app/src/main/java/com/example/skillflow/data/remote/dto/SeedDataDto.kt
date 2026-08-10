@@ -17,27 +17,27 @@ data class CareerPathSeedDto(
     @SerialName("icon_url")
     val iconUrl: String,
     @SerialName("knowledge_nuggets")
-    val nuggets: List<NuggetSeedDto>,
-    @SerialName("quiz_questions")
-    val quizzes: List<QuizSeedDto>
+    val nuggets: List<NuggetSeedDto>
 )
 
 @Serializable
 data class NuggetSeedDto(
     val id: String,
     val title: String,
+    @SerialName("short_description")
+    val shortDescription: String,
     val content: String,
+    val complexity: String,
     @SerialName("category_id")
     val categoryId: String,
     @SerialName("image_url")
-    val imageUrl: String? = null
+    val imageUrl: String? = null,
+    val quizzes: List<QuizSeedDto>
 )
 
 @Serializable
 data class QuizSeedDto(
     val id: String,
-    @SerialName("category_id")
-    val categoryId: String,
     val text: String,
     val options: List<String>,
     @SerialName("correct_answer_index")

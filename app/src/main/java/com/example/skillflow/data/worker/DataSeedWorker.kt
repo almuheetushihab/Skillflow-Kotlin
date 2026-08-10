@@ -9,8 +9,11 @@ import com.example.skillflow.data.local.entity.CareerPathEntity
 import com.example.skillflow.data.local.entity.NuggetEntity
 import com.example.skillflow.data.remote.dto.SeedDataDto
 import com.example.skillflow.data.util.JsonAssetManager
+import com.example.skillflow.domain.model.QuizQuestion
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -41,7 +44,7 @@ class DataSeedWorker @AssistedInject constructor(
                 skillDao.insertCareerPaths(listOf(
                     CareerPathEntity(
                         id = pathDto.id,
-                        name = pathDto.title, // Changed title to name
+                        name = pathDto.title,
                         description = pathDto.description,
                         iconUrl = pathDto.iconUrl
                     )
@@ -49,15 +52,29 @@ class DataSeedWorker @AssistedInject constructor(
 
                 // Insert Nuggets
                 val nuggetEntities = pathDto.nuggets.map {
+                    val domainQuizzes = it.quizzes.map { q ->
+                        QuizQuestion(
+                            id = q.id,
+                            nuggetId = it.id,
+                            text = q.text,
+                            options = q.options,
+                            correctAnswerIndex = q.correctAnswerIndex,
+                            explanation = q.explanation
+                        )
+                    }
+                    
                     NuggetEntity(
                         id = it.id,
                         title = it.title,
+                        shortDescription = it.shortDescription,
                         content = it.content,
+                        complexity = it.complexity,
                         imageUrl = it.imageUrl,
-                        careerPathId = it.categoryId, // Changed categoryId to careerPathId
+                        careerPathId = it.categoryId,
                         isDone = false,
                         isSaved = false,
-                        date = today // Changed createdAt to date
+                        date = today,
+                        quizzesJson = Json.encodeToString(domainQuizzes)
                     )
                 }
                 skillDao.insertNuggets(nuggetEntities)
