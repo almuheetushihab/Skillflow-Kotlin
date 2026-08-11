@@ -8,6 +8,7 @@ import com.example.skillflow.domain.model.UserNote
 data class UserNoteEntity(
     @PrimaryKey val id: String,
     val nuggetId: String,
+    val title: String,
     val noteContent: String,
     val timestamp: Long
 )
@@ -16,6 +17,7 @@ fun UserNoteEntity.toDomain(): UserNote {
     return UserNote(
         id = id,
         nuggetId = nuggetId,
+        title = title,
         noteContent = noteContent,
         timestamp = timestamp
     )
@@ -25,6 +27,7 @@ fun UserNote.toEntity(): UserNoteEntity {
     return UserNoteEntity(
         id = id,
         nuggetId = nuggetId,
+        title = title,
         noteContent = noteContent,
         timestamp = timestamp
     )

@@ -8,14 +8,17 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SkillDao {
-    @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND date = :date ORDER BY priority DESC")
-    fun getDailyNuggets(careerPathId: String, date: String): Flow<List<NuggetEntity>>
+    @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId ORDER BY priority ASC")
+    fun getAllNuggetsByPath(careerPathId: String): Flow<List<NuggetEntity>>
 
-    @Query("SELECT COUNT(*) FROM nuggets WHERE careerPathId = :careerPathId AND date = :date AND isDone = 1")
-    fun getCompletedNuggetsCount(careerPathId: String, date: String): Flow<Int>
+    @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND date = :date")
+    fun getNuggetsByDate(careerPathId: String, date: String): Flow<List<NuggetEntity>>
 
-    @Query("SELECT COUNT(*) FROM nuggets WHERE careerPathId = :careerPathId AND date = :date")
-    fun getTotalNuggetsCount(careerPathId: String, date: String): Flow<Int>
+    @Query("SELECT COUNT(*) FROM nuggets WHERE careerPathId = :careerPathId AND isDone = 1")
+    fun getCompletedNuggetsCount(careerPathId: String): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM nuggets WHERE careerPathId = :careerPathId")
+    fun getTotalNuggetsCount(careerPathId: String): Flow<Int>
 
     @Query("SELECT * FROM nuggets WHERE careerPathId = :careerPathId AND isDone = 1 ORDER BY date DESC LIMIT 10")
     fun getRecentlyCompletedNuggets(careerPathId: String): Flow<List<NuggetEntity>>
@@ -46,9 +49,6 @@ interface SkillDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCareerPaths(paths: List<CareerPathEntity>)
-
-    @Query("UPDATE career_paths SET isUnlocked = :isUnlocked WHERE id = :pathId")
-    suspend fun updatePathUnlockStatus(pathId: String, isUnlocked: Boolean)
 
     // User Notes
     @Query("SELECT * FROM user_notes WHERE nuggetId = :nuggetId ORDER BY timestamp DESC")

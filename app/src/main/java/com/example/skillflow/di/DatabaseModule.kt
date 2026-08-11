@@ -23,7 +23,8 @@ object DatabaseModule {
             context,
             SkillDatabase::class.java,
             DATABASE_NAME
-        ).build()
+        ).fallbackToDestructiveMigration() // Critical for dev builds to avoid crashes after schema changes
+        .build()
     }
 
     @Provides

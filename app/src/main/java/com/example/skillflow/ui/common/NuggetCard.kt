@@ -9,11 +9,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,9 +26,6 @@ import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
-/**
- * A reusable card component to display a Knowledge Nugget summary.
- */
 @Composable
 fun NuggetCard(
     nugget: KnowledgeNugget,
@@ -40,11 +39,11 @@ fun NuggetCard(
         shape = RoundedCornerShape(20.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
+            containerColor = if (nugget.isMastered) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.1f) else MaterialTheme.colorScheme.surface,
         ),
         border = BorderStroke(
-            1.dp,
-            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+            if (nugget.isMastered) 2.dp else 1.dp,
+            if (nugget.isMastered) GradientStart.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
         )
     ) {
         Row(
@@ -58,24 +57,19 @@ fun NuggetCard(
                     .size(48.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(
-                        if (nugget.isDone) GradientStart.copy(alpha = 0.1f)
-                        else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                        when {
+                            nugget.isMastered -> GradientStart.copy(alpha = 0.2f)
+                            nugget.isDone -> GradientStart.copy(alpha = 0.1f)
+                            else -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.5f)
+                        }
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                if (nugget.isDone) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = null,
-                        tint = GradientStart
-                    )
-                } else {
-                    Text(
-                        text = nugget.title.take(1).uppercase(),
-                        style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
+                Icon(
+                    imageVector = if (nugget.isMastered) Icons.Default.Stars else if (nugget.isDone) Icons.Default.Check else Icons.Default.Check,
+                    contentDescription = null,
+                    tint = if (nugget.isMastered || nugget.isDone) GradientStart else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.3f)
+                )
             }
             
             Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
@@ -89,19 +83,18 @@ fun NuggetCard(
                         modifier = Modifier.weight(1f)
                     )
                     if (nugget.isSaved) {
-                        Icon(
-                            imageVector = Icons.Default.Bookmark,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = GradientStart
-                        )
+                        Icon(imageVector = Icons.Default.Bookmark, contentDescription = null, modifier = Modifier.size(16.dp), tint = GradientStart)
                     }
                 }
                 Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraSmall))
                 Text(
-                    text = if (nugget.isDone) stringResource(R.string.mastered) else stringResource(R.string.ready_to_explore),
+                    text = when {
+                        nugget.isMastered -> "Mastered ✨"
+                        nugget.isDone -> "Read & Understood"
+                        else -> "Not Started"
+                    },
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (nugget.isDone) GradientStart else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                    color = if (nugget.isMastered || nugget.isDone) GradientStart else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                 )
             }
             
@@ -112,31 +105,5 @@ fun NuggetCard(
                 tint = MaterialTheme.colorScheme.outline
             )
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun NuggetCardPreview() {
-    SkillflowTheme {
-        NuggetCard(
-            nugget = KnowledgeNugget(
-                id = "1",
-                title = "Kotlin Coroutines",
-                shortDescription = "Learn async",
-                content = "Content",
-                complexity = "Intermediate",
-                imageUrl = null,
-                careerPathId = "android",
-                isDone = false,
-                isSaved = true,
-                isMastered = false,
-                completionDate = null,
-                priority = 0,
-                date = "2026-08-02",
-                quizzes = emptyList()
-            ),
-            onClick = {}
-        )
     }
 }

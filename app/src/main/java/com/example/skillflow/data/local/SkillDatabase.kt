@@ -9,7 +9,7 @@ import com.example.skillflow.data.local.entity.UserNoteEntity
 
 @Database(
     entities = [NuggetEntity::class, CareerPathEntity::class, UserNoteEntity::class],
-    version = 2, // Bumped version for schema changes
+    version = 3, // Bumped to 3 for UserNote title field addition
     exportSchema = false
 )
 abstract class SkillDatabase : RoomDatabase() {

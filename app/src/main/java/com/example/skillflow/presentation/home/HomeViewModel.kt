@@ -15,13 +15,16 @@ import javax.inject.Inject
 
 data class HomeState(
     val dailyNuggets: List<KnowledgeNugget> = emptyList(),
-    val searchResults: List<KnowledgeNugget> = emptyList(),
-    val searchQuery: String = "",
-    val isSearching: Boolean = false,
     val streakCount: Int = 0,
     val isLoading: Boolean = false,
-    val error: String? = null,
-    val careerPathId: String? = null
+    val isSearching: Boolean = false,
+    val searchQuery: String = "",
+    val searchResults: List<KnowledgeNugget> = emptyList(),
+    val isPathFinished: Boolean = false,
+    val totalLearned: Int = 0,
+    val totalCount: Int = 0,
+    val selectedDate: String? = null,
+    val isRefreshing: Boolean = false
 )
 
 @HiltViewModel
@@ -33,67 +36,78 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
 
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
     init {
-        loadData()
+        loadHomeData()
     }
 
-    private fun loadData() {
-        viewModelScope.launch {
-            settingsRepository.getSelectedCareerPath().collect { id ->
-                if (id != null) {
-                    _state.update { it.copy(careerPathId = id) }
-                    loadNuggets(id)
-                }
-            }
-        }
-        viewModelScope.launch {
-            settingsRepository.getStreakCount().collect { streak ->
-                _state.update { it.copy(streakCount = streak) }
-            }
-        }
-    }
-
-    private fun loadNuggets(careerPathId: String) {
+    fun loadHomeData() {
         _state.update { it.copy(isLoading = true) }
+        
+        settingsRepository.getStreakCount()
+            .onEach { count -> _state.update { it.copy(streakCount = count) } }
+            .launchIn(viewModelScope)
+
         viewModelScope.launch {
-            skillRepository.getDailyNuggets(careerPathId)
-                .catch { e ->
-                    _state.update { it.copy(isLoading = false, error = e.message) }
+            settingsRepository.getSelectedCareerPath().filterNotNull().collectLatest { pathId ->
+                // Observe progress to check for empty DB
+                skillRepository.getDailyProgress(pathId, "").collect { progress ->
+                    _state.update { 
+                        it.copy(
+                            totalLearned = progress.first,
+                            totalCount = progress.second,
+                            isPathFinished = progress.second > 0 && progress.first == progress.second
+                        ) 
+                    }
+                    
+                    // If DB is empty, trigger a seed
+                    if (progress.second == 0 && !_state.value.isRefreshing) {
+                        skillRepository.seedDatabase()
+                    }
                 }
-                .collect { nuggets ->
-                    _state.update { it.copy(isLoading = false, dailyNuggets = nuggets) }
-                    checkAndUpdateStreak()
+            }
+        }
+
+        viewModelScope.launch {
+            combine(
+                settingsRepository.getSelectedCareerPath().filterNotNull(),
+                _state.map { it.selectedDate }.distinctUntilChanged()
+            ) { pathId, date ->
+                pathId to date
+            }.collectLatest { (pathId, date) ->
+                val nuggetsFlow = if (date == null) {
+                    skillRepository.getDailyNuggets(pathId).map { list ->
+                        list.sortedBy { it.priority }
+                    }
+                } else {
+                    skillRepository.getNuggetsByDate(pathId, date)
                 }
+
+                nuggetsFlow.collect { nuggets ->
+                    _state.update { it.copy(dailyNuggets = nuggets, isLoading = false, isRefreshing = false) }
+                }
+            }
+        }
+    }
+
+    fun onDateSelected(date: String?) {
+        _state.update { it.copy(selectedDate = date) }
+    }
+
+    fun refresh() {
+        _state.update { it.copy(isRefreshing = true, selectedDate = null) }
+        viewModelScope.launch {
+            skillRepository.seedDatabase()
+            loadHomeData()
         }
     }
 
     fun onSearchQueryChange(query: String) {
         _state.update { it.copy(searchQuery = query, isSearching = query.isNotEmpty()) }
-        if (query.isEmpty()) {
-            _state.update { it.copy(searchResults = emptyList()) }
-            return
-        }
-        
-        viewModelScope.launch {
-            skillRepository.searchNuggets(query)
-                .collect { results ->
+        if (query.isNotEmpty()) {
+            viewModelScope.launch {
+                skillRepository.searchNuggets(query).collect { results ->
                     _state.update { it.copy(searchResults = results) }
                 }
-        }
-    }
-
-    private fun checkAndUpdateStreak() {
-        val today = dateFormatter.format(Date())
-        viewModelScope.launch {
-            val lastActivityDate = settingsRepository.getLastActivityDate().first()
-            if (lastActivityDate != today) {
-                val currentStreak = settingsRepository.getStreakCount().first()
-                // Simple logic: if last activity was yesterday, increment. If older, reset.
-                // For now, just increment if it's a new day activity
-                settingsRepository.updateStreak(currentStreak + 1)
-                settingsRepository.updateLastActivityDate(today)
             }
         }
     }

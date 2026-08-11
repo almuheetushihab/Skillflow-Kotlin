@@ -5,7 +5,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,13 +26,15 @@ import com.example.skillflow.presentation.home.HomeState
 import com.example.skillflow.presentation.home.HomeViewModel
 import com.example.skillflow.ui.common.AnimatedEntrance
 import com.example.skillflow.ui.common.NuggetCard
-import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.home.components.DailyProgressCard
 import com.example.skillflow.ui.home.components.NuggetCardSkeleton
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.SunsetEnd
 import com.example.skillflow.ui.theme.spacing
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun HomeScreen(
@@ -44,6 +48,8 @@ fun HomeScreen(
         state = state,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onNavigateToDetail = onNavigateToDetail,
+        onDateSelected = viewModel::onDateSelected,
+        onRefresh = viewModel::refresh,
         modifier = modifier
     )
 }
@@ -54,22 +60,59 @@ fun HomeContent(
     state: HomeState,
     onSearchQueryChange: (String) -> Unit,
     onNavigateToDetail: (String) -> Unit,
+    onDateSelected: (String?) -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    var showDatePicker by remember { mutableStateOf(false) }
+
+    if (showDatePicker) {
+        val datePickerState = rememberDatePickerState()
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let {
+                        val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(it)
+                        onDateSelected(date)
+                    }
+                    showDatePicker = false
+                }) { Text("OK") }
+            },
+            dismissButton = {
+                TextButton(onClick = { 
+                    onDateSelected(null)
+                    showDatePicker = false 
+                }) { Text("Clear Filter") }
+            }
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
 
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             LargeTopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        fontWeight = FontWeight.Black,
-                        style = MaterialTheme.typography.displaySmall
-                    )
+                    Column {
+                        Text(
+                            text = stringResource(R.string.app_name),
+                            fontWeight = FontWeight.Black,
+                            style = MaterialTheme.typography.displaySmall
+                        )
+                        Text(
+                            text = if (state.selectedDate == null) "All Learning Material" else "History for ${state.selectedDate}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 },
                 actions = {
+                    IconButton(onClick = { showDatePicker = true }) {
+                        Icon(Icons.Default.CalendarMonth, contentDescription = "Select Date")
+                    }
                     Surface(
                         shape = RoundedCornerShape(20.dp),
                         color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.15f),
@@ -79,186 +122,94 @@ fun HomeContent(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.LocalFireDepartment,
-                                contentDescription = stringResource(R.string.streak),
-                                tint = SunsetEnd,
-                                modifier = Modifier.size(20.dp)
-                            )
+                            Icon(Icons.Default.LocalFireDepartment, contentDescription = null, tint = SunsetEnd, modifier = Modifier.size(20.dp))
                             Spacer(modifier = Modifier.width(6.dp))
-                            Text(
-                                text = "${state.streakCount}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = SunsetEnd
-                            )
+                            Text(text = "${state.streakCount}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = SunsetEnd)
                         }
                     }
                 },
-                scrollBehavior = scrollBehavior,
-                windowInsets = WindowInsets(0),
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
-                )
+                scrollBehavior = scrollBehavior
             )
         }
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(horizontal = MaterialTheme.spacing.large)
-        ) {
-            // Refined Search Bar
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                modifier = Modifier.fillMaxWidth()
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = MaterialTheme.spacing.large)
             ) {
-                TextField(
-                    value = state.searchQuery,
-                    onValueChange = onSearchQueryChange,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = { 
-                        Text(
-                            text = stringResource(R.string.search_hint),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
-                        ) 
-                    },
-                    leadingIcon = { 
-                        Icon(
-                            Icons.Default.Search, 
-                            contentDescription = null,
-                            tint = GradientStart
-                        ) 
-                    },
-                    singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
-
-            if (state.isSearching) {
-                Text(
-                    text = stringResource(R.string.search_results),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.ExtraBold
-                )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-                    modifier = Modifier.fillMaxSize()
+                // Search Bar
+                Surface(
+                    shape = RoundedCornerShape(28.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    itemsIndexed(state.searchResults) { index, nugget ->
-                        AnimatedEntrance(index = index) {
-                            NuggetCard(
-                                nugget = nugget,
-                                onClick = { onNavigateToDetail(nugget.id) }
-                            )
-                        }
-                    }
+                    TextField(
+                        value = state.searchQuery,
+                        onValueChange = onSearchQueryChange,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text(text = stringResource(R.string.search_hint)) },
+                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = GradientStart) },
+                        singleLine = true,
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = Color.Transparent,
+                            unfocusedContainerColor = Color.Transparent,
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent
+                        )
+                    )
                 }
-            } else {
-                val completedCount = state.dailyNuggets.count { it.isDone }
-                val totalCount = state.dailyNuggets.size
 
-                DailyProgressCard(
-                    completedCount = completedCount,
-                    totalCount = totalCount
-                )
+                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
-
-                Text(
-                    text = stringResource(R.string.todays_nuggets),
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.ExtraBold
-                )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-                if (state.isLoading) {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-                        modifier = Modifier.fillMaxSize()
-                    ) {
-                        items(5) {
-                            NuggetCardSkeleton()
+                if (state.isSearching) {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)) {
+                        itemsIndexed(state.searchResults) { _, nugget ->
+                            NuggetCard(nugget = nugget, onClick = { onNavigateToDetail(nugget.id) })
                         }
                     }
                 } else {
-                    LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(bottom = 24.dp)
-                    ) {
-                        itemsIndexed(state.dailyNuggets) { index, nugget ->
-                            AnimatedEntrance(index = index) {
-                                NuggetCard(
-                                    nugget = nugget,
-                                    onClick = { onNavigateToDetail(nugget.id) }
-                                )
+                    DailyProgressCard(completedCount = state.totalLearned, totalCount = state.totalCount)
+
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = if (state.selectedDate != null) "Learned on this day" else "Your Learning Path",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.ExtraBold
+                        )
+                        IconButton(onClick = onRefresh) {
+                            Icon(Icons.Default.RestartAlt, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+
+                    if (state.isLoading) {
+                        repeat(3) { NuggetCardSkeleton() }
+                    } else if (state.dailyNuggets.isEmpty()) {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = if (state.selectedDate != null) "You didn't master any nuggets on this date." else "No nuggets found.",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    } else {
+                        LazyColumn(
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = PaddingValues(bottom = 24.dp)
+                        ) {
+                            itemsIndexed(state.dailyNuggets) { index, nugget ->
+                                AnimatedEntrance(index = index) {
+                                    NuggetCard(nugget = nugget, onClick = { onNavigateToDetail(nugget.id) })
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeContentPreview() {
-    SkillflowTheme {
-        HomeContent(
-            state = HomeState(
-                streakCount = 5,
-                dailyNuggets = listOf(
-                    KnowledgeNugget(
-                        id = "1",
-                        title = "Kotlin Coroutines",
-                        shortDescription = "Learn async",
-                        content = "Full content",
-                        complexity = "Intermediate",
-                        imageUrl = null,
-                        careerPathId = "android",
-                        isDone = false,
-                        isSaved = false,
-                        isMastered = false,
-                        completionDate = null,
-                        priority = 0,
-                        date = "2026-08-02",
-                        quizzes = emptyList()
-                    ),
-                    KnowledgeNugget(
-                        id = "2",
-                        title = "Compose Layouts",
-                        shortDescription = "Learn UI",
-                        content = "Full content",
-                        complexity = "Beginner",
-                        imageUrl = null,
-                        careerPathId = "android",
-                        isDone = true,
-                        isSaved = false,
-                        isMastered = false,
-                        completionDate = null,
-                        priority = 0,
-                        date = "2026-08-02",
-                        quizzes = emptyList()
-                    )
-                )
-            ),
-            onSearchQueryChange = {},
-            onNavigateToDetail = {}
-        )
     }
 }
