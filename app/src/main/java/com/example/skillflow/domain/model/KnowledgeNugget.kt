@@ -13,6 +13,9 @@ data class KnowledgeNugget(
     val careerPathId: String,
     val isDone: Boolean = false,
     val isSaved: Boolean = false,
+    val isMastered: Boolean = false,
+    val completionDate: Long? = null,
+    val priority: Int = 0,
     val date: String,
     val quizzes: List<QuizQuestion> = emptyList()
 )

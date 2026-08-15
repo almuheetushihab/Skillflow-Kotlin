@@ -2,20 +2,27 @@ package com.example.skillflow.data.repository
 
 import android.content.Context
 import com.example.skillflow.data.local.dao.SkillDao
+import com.example.skillflow.data.local.entity.CareerPathEntity
+import com.example.skillflow.data.local.entity.NuggetEntity
 import com.example.skillflow.data.local.entity.toDomain
 import com.example.skillflow.data.local.entity.toEntity
 import com.example.skillflow.data.remote.SkillApi
+import com.example.skillflow.data.remote.dto.SeedDataDto
 import com.example.skillflow.domain.model.CareerPath
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.domain.model.QuizQuestion
+import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.domain.repository.SkillRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import timber.log.Timber
 
 class SkillRepositoryImpl @Inject constructor(
     private val api: SkillApi,
@@ -23,99 +30,43 @@ class SkillRepositoryImpl @Inject constructor(
     @ApplicationContext private val context: Context
 ) : SkillRepository {
 
-    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-
     private val json = Json { 
         ignoreUnknownKeys = true
         coerceInputValues = true
     }
 
-    private val allCareerPaths by lazy {
+    private val assetCareerPaths by lazy {
         try {
             val content = context.assets.open("career_paths.json").bufferedReader().use { it.readText() }
-            val list = json.decodeFromString<List<CareerPath>>(content)
-            if (list.isEmpty()) throw Exception("Empty list")
-            list
+            json.decodeFromString<List<CareerPath>>(content)
         } catch (e: Exception) {
             listOf(
-                CareerPath("android", "Android Developer", "Master modern mobile app development with Kotlin and Jetpack Compose.", ""),
-                CareerPath("ios", "iOS Developer", "Build premium mobile experiences using Swift and SwiftUI.", ""),
-                CareerPath("backend", "Backend Engineer", "Design and build scalable server-side systems and APIs.", ""),
-                CareerPath("frontend", "Frontend Developer", "Create engaging web interfaces using React, Vue, or Angular.", ""),
-                CareerPath("uiux", "UI/UX Designer", "Craft beautiful, intuitive, and accessible user experiences.", ""),
-                CareerPath("data", "Data Scientist", "Extract actionable insights from complex data sets using AI and ML.", "")
+                CareerPath(id = "android", name = "Android Developer", description = "Master modern mobile app development.", iconUrl = "", isUnlocked = true)
             )
         }
     }
 
-    private val allNuggets by lazy {
-        try {
-            val content = context.assets.open("nuggets.json").bufferedReader().use { it.readText() }
-            val list = json.decodeFromString<List<KnowledgeNugget>>(content)
-            if (list.isEmpty()) throw Exception("Empty list")
-            list
-        } catch (e: Exception) {
-            listOf(
-                KnowledgeNugget("a1", "Kotlin Fundamentals", "Short desc", "Content", "Beginner", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a2", "Jetpack Compose Basics", "Short desc", "Content", "Beginner", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a3", "Clean Architecture", "Short desc", "Content", "Advanced", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a4", "Hilt Dependency Injection", "Short desc", "Content", "Intermediate", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("a5", "Coroutines & Flow", "Short desc", "Content", "Intermediate", null, "android", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("i1", "Swift Fundamentals", "Short desc", "Content", "Beginner", null, "ios", false, false, "2026-08-03", emptyList()),
-                KnowledgeNugget("b1", "RESTful API Design", "Short desc", "Content", "Intermediate", null, "backend", false, false, "2026-08-03", emptyList())
-            )
-        }
-    }
-
-    private val allQuizQuestions by lazy {
-        try {
-            val content = context.assets.open("quizzes.json").bufferedReader().use { it.readText() }
-            val list = json.decodeFromString<List<QuizQuestion>>(content)
-            if (list.isEmpty()) throw Exception("Empty quiz list")
-            list
-        } catch (e: Exception) {
-            listOf(
-                QuizQuestion("q1", "a1", "What is the primary language for Android?", listOf("Java", "Kotlin"), 1, "Kotlin is preferred."),
-                QuizQuestion("q2", "a1", "What manages UI data?", listOf("Activity", "ViewModel"), 1, "ViewModel survives rotation.")
-            )
-        }
-    }
-
-    override fun getDailyNuggets(careerPathId: String): Flow<List<KnowledgeNugget>> = flow {
-        val today = dateFormatter.format(Date())
+    override fun getDailyNuggets(careerPathId: String): Flow<List<KnowledgeNugget>> {
         val path = if (careerPathId.isEmpty()) "android" else careerPathId
-        
-        dao.getDailyNuggets(path, today).collect { localNuggets ->
-            if (localNuggets.isNotEmpty()) {
-                emit(localNuggets.map { it.toDomain() })
-            } else {
-                val careerNuggets = allNuggets.filter { it.careerPathId == path }
-                // Take 3 random or first 3 for simplicity
-                val todayNuggets = careerNuggets.take(3).map { it.copy(date = today) }
-                if (todayNuggets.isNotEmpty()) {
-                    dao.insertNuggets(todayNuggets.map { it.toEntity() })
-                } else {
-                    emit(emptyList())
+        return dao.getAllNuggetsByPath(path).map { entities ->
+            entities.map { it.toDomain() }
+        }
+    }
+
+    override fun getNuggetsByDate(careerPathId: String, date: String): Flow<List<KnowledgeNugget>> {
+        val path = if (careerPathId.isEmpty()) "android" else careerPathId
+        return dao.getAllNuggetsByPath(path).map { entities ->
+            entities.map { it.toDomain() }.filter { nugget ->
+                val masteredDate = nugget.completionDate?.let {
+                    SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date(it))
                 }
+                masteredDate == date || nugget.date == date
             }
         }
     }
 
-    override fun searchNuggets(query: String): Flow<List<KnowledgeNugget>> = flow {
-        val filtered = allNuggets.filter { 
-            it.title.contains(query, ignoreCase = true) || it.content.contains(query, ignoreCase = true)
-        }
-        emit(filtered)
-    }
-
-    override fun getNuggetById(id: String): Flow<KnowledgeNugget?> = flow {
-        dao.getNuggetById(id).collect { entity ->
-            if (entity != null) {
-                emit(entity.toDomain())
-            } else {
-                emit(allNuggets.find { it.id == id })
-            }
-        }
+    override fun getNuggetById(id: String): Flow<KnowledgeNugget?> {
+        return dao.getNuggetById(id).map { it?.toDomain() }
     }
 
     override fun getSavedNuggets(): Flow<List<KnowledgeNugget>> {
@@ -123,38 +74,36 @@ class SkillRepositoryImpl @Inject constructor(
     }
 
     override suspend fun toggleSaveNugget(nuggetId: String) {
-        val existing = dao.getNuggetByIdSync(nuggetId)
-        if (existing == null) {
-            val assetNugget = allNuggets.find { it.id == nuggetId }
-            assetNugget?.let {
-                dao.insertNuggets(listOf(it.toEntity().copy(isSaved = true)))
-            }
-        } else {
-            dao.toggleSaveNugget(nuggetId)
-        }
+        dao.toggleSaveNugget(nuggetId)
     }
 
     override suspend fun markNuggetAsDone(nuggetId: String) {
-        val existing = dao.getNuggetByIdSync(nuggetId)
-        if (existing == null) {
-            val assetNugget = allNuggets.find { it.id == nuggetId }
-            assetNugget?.let {
-                dao.insertNuggets(listOf(it.toEntity().copy(isDone = true)))
-            }
-        } else {
-            dao.markNuggetAsDone(nuggetId)
+        dao.markNuggetAsDone(nuggetId)
+    }
+
+    override suspend fun updateMasteryStatus(nuggetId: String, isMastered: Boolean) {
+        val completionDate = if (isMastered) System.currentTimeMillis() else null
+        dao.updateMasteryStatus(nuggetId, isMastered, completionDate)
+        if (isMastered) dao.markNuggetAsDone(nuggetId)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override fun getCareerPaths(): Flow<List<CareerPath>> {
+        return dao.getCareerPaths().flatMapLatest { entities ->
+            if (entities.isEmpty()) flowOf(assetCareerPaths) 
+            else flowOf(entities.map { it.toDomain() })
         }
     }
 
-    override fun getCareerPaths(): Flow<List<CareerPath>> = flow {
-        emit(allCareerPaths)
+    override fun searchNuggets(query: String): Flow<List<KnowledgeNugget>> = flow {
+        emit(emptyList()) 
     }
 
     override fun getDailyProgress(careerPathId: String, date: String): Flow<Pair<Int, Int>> {
         val path = if (careerPathId.isEmpty()) "android" else careerPathId
         return combine(
-            dao.getCompletedNuggetsCount(path, date),
-            dao.getTotalNuggetsCount(path, date)
+            dao.getCompletedNuggetsCount(path),
+            dao.getTotalNuggetsCount(path)
         ) { completed, total ->
             completed to total
         }
@@ -167,18 +116,80 @@ class SkillRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getQuizQuestions(careerPathId: String): Flow<List<QuizQuestion>> = flow {
+    override fun getQuizQuestions(careerPathId: String): Flow<List<QuizQuestion>> {
         val path = if (careerPathId.isEmpty()) "android" else careerPathId
-        // In the new structure, quizzes are inside nuggets. 
-        // For simplicity, we can fetch all nuggets of this path and flatten their quizzes.
-        dao.getDailyNuggets(path, dateFormatter.format(Date())).collect { nuggets ->
-            val quizzes = nuggets.flatMap { it.toDomain().quizzes }
-            if (quizzes.isEmpty()) {
-                // Fallback to all quiz questions if no daily nuggets have quizzes
-                emit(allQuizQuestions)
-            } else {
-                emit(quizzes)
+        return dao.getAllNuggetsByPath(path).map { nuggets ->
+            nuggets.flatMap { it.toDomain().quizzes }
+        }
+    }
+
+    override fun getNotesForNugget(nuggetId: String): Flow<List<UserNote>> {
+        return dao.getNotesForNugget(nuggetId).map { list ->
+            list.map { it.toDomain() }
+        }
+    }
+
+    override suspend fun saveNote(note: UserNote) {
+        dao.insertNote(note.toEntity())
+    }
+
+    override suspend fun deleteNote(note: UserNote) {
+        dao.deleteNote(note.toEntity())
+    }
+
+    override suspend fun seedDatabase(): Boolean {
+        Timber.d("Manual seeding triggered...")
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        return try {
+            val content = context.assets.open("seed_data.json").bufferedReader().use { it.readText() }
+            val seedData = json.decodeFromString<SeedDataDto>(content)
+            
+            seedData.careerPaths.forEach { pathDto ->
+                dao.insertCareerPaths(listOf(
+                    CareerPathEntity(
+                        id = pathDto.id,
+                        name = pathDto.title,
+                        description = pathDto.description,
+                        iconUrl = pathDto.iconUrl,
+                        isUnlocked = pathDto.id == "android"
+                    )
+                ))
+
+                val entities = pathDto.nuggets.mapIndexed { index, nuggetDto ->
+                    val domainQuizzes = nuggetDto.quizzes.map { q ->
+                        QuizQuestion(
+                            id = q.id,
+                            nuggetId = nuggetDto.id,
+                            text = q.text,
+                            options = q.options,
+                            correctAnswerIndex = q.correctAnswerIndex,
+                            explanation = q.explanation
+                        )
+                    }
+                    NuggetEntity(
+                        id = nuggetDto.id,
+                        title = nuggetDto.title,
+                        shortDescription = nuggetDto.shortDescription,
+                        content = nuggetDto.content,
+                        complexity = nuggetDto.complexity,
+                        imageUrl = nuggetDto.imageUrl,
+                        careerPathId = nuggetDto.categoryId,
+                        isDone = false,
+                        isSaved = false,
+                        isMastered = false,
+                        completionDate = null,
+                        priority = index,
+                        date = today,
+                        quizzesJson = json.encodeToString(domainQuizzes)
+                    )
+                }
+                dao.insertNuggets(entities)
             }
+            Timber.d("Seeding completed successfully")
+            true
+        } catch (e: Exception) {
+            Timber.e(e, "Seeding failed")
+            false
         }
     }
 }

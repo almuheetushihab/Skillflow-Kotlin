@@ -3,6 +3,7 @@ package com.example.skillflow
 import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.skillflow.data.worker.DataSeedWorker
@@ -10,10 +11,6 @@ import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * Custom Application class for SkillFlow.
- * Handles initialization of Timber, WorkManager, and initial data seeding.
- */
 @HiltAndroidApp
 class SkillFlowApp : Application(), Configuration.Provider {
 
@@ -23,12 +20,10 @@ class SkillFlowApp : Application(), Configuration.Provider {
     override fun onCreate() {
         super.onCreate()
         
-        // Initialize Timber for logging
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
         
-        // Trigger initial data seeding
         scheduleInitialSeeding()
     }
 
@@ -39,6 +34,10 @@ class SkillFlowApp : Application(), Configuration.Provider {
 
     private fun scheduleInitialSeeding() {
         val workRequest = OneTimeWorkRequestBuilder<DataSeedWorker>().build()
-        WorkManager.getInstance(this).enqueue(workRequest)
+        WorkManager.getInstance(this).enqueueUniqueWork(
+            "DataSeedWork",
+            ExistingWorkPolicy.REPLACE, // Force seeding on each app start for now to ensure data is there
+            workRequest
+        )
     }
 }

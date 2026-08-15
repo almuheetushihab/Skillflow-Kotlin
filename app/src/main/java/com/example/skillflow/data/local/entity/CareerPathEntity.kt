@@ -9,7 +9,8 @@ data class CareerPathEntity(
     @PrimaryKey val id: String,
     val name: String,
     val description: String,
-    val iconUrl: String
+    val iconUrl: String,
+    val isUnlocked: Boolean
 )
 
 fun CareerPathEntity.toDomain(): CareerPath {
@@ -17,7 +18,8 @@ fun CareerPathEntity.toDomain(): CareerPath {
         id = id,
         name = name,
         description = description,
-        iconUrl = iconUrl
+        iconUrl = iconUrl,
+        isUnlocked = isUnlocked
     )
 }
 
@@ -26,6 +28,7 @@ fun CareerPath.toEntity(): CareerPathEntity {
         id = id,
         name = name,
         description = description,
-        iconUrl = iconUrl
+        iconUrl = iconUrl,
+        isUnlocked = isUnlocked
     )
 }

@@ -100,7 +100,7 @@ fun BookmarksContentPreview() {
             state = BookmarksState(
                 savedNuggets = listOf(
                     KnowledgeNugget(
-                        id = "1", 
+                        id = "1",
                         title = "Kotlin Coroutines",
                         shortDescription = "Learn async programming",
                         content = "Full content of coroutines",
@@ -109,6 +109,9 @@ fun BookmarksContentPreview() {
                         careerPathId = "android",
                         isDone = false,
                         isSaved = true,
+                        isMastered = false,
+                        completionDate = null,
+                        priority = 0,
                         date = "2026-08-02",
                         quizzes = emptyList()
                     )
