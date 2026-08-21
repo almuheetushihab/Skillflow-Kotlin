@@ -15,10 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.skillflow.ui.theme.GradientEnd
-import com.example.skillflow.ui.theme.GradientStart
-import com.example.skillflow.ui.theme.SkillflowTheme
-import com.example.skillflow.ui.theme.spacing
+import com.example.skillflow.ui.theme.*
 
 /**
  * A standardized text field for authentication screens.
@@ -34,13 +31,14 @@ fun AuthTextField(
     trailingIcon: @Composable (() -> Unit)? = null,
     error: String? = null
 ) {
+    val spacing = MaterialTheme.spacing
     Column(modifier = modifier) {
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
             label = { Text(label) },
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
+            shape = RoundedCornerShape(spacing.medium),
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             trailingIcon = trailingIcon,
@@ -57,7 +55,7 @@ fun AuthTextField(
                 text = error,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = MaterialTheme.spacing.small, top = 4.dp)
+                modifier = Modifier.padding(start = spacing.small, top = spacing.extraSmall)
             )
         }
     }
@@ -74,6 +72,7 @@ fun AuthButton(
     isLoading: Boolean = false,
     enabled: Boolean = true
 ) {
+    val spacing = MaterialTheme.spacing
     Button(
         onClick = onClick,
         modifier = modifier
@@ -93,7 +92,11 @@ fun AuthButton(
         enabled = enabled && !isLoading
     ) {
         if (isLoading) {
-            CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
+            CircularProgressIndicator(
+                color = Color.White, 
+                modifier = Modifier.size(spacing.large),
+                strokeWidth = 2.dp
+            )
         } else {
             Text(
                 text = text,

@@ -13,8 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.skillflow.BuildConfig
 import com.example.skillflow.R
 import com.example.skillflow.presentation.profile.SettingsState
 import com.example.skillflow.presentation.profile.SettingsUiEvent
@@ -24,6 +26,7 @@ import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.profile.components.LanguageToggleButton
 import com.example.skillflow.ui.profile.components.SettingsItem
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 import kotlinx.coroutines.flow.collectLatest
 
@@ -52,6 +55,39 @@ fun SettingsScreen(
         }
     }
 
+    SettingsContent(
+        state = state,
+        snackbarHostState = snackbarHostState,
+        showDeleteDialog = showDeleteDialog,
+        onNavigateBack = onNavigateBack,
+        onUpdateName = viewModel::updateName,
+        onUpdateEmail = viewModel::updateEmail,
+        onSetLanguage = viewModel::setLanguage,
+        onNavigateToPrivacy = onNavigateToPrivacy,
+        onLogout = viewModel::logout,
+        onDeleteAccount = viewModel::deleteAccount,
+        onShowDeleteDialogChange = { showDeleteDialog = it },
+        modifier = modifier
+    )
+}
+
+@Composable
+fun SettingsContent(
+    state: SettingsState,
+    snackbarHostState: SnackbarHostState,
+    showDeleteDialog: Boolean,
+    onNavigateBack: () -> Unit,
+    onUpdateName: (String) -> Unit,
+    onUpdateEmail: (String) -> Unit,
+    onSetLanguage: (String) -> Unit,
+    onNavigateToPrivacy: () -> Unit,
+    onLogout: () -> Unit,
+    onDeleteAccount: () -> Unit,
+    onShowDeleteDialogChange: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val spacing = MaterialTheme.spacing
+    
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -67,37 +103,37 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(MaterialTheme.spacing.large)
+                .padding(horizontal = spacing.large)
                 .verticalScroll(rememberScrollState())
         ) {
+            Spacer(modifier = Modifier.height(spacing.medium))
             Text(
                 text = stringResource(R.string.edit_profile),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
 
             AuthTextField(
                 value = state.name,
-                onValueChange = { viewModel.updateName(it) },
+                onValueChange = onUpdateName,
                 label = stringResource(R.string.full_name)
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
             AuthTextField(
                 value = state.email,
-                onValueChange = { viewModel.updateEmail(it) },
+                onValueChange = onUpdateEmail,
                 label = stringResource(R.string.email_address)
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
             
-            // Preferences Section
             Text(
                 text = stringResource(R.string.account_details),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
 
             SettingsItem(
                 title = stringResource(R.string.language_toggle, if (state.language == "bn") stringResource(R.string.bengali) else stringResource(R.string.english)),
@@ -107,7 +143,7 @@ fun SettingsScreen(
                         currentLanguage = state.language,
                         onToggle = { 
                             val nextLang = if (state.language == "bn") "en" else "bn"
-                            viewModel.setLanguage(nextLang)
+                            onSetLanguage(nextLang)
                         }
                     )
                 }
@@ -119,18 +155,17 @@ fun SettingsScreen(
                 onClick = onNavigateToPrivacy
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
             
-            // About Section
             Text(
                 text = stringResource(R.string.about_app),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
             
             Text(
-                text = stringResource(R.string.app_version, "1.0.0"),
+                text = stringResource(R.string.app_version, "1.0"), // Ideally from BuildConfig
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -147,20 +182,18 @@ fun SettingsScreen(
                 Text(text = stringResource(R.string.contact_support))
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
             
             AuthButton(
                 text = stringResource(R.string.logout),
-                onClick = {
-                    viewModel.logout()
-                },
+                onClick = onLogout,
                 isLoading = state.isLoading && !showDeleteDialog
             )
             
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
             
             TextButton(
-                onClick = { showDeleteDialog = true },
+                onClick = { onShowDeleteDialogChange(true) },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
             ) {
@@ -170,20 +203,20 @@ fun SettingsScreen(
                 )
             }
             
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
         }
     }
 
     if (showDeleteDialog) {
         AlertDialog(
-            onDismissRequest = { showDeleteDialog = false },
+            onDismissRequest = { onShowDeleteDialogChange(false) },
             title = { Text(text = stringResource(R.string.delete_account_title)) },
             text = { Text(text = stringResource(R.string.delete_account_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
-                        viewModel.deleteAccount()
-                        showDeleteDialog = false
+                        onDeleteAccount()
+                        onShowDeleteDialogChange(false)
                     },
                     colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
                 ) {
@@ -191,7 +224,7 @@ fun SettingsScreen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showDeleteDialog = false }) {
+                TextButton(onClick = { onShowDeleteDialogChange(false) }) {
                     Text(text = stringResource(R.string.cancel))
                 }
             }
@@ -202,5 +235,25 @@ fun SettingsScreen(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SettingsContentPreview() {
+    SkillflowTheme {
+        SettingsContent(
+            state = SettingsState(name = "User", email = "user@example.com"),
+            snackbarHostState = SnackbarHostState(),
+            showDeleteDialog = false,
+            onNavigateBack = {},
+            onUpdateName = {},
+            onUpdateEmail = {},
+            onSetLanguage = {},
+            onNavigateToPrivacy = {},
+            onLogout = {},
+            onDeleteAccount = {},
+            onShowDeleteDialogChange = {}
+        )
     }
 }

@@ -1,4 +1,4 @@
-package com.example.skillflow
+package com.example.skillflow.ui.home
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,12 +28,12 @@ import com.example.skillflow.ui.common.AnimatedEntrance
 import com.example.skillflow.ui.common.NuggetCard
 import com.example.skillflow.ui.home.components.DailyProgressCard
 import com.example.skillflow.ui.home.components.NuggetCardSkeleton
+import com.example.skillflow.ui.home.components.ProgressCardSkeleton
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.SunsetEnd
 import com.example.skillflow.ui.theme.spacing
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Locale
 
 @Composable
@@ -65,6 +65,7 @@ fun HomeContent(
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val spacing = MaterialTheme.spacing
     var showDatePicker by remember { mutableStateOf(false) }
 
     if (showDatePicker) {
@@ -78,13 +79,17 @@ fun HomeContent(
                         onDateSelected(date)
                     }
                     showDatePicker = false
-                }) { Text("OK") }
+                }) {
+                    Text(text = stringResource(id = android.R.string.ok))
+                }
             },
             dismissButton = {
                 TextButton(onClick = { 
                     onDateSelected(null)
                     showDatePicker = false 
-                }) { Text("Clear Filter") }
+                }) {
+                    Text(text = stringResource(R.string.cancel))
+                }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -103,44 +108,68 @@ fun HomeContent(
                             style = MaterialTheme.typography.displaySmall
                         )
                         Text(
-                            text = if (state.selectedDate == null) "All Learning Material" else "History for ${state.selectedDate}",
+                            text = if (state.selectedDate == null) 
+                                stringResource(R.string.all_learning_material) 
+                            else 
+                                stringResource(R.string.history_for, state.selectedDate),
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                         )
                     }
                 },
                 actions = {
                     IconButton(onClick = { showDatePicker = true }) {
-                        Icon(Icons.Default.CalendarMonth, contentDescription = "Select Date")
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = stringResource(R.string.select_date)
+                        )
                     }
                     Surface(
-                        shape = RoundedCornerShape(20.dp),
+                        shape = RoundedCornerShape(spacing.extraLarge),
                         color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.15f),
-                        modifier = Modifier.padding(end = MaterialTheme.spacing.medium)
+                        modifier = Modifier.padding(end = spacing.medium)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = spacing.medium - 2.dp, vertical = spacing.extraSmall + 2.dp)
                         ) {
-                            Icon(Icons.Default.LocalFireDepartment, contentDescription = null, tint = SunsetEnd, modifier = Modifier.size(20.dp))
-                            Spacer(modifier = Modifier.width(6.dp))
-                            Text(text = "${state.streakCount}", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.ExtraBold, color = SunsetEnd)
+                            Icon(
+                                imageVector = Icons.Default.LocalFireDepartment,
+                                contentDescription = stringResource(R.string.streak),
+                                tint = SunsetEnd,
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(spacing.extraSmall + 2.dp))
+                            Text(
+                                text = "${state.streakCount}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.ExtraBold,
+                                color = SunsetEnd
+                            )
                         }
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+                )
             )
         }
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = MaterialTheme.spacing.large)
-            ) {
-                // Search Bar
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = spacing.large),
+            contentPadding = PaddingValues(
+                top = padding.calculateTopPadding() + spacing.medium,
+                bottom = padding.calculateBottomPadding() + spacing.extraLarge
+            ),
+            verticalArrangement = Arrangement.spacedBy(spacing.medium)
+        ) {
+            item {
                 Surface(
-                    shape = RoundedCornerShape(28.dp),
+                    shape = RoundedCornerShape(spacing.extraLarge),
                     color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -149,7 +178,13 @@ fun HomeContent(
                         onValueChange = onSearchQueryChange,
                         modifier = Modifier.fillMaxWidth(),
                         placeholder = { Text(text = stringResource(R.string.search_hint)) },
-                        leadingIcon = { Icon(Icons.Default.Search, contentDescription = null, tint = GradientStart) },
+                        leadingIcon = { 
+                            Icon(
+                                imageVector = Icons.Default.Search,
+                                contentDescription = null,
+                                tint = GradientStart
+                            ) 
+                        },
                         singleLine = true,
                         colors = TextFieldDefaults.colors(
                             focusedContainerColor = Color.Transparent,
@@ -159,57 +194,109 @@ fun HomeContent(
                         )
                     )
                 }
+            }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            if (!state.isSearching) {
+                item {
+                    Spacer(modifier = Modifier.height(spacing.extraSmall))
+                    if (state.isLoading) {
+                        ProgressCardSkeleton()
+                    } else {
+                        DailyProgressCard(completedCount = state.totalLearned, totalCount = state.totalCount)
+                    }
+                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                }
 
-                if (state.isSearching) {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)) {
-                        itemsIndexed(state.searchResults) { _, nugget ->
-                            NuggetCard(nugget = nugget, onClick = { onNavigateToDetail(nugget.id) })
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (state.selectedDate != null) 
+                                stringResource(R.string.learned_on_this_day) 
+                            else 
+                                stringResource(R.string.all_lessons),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                        IconButton(onClick = onRefresh) {
+                            Icon(
+                                imageVector = Icons.Default.RestartAlt,
+                                contentDescription = stringResource(R.string.refresh),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+            } else {
+                item {
+                    Text(
+                        text = stringResource(R.string.search_results),
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = spacing.small)
+                    )
+                }
+            }
+
+            if (state.isLoading) {
+                items(5) {
+                    NuggetCardSkeleton()
+                }
+            } else {
+                val displayList = if (state.isSearching) state.searchResults else state.dailyNuggets
+                
+                if (displayList.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxHeight(0.6f)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = if (state.selectedDate != null) 
+                                    stringResource(R.string.no_activity_for_date) 
+                                else 
+                                    stringResource(R.string.no_nuggets_found),
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                            )
                         }
                     }
                 } else {
-                    DailyProgressCard(completedCount = state.totalLearned, totalCount = state.totalCount)
-
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
-
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = if (state.selectedDate != null) "Learned on this day" else "Your Learning Path",
-                            style = MaterialTheme.typography.headlineSmall,
-                            fontWeight = FontWeight.ExtraBold
-                        )
-                        IconButton(onClick = onRefresh) {
-                            Icon(Icons.Default.RestartAlt, contentDescription = "Refresh", tint = MaterialTheme.colorScheme.primary)
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-
-                    if (state.isLoading) {
-                        repeat(3) { NuggetCardSkeleton() }
-                    } else if (state.dailyNuggets.isEmpty()) {
-                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text(
-                                text = if (state.selectedDate != null) "You didn't master any nuggets on this date." else "No nuggets found.",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                    itemsIndexed(displayList) { index, nugget ->
+                        AnimatedEntrance(index = index) {
+                            NuggetCard(
+                                nugget = nugget,
+                                onClick = { onNavigateToDetail(nugget.id) }
                             )
-                        }
-                    } else {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
-                            modifier = Modifier.fillMaxSize(),
-                            contentPadding = PaddingValues(bottom = 24.dp)
-                        ) {
-                            itemsIndexed(state.dailyNuggets) { index, nugget ->
-                                AnimatedEntrance(index = index) {
-                                    NuggetCard(nugget = nugget, onClick = { onNavigateToDetail(nugget.id) })
-                                }
-                            }
                         }
                     }
                 }
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeContentPreview() {
+    SkillflowTheme {
+        HomeContent(
+            state = HomeState(
+                dailyNuggets = listOf(
+                    KnowledgeNugget("1", "Title 1", "Desc", "Content", "Beginner", null, "android", false, false, false, null, 0, "2026-08-01")
+                ),
+                totalLearned = 5,
+                totalCount = 15
+            ),
+            onSearchQueryChange = {},
+            onNavigateToDetail = {},
+            onDateSelected = {},
+            onRefresh = {}
+        )
     }
 }

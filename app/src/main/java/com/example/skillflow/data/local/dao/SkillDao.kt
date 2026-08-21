@@ -54,6 +54,9 @@ interface SkillDao {
     @Query("SELECT * FROM user_notes WHERE nuggetId = :nuggetId ORDER BY timestamp DESC")
     fun getNotesForNugget(nuggetId: String): Flow<List<UserNoteEntity>>
 
+    @Query("SELECT * FROM nuggets WHERE title LIKE '%' || :query || '%' OR shortDescription LIKE '%' || :query || '%'")
+    fun searchNuggets(query: String): Flow<List<NuggetEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: UserNoteEntity)
 

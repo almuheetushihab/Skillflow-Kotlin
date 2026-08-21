@@ -20,9 +20,9 @@ import com.example.skillflow.presentation.bookmarks.BookmarksState
 import com.example.skillflow.presentation.bookmarks.BookmarksViewModel
 import com.example.skillflow.ui.common.AnimatedEntrance
 import com.example.skillflow.ui.common.EmptyView
-import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.NuggetCard
 import com.example.skillflow.ui.common.SkillflowTopAppBar
+import com.example.skillflow.ui.home.components.NuggetCardSkeleton
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
@@ -60,8 +60,21 @@ fun BookmarksContent(
             SkillflowTopAppBar(title = stringResource(R.string.saved_nuggets))
         }
     ) { padding ->
+        val spacing = MaterialTheme.spacing
+        
         if (state.isLoading) {
-            LoadingView(modifier = Modifier.padding(padding))
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(horizontal = spacing.large),
+                verticalArrangement = Arrangement.spacedBy(spacing.medium),
+                contentPadding = PaddingValues(top = spacing.medium, bottom = spacing.medium)
+            ) {
+                items(5) {
+                    NuggetCardSkeleton()
+                }
+            }
         } else if (state.savedNuggets.isEmpty()) {
             EmptyView(
                 message = stringResource(R.string.no_bookmarks),
@@ -72,11 +85,11 @@ fun BookmarksContent(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = MaterialTheme.spacing.large),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium),
+                    .padding(horizontal = spacing.large),
+                verticalArrangement = Arrangement.spacedBy(spacing.medium),
                 contentPadding = PaddingValues(
-                    top = MaterialTheme.spacing.medium,
-                    bottom = MaterialTheme.spacing.medium
+                    top = spacing.medium,
+                    bottom = spacing.medium
                 )
             ) {
                 itemsIndexed(state.savedNuggets) { index, nugget ->

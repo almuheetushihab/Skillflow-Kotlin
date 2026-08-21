@@ -1,6 +1,7 @@
 package com.example.skillflow.ui.common
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -8,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
@@ -50,8 +50,11 @@ fun ErrorView(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
-        Button(onClick = onRetry) {
-            Text(text = "Retry")
+        Button(
+            onClick = onRetry,
+            shape = RoundedCornerShape(MaterialTheme.spacing.medium)
+        ) {
+            Text(text = stringResource(R.string.retry))
         }
     }
 }
@@ -83,9 +86,16 @@ fun EmptyView(
 fun StateViewsPreview() {
     SkillflowTheme {
         Column {
-            LoadingView(modifier = Modifier.height(100.dp))
-            ErrorView(message = "Connection timeout", onRetry = {}, modifier = Modifier.height(100.dp))
-            EmptyView(message = "No data found", modifier = Modifier.height(100.dp))
+            LoadingView(modifier = Modifier.height(MaterialTheme.spacing.extraExtraLarge))
+            ErrorView(
+                message = "Connection timeout",
+                onRetry = {},
+                modifier = Modifier.height(MaterialTheme.spacing.extraExtraLarge)
+            )
+            EmptyView(
+                message = "No data found",
+                modifier = Modifier.height(MaterialTheme.spacing.extraExtraLarge)
+            )
         }
     }
 }

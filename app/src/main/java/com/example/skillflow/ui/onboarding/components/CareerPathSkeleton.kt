@@ -1,6 +1,7 @@
-package com.example.skillflow.ui.home.components
+package com.example.skillflow.ui.onboarding.components
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,19 +14,16 @@ import com.example.skillflow.ui.common.shimmerEffect
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
-/**
- * A professional skeleton loader for the NuggetCard using a shimmer effect.
- */
 @Composable
-fun NuggetCardSkeleton(
+fun CareerPathSkeleton(
     modifier: Modifier = Modifier
 ) {
     val spacing = MaterialTheme.spacing
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(100.dp),
-        shape = RoundedCornerShape(24.dp), // Matches the new NuggetCard radius
+            .height(80.dp),
+        shape = RoundedCornerShape(spacing.medium),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
         )
@@ -36,52 +34,31 @@ fun NuggetCardSkeleton(
                 .padding(spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Icon Placeholder
             Box(
                 modifier = Modifier
-                    .size(56.dp)
-                    .clip(RoundedCornerShape(16.dp))
+                    .size(48.dp)
+                    .clip(CircleShape)
                     .shimmerEffect()
             )
             
             Spacer(modifier = Modifier.width(spacing.medium))
             
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Center
-            ) {
-                // Title Placeholder
+            Column(verticalArrangement = Arrangement.Center) {
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(20.dp)
+                        .width(120.dp)
+                        .height(18.dp)
                         .clip(RoundedCornerShape(4.dp))
                         .shimmerEffect()
                 )
-                
                 Spacer(modifier = Modifier.height(spacing.extraSmall))
-                
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    // Complexity Badge Placeholder
-                    Box(
-                        modifier = Modifier
-                            .width(60.dp)
-                            .height(16.dp)
-                            .clip(RoundedCornerShape(8.dp))
-                            .shimmerEffect()
-                    )
-                    
-                    Spacer(modifier = Modifier.width(spacing.small))
-                    
-                    // Status Text Placeholder
-                    Box(
-                        modifier = Modifier
-                            .width(80.dp)
-                            .height(14.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .shimmerEffect()
-                    )
-                }
+                Box(
+                    modifier = Modifier
+                        .width(200.dp)
+                        .height(12.dp)
+                        .clip(RoundedCornerShape(4.dp))
+                        .shimmerEffect()
+                )
             }
         }
     }
@@ -89,11 +66,11 @@ fun NuggetCardSkeleton(
 
 @Preview(showBackground = true)
 @Composable
-fun NuggetCardSkeletonPreview() {
+fun CareerPathSkeletonPreview() {
     SkillflowTheme {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             repeat(3) {
-                NuggetCardSkeleton()
+                CareerPathSkeleton()
             }
         }
     }

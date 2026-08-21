@@ -29,9 +29,7 @@ import com.example.skillflow.presentation.quiz.QuizState
 import com.example.skillflow.presentation.quiz.QuizUiEvent
 import com.example.skillflow.presentation.quiz.QuizViewModel
 import com.example.skillflow.ui.common.SkillflowTopAppBar
-import com.example.skillflow.ui.theme.GradientStart
-import com.example.skillflow.ui.theme.SkillflowTheme
-import com.example.skillflow.ui.theme.spacing
+import com.example.skillflow.ui.theme.*
 
 @Composable
 fun QuizScreen(
@@ -68,7 +66,7 @@ fun QuizScreen(
         )
     } else {
         Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator()
+            CircularProgressIndicator(color = GradientStart)
         }
     }
 }
@@ -82,6 +80,7 @@ fun QuizContent(
     onFinish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     val question = state.questions[state.currentIndex]
 
     Scaffold(
@@ -92,7 +91,7 @@ fun QuizContent(
                 actions = {
                     Text(
                         text = stringResource(R.string.daily_progress_format, state.currentIndex + 1, state.questions.size),
-                        modifier = Modifier.padding(end = 16.dp),
+                        modifier = Modifier.padding(end = spacing.medium),
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -104,7 +103,7 @@ fun QuizContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(MaterialTheme.spacing.large)
+                .padding(spacing.large)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -112,13 +111,13 @@ fun QuizContent(
                 progress = { (state.currentIndex + 1).toFloat() / state.questions.size },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(8.dp)
-                    .clip(RoundedCornerShape(4.dp)),
+                    .height(spacing.small)
+                    .clip(RoundedCornerShape(spacing.extraSmall)),
                 color = GradientStart,
                 trackColor = GradientStart.copy(alpha = 0.1f)
             )
             
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
 
             Text(
                 text = question.text,
@@ -127,22 +126,22 @@ fun QuizContent(
                 textAlign = TextAlign.Center
             )
             
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
 
             question.options.forEachIndexed { index, option ->
                 val isSelected = state.selectedOption == index
                 val isCorrect = index == question.correctAnswerIndex
                 
                 val containerColor = when {
-                    state.showFeedback && isCorrect -> Color(0xFFE8F5E9)
-                    state.showFeedback && isSelected && !isCorrect -> Color(0xFFFFEBEE)
+                    state.showFeedback && isCorrect -> BeginnerGreen.copy(alpha = 0.1f)
+                    state.showFeedback && isSelected && !isCorrect -> AdvancedRed.copy(alpha = 0.1f)
                     isSelected -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
                     else -> MaterialTheme.colorScheme.surface
                 }
                 
                 val borderColor = when {
-                    state.showFeedback && isCorrect -> Color(0xFF4CAF50)
-                    state.showFeedback && isSelected && !isCorrect -> Color(0xFFEF5350)
+                    state.showFeedback && isCorrect -> BeginnerGreen
+                    state.showFeedback && isSelected && !isCorrect -> AdvancedRed
                     isSelected -> GradientStart
                     else -> MaterialTheme.colorScheme.outlineVariant
                 }
@@ -151,13 +150,13 @@ fun QuizContent(
                     onClick = { onOptionSelected(index) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = MaterialTheme.spacing.medium),
-                    shape = RoundedCornerShape(16.dp),
+                        .padding(bottom = spacing.medium),
+                    shape = RoundedCornerShape(spacing.medium),
                     colors = CardDefaults.outlinedCardColors(containerColor = containerColor),
                     border = BorderStroke(2.dp, borderColor)
                 ) {
                     Row(
-                        modifier = Modifier.padding(MaterialTheme.spacing.medium),
+                        modifier = Modifier.padding(spacing.medium),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         RadioButton(
@@ -165,7 +164,7 @@ fun QuizContent(
                             onClick = null,
                             colors = RadioButtonDefaults.colors(selectedColor = GradientStart)
                         )
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                        Spacer(modifier = Modifier.width(spacing.small))
                         Text(
                             text = option,
                             style = MaterialTheme.typography.bodyLarge,
@@ -175,24 +174,28 @@ fun QuizContent(
                         if (state.showFeedback) {
                             Spacer(modifier = Modifier.weight(1f))
                             if (isCorrect) {
-                                Icon(Icons.Default.CheckCircle, contentDescription = null, tint = Color(0xFF4CAF50))
+                                Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null, tint = BeginnerGreen)
                             } else if (isSelected) {
-                                Icon(Icons.Default.Cancel, contentDescription = null, tint = Color(0xFFEF5350))
+                                Icon(imageVector = Icons.Default.Cancel, contentDescription = null, tint = AdvancedRed)
                             }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
 
-            AnimatedVisibility(visible = state.showFeedback) {
+            AnimatedVisibility(
+                visible = state.showFeedback,
+                enter = fadeIn() + expandVertically(),
+                exit = fadeOut() + shrinkVertically()
+            ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(spacing.medium)
                 ) {
-                    Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
+                    Column(modifier = Modifier.padding(spacing.medium)) {
                         Text(
                             text = stringResource(R.string.explanation_label),
                             style = MaterialTheme.typography.labelLarge,
@@ -207,7 +210,7 @@ fun QuizContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
 
             if (!state.showFeedback) {
                 Button(
@@ -216,9 +219,10 @@ fun QuizContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp),
-                    shape = RoundedCornerShape(28.dp)
+                    shape = RoundedCornerShape(28.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = GradientStart)
                 ) {
-                    Text(stringResource(R.string.submit), fontWeight = FontWeight.Bold)
+                    Text(text = stringResource(R.string.submit), fontWeight = FontWeight.Bold)
                 }
             } else {
                 Button(
@@ -230,7 +234,10 @@ fun QuizContent(
                     colors = ButtonDefaults.buttonColors(containerColor = GradientStart)
                 ) {
                     Text(
-                        text = if (state.currentIndex == state.questions.size - 1) stringResource(R.string.finish_quiz) else stringResource(R.string.next_question),
+                        text = if (state.currentIndex == state.questions.size - 1) 
+                            stringResource(R.string.finish_quiz) 
+                        else 
+                            stringResource(R.string.next_question),
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -245,6 +252,7 @@ fun QuizResultScreen(
     onFinish: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = { SkillflowTopAppBar(title = stringResource(R.string.quiz_results)) }
@@ -253,7 +261,7 @@ fun QuizResultScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(MaterialTheme.spacing.large)
+                .padding(spacing.large)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -264,7 +272,7 @@ fun QuizResultScreen(
                     progress = { state.score.toFloat() / state.questions.size },
                     modifier = Modifier.fillMaxSize(),
                     strokeWidth = 12.dp,
-                    color = if (percentage >= 70) Color(0xFF4CAF50) else GradientStart,
+                    color = if (percentage >= 70) BeginnerGreen else GradientStart,
                     trackColor = MaterialTheme.colorScheme.surfaceVariant
                 )
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -280,7 +288,7 @@ fun QuizResultScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
 
             Text(
                 text = if (percentage >= 70) stringResource(R.string.great_job) else stringResource(R.string.keep_learning),
@@ -288,7 +296,7 @@ fun QuizResultScreen(
                 fontWeight = FontWeight.Bold
             )
             
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
 
             Text(
                 text = stringResource(R.string.detailed_feedback),
@@ -297,7 +305,7 @@ fun QuizResultScreen(
                 fontWeight = FontWeight.Bold
             )
             
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
 
             state.questions.forEachIndexed { index, question ->
                 val userAnswer = state.userAnswers[index]
@@ -306,52 +314,71 @@ fun QuizResultScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = MaterialTheme.spacing.medium),
-                    shape = RoundedCornerShape(12.dp),
+                        .padding(bottom = spacing.medium),
+                    shape = RoundedCornerShape(spacing.medium),
                     colors = CardDefaults.cardColors(
-                        containerColor = if (isCorrect) Color(0xFFE8F5E9) else Color(0xFFFFEBEE)
+                        containerColor = if (isCorrect) BeginnerGreen.copy(alpha = 0.1f) else AdvancedRed.copy(alpha = 0.1f)
                     )
                 ) {
-                    Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
+                    Column(modifier = Modifier.padding(spacing.medium)) {
                         Row(verticalAlignment = Alignment.Top) {
                             Text(text = "${index + 1}. ", fontWeight = FontWeight.Bold)
                             Text(text = question.text, modifier = Modifier.weight(1f))
                             Icon(
                                 imageVector = if (isCorrect) Icons.Default.CheckCircle else Icons.Default.Cancel,
                                 contentDescription = null,
-                                tint = if (isCorrect) Color(0xFF4CAF50) else Color(0xFFEF5350)
+                                tint = if (isCorrect) BeginnerGreen else AdvancedRed
                             )
                         }
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                        Spacer(modifier = Modifier.height(spacing.small))
                         val answerText = if (userAnswer != null) question.options[userAnswer] else stringResource(R.string.skipped)
                         Text(
                             text = stringResource(R.string.your_answer, answerText),
                             style = MaterialTheme.typography.bodySmall,
-                            color = if (isCorrect) Color(0xFF2E7D32) else Color(0xFFC62828)
+                            color = if (isCorrect) BeginnerGreenDark else AdvancedRedDark
                         )
                         if (!isCorrect) {
                             Text(
                                 text = stringResource(R.string.correct_answer, question.options[question.correctAnswerIndex]),
                                 style = MaterialTheme.typography.bodySmall,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF2E7D32)
+                                color = BeginnerGreenDark
                             )
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+            Spacer(modifier = Modifier.height(spacing.extraLarge))
 
             Button(
                 onClick = onFinish,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
-                shape = RoundedCornerShape(28.dp)
+                shape = RoundedCornerShape(28.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = GradientStart)
             ) {
-                Text(stringResource(R.string.back_to_profile), fontWeight = FontWeight.Bold)
+                Text(text = stringResource(R.string.back_to_profile), fontWeight = FontWeight.Bold)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun QuizContentPreview() {
+    SkillflowTheme {
+        QuizContent(
+            state = QuizState(
+                questions = listOf(
+                    QuizQuestion("1", "1", "Question Text", listOf("Option 1", "Option 2"), 0, "Explanation")
+                )
+            ),
+            onOptionSelected = {},
+            onSubmit = {},
+            onNext = {},
+            onFinish = {}
+        )
     }
 }

@@ -46,6 +46,7 @@
     <string name="error_password_short">পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে</string>
     <string name="error_nugget_not_found">নাগেট পাওয়া যায়নি</string>
     <string name="error_unknown">একটি অজানা ত্রুটি ঘটেছে</string>
+    <string name="retry">আবার চেষ্টা করুন</string>
     <string name="email_updated">ইমেল আপডেট করা হয়েছে</string>
     <string name="name_updated">নাম আপডেট করা হয়েছে</string>
     <string name="deletion_failed">মুছে ফেলতে ব্যর্থ হয়েছে</string>
@@ -57,6 +58,7 @@
     <string name="skip">এড়িয়ে যান</string>
     <string name="get_started">শুরু করুন</string>
     <string name="please_select_goal">দয়া করে একটি ক্যারিয়ার লক্ষ্য নির্বাচন করুন</string>
+    <string name="loading_career_paths">ক্যারিয়ার পাথ লোড হচ্ছে...</string>
 
     <!-- Home -->
     <string name="daily_goals">দৈনিক লক্ষ্য</string>
@@ -68,6 +70,30 @@
     <string name="mastered">সম্পন্ন হয়েছে</string>
     <string name="search_hint">বিষয় খুঁজুন...</string>
     <string name="search_results">অনুসন্ধানের ফলাফল</string>
+    <string name="all_learning_material">সব শিক্ষার উপকরণ</string>
+    <string name="history_for">%1$s এর ইতিহাস</string>
+    <string name="select_date">তারিখ নির্বাচন করুন</string>
+    <string name="learned_on_this_day">এই দিনে শিখেছেন</string>
+    <string name="all_lessons">সব পাঠ</string>
+    <string name="refresh">রিফ্রেশ করুন</string>
+    <string name="no_activity_for_date">এই তারিখে কোনো কার্যক্রম নেই।</string>
+    <string name="no_nuggets_found">কোনো নাগেট পাওয়া যায়নি।</string>
+    <string name="mastered_question">আপনি কি এই বিষয়টি আয়ত্ত করেছেন?</string>
+    <string name="add_study_note">পড়ার নোট যোগ করুন</string>
+    <string name="edit_note">নোট এডিট করুন</string>
+    <string name="note_title_placeholder">নোটের শিরোনাম</string>
+    <string name="note_details_placeholder">বিস্তারিত লিখুন...</string>
+    <string name="save_note">নোট সেভ করুন</string>
+    <string name="update_note">নোট আপডেট করুন</string>
+    <string name="your_saved_notes">আপনার সংরক্ষিত নোটসমূহ</string>
+    <string name="note_saved">নোট সেভ করা হয়েছে!</string>
+    <string name="note_deleted">নোট ডিলিট করা হয়েছে</string>
+    <string name="error_saving_note">নোট সেভ করতে সমস্যা হয়েছে</string>
+    <string name="select_date_hint">তারিখ নির্বাচন করুন</string>
+    <string name="keep_momentum">আপনার গতি বজায় রাখুন!</string>
+    <string name="achieved_emoji">অর্জন করেছেন! 🏆</string>
+    <string name="goal">লক্ষ্য</string>
+    <string name="not_set">সেট করা হয়নি</string>
 
     <!-- Detail -->
     <string name="knowledge_nugget">জ্ঞানের উৎস</string>

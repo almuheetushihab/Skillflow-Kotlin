@@ -98,6 +98,7 @@ fun LoginContent(
     onNavigateToForgotPassword: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
@@ -117,7 +118,7 @@ fun LoginContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(MaterialTheme.spacing.large)
+                    .padding(spacing.large)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -128,7 +129,7 @@ fun LoginContent(
                     color = GradientStart,
                     fontWeight = FontWeight.ExtraBold
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+                Spacer(modifier = Modifier.height(spacing.extraLarge))
 
                 AuthTextField(
                     value = email,
@@ -137,7 +138,7 @@ fun LoginContent(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     error = state.emailError?.asString()
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(spacing.medium))
 
                 AuthTextField(
                     value = password,
@@ -160,7 +161,7 @@ fun LoginContent(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = MaterialTheme.spacing.small),
+                        .padding(top = spacing.small),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -186,7 +187,7 @@ fun LoginContent(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+                Spacer(modifier = Modifier.height(spacing.extraLarge))
 
                 AuthButton(
                     text = stringResource(R.string.login),
@@ -194,7 +195,7 @@ fun LoginContent(
                     isLoading = state.isLoading
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                Spacer(modifier = Modifier.height(spacing.large))
 
                 Text(
                     text = stringResource(R.string.dont_have_account),
@@ -204,16 +205,16 @@ fun LoginContent(
                 )
 
                 if (state.error != null) {
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                    Spacer(modifier = Modifier.height(spacing.medium))
                     Surface(
                         color = MaterialTheme.colorScheme.errorContainer,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(spacing.small)
                     ) {
                         Text(
                             text = state.error.asString(),
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = spacing.medium - 4.dp, vertical = spacing.extraSmall + 2.dp)
                         )
                     }
                 }

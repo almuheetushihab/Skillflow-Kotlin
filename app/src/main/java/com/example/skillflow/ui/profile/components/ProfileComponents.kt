@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,9 +20,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -32,20 +35,30 @@ fun StatCard(
     color: Color,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     Card(
         modifier = modifier,
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(spacing.medium),
         colors = CardDefaults.cardColors(containerColor = color.copy(alpha = 0.1f)),
         border = BorderStroke(1.dp, color.copy(alpha = 0.2f))
     ) {
         Column(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium),
+            modifier = Modifier.padding(spacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(icon, contentDescription = null, tint = color)
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
-            Text(text = value, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold, color = color)
-            Text(text = title, style = MaterialTheme.typography.labelMedium, color = color.copy(alpha = 0.8f))
+            Icon(imageVector = icon, contentDescription = null, tint = color)
+            Spacer(modifier = Modifier.height(spacing.small))
+            Text(
+                text = value, 
+                style = MaterialTheme.typography.titleLarge, 
+                fontWeight = FontWeight.Bold, 
+                color = color
+            )
+            Text(
+                text = title, 
+                style = MaterialTheme.typography.labelMedium, 
+                color = color.copy(alpha = 0.8f)
+            )
         }
     }
 }
@@ -58,17 +71,18 @@ fun SettingsItem(
     onClick: (() -> Unit)? = null,
     trailing: @Composable (() -> Unit)? = null
 ) {
+    val spacing = MaterialTheme.spacing
     Row(
         modifier = modifier
             .fillMaxWidth()
             .then(if (onClick != null) Modifier.clickable { onClick() } else Modifier)
-            .padding(vertical = MaterialTheme.spacing.medium),
+            .padding(vertical = spacing.medium),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, tint = GradientStart)
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+            Icon(imageVector = icon, contentDescription = null, tint = GradientStart)
+            Spacer(modifier = Modifier.width(spacing.medium))
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
@@ -76,9 +90,13 @@ fun SettingsItem(
             )
         }
         trailing?.invoke() ?: if (onClick != null) {
-            Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onSurfaceVariant)
+            Icon(
+                imageVector = Icons.Default.ChevronRight, 
+                contentDescription = null, 
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         } else {
-            Spacer(modifier = Modifier.width(0.dp))
+            Spacer(modifier = Modifier.width(spacing.default))
         }
     }
 }
@@ -89,6 +107,7 @@ fun LanguageToggleButton(
     onToggle: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     val horizontalBias by animateFloatAsState(
         targetValue = if (currentLanguage == "en") -1f else 1f,
         label = "LanguageThumbBias"
@@ -105,7 +124,7 @@ fun LanguageToggleButton(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(4.dp),
+                .padding(spacing.extraSmall),
             contentAlignment = Alignment.Center
         ) {
             Row(
@@ -145,6 +164,18 @@ fun LanguageToggleButton(
                     fontWeight = FontWeight.ExtraBold
                 )
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ProfileComponentsPreview() {
+    SkillflowTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            StatCard(title = "Level", value = "10", icon = Icons.Default.Star, color = Color.Blue)
+            Spacer(modifier = Modifier.height(16.dp))
+            LanguageToggleButton(currentLanguage = "en", onToggle = {})
         }
     }
 }

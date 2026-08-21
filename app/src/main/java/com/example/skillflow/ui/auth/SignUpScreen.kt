@@ -103,6 +103,7 @@ fun SignUpContent(
     onNavigateToLogin: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
@@ -122,7 +123,7 @@ fun SignUpContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(MaterialTheme.spacing.large)
+                    .padding(spacing.large)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -133,7 +134,7 @@ fun SignUpContent(
                     color = GradientStart,
                     fontWeight = FontWeight.ExtraBold
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+                Spacer(modifier = Modifier.height(spacing.extraLarge))
 
                 AuthTextField(
                     value = name,
@@ -141,7 +142,7 @@ fun SignUpContent(
                     label = stringResource(R.string.name),
                     error = state.nameError?.asString()
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(spacing.medium))
 
                 AuthTextField(
                     value = email,
@@ -150,7 +151,7 @@ fun SignUpContent(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     error = state.emailError?.asString()
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(spacing.medium))
 
                 AuthTextField(
                     value = phone,
@@ -159,7 +160,7 @@ fun SignUpContent(
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     error = state.phoneError?.asString()
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(spacing.medium))
 
                 AuthTextField(
                     value = password,
@@ -179,7 +180,7 @@ fun SignUpContent(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+                Spacer(modifier = Modifier.height(spacing.extraLarge))
 
                 AuthButton(
                     text = stringResource(R.string.signup),
@@ -187,7 +188,7 @@ fun SignUpContent(
                     isLoading = state.isLoading
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                Spacer(modifier = Modifier.height(spacing.large))
 
                 Text(
                     text = stringResource(R.string.already_have_account),
@@ -197,16 +198,16 @@ fun SignUpContent(
                 )
 
                 if (state.error != null) {
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                    Spacer(modifier = Modifier.height(spacing.medium))
                     Surface(
                         color = MaterialTheme.colorScheme.errorContainer,
-                        shape = RoundedCornerShape(8.dp)
+                        shape = RoundedCornerShape(spacing.small)
                     ) {
                         Text(
                             text = state.error.asString(),
                             color = MaterialTheme.colorScheme.onErrorContainer,
                             style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = spacing.medium - 4.dp, vertical = spacing.extraSmall + 2.dp)
                         )
                     }
                 }

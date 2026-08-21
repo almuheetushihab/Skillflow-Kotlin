@@ -35,9 +35,6 @@ import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 import java.util.Locale
 
-/**
- * Screen displaying the user's profile and learning statistics.
- */
 @Composable
 fun ProfileScreen(
     onResetOnboarding: () -> Unit,
@@ -68,9 +65,6 @@ fun ProfileScreen(
     )
 }
 
-/**
- * The internal content of the Profile screen.
- */
 @Composable
 fun ProfileContent(
     state: ProfileState,
@@ -81,6 +75,7 @@ fun ProfileContent(
     onChangePhoto: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
@@ -92,7 +87,10 @@ fun ProfileContent(
                 title = stringResource(R.string.my_profile),
                 actions = {
                     IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = stringResource(R.string.settings))
+                        Icon(
+                            imageVector = Icons.Default.Settings, 
+                            contentDescription = stringResource(R.string.settings)
+                        )
                     }
                 }
             )
@@ -102,11 +100,11 @@ fun ProfileContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = MaterialTheme.spacing.large)
+                .padding(horizontal = spacing.large)
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
 
             Box(
                 modifier = Modifier.size(120.dp),
@@ -132,7 +130,7 @@ fun ProfileContent(
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = null,
-                            modifier = Modifier.size(60.dp),
+                            modifier = Modifier.size(64.dp),
                             tint = GradientStart.copy(alpha = 0.6f)
                         )
                     }
@@ -144,19 +142,19 @@ fun ProfileContent(
                         .clickable { onChangePhoto() },
                     shape = CircleShape,
                     color = GradientStart,
-                    tonalElevation = 6.dp,
-                    shadowElevation = 4.dp
+                    tonalElevation = spacing.small,
+                    shadowElevation = spacing.extraSmall
                 ) {
                     Icon(
-                        Icons.Default.CameraAlt,
+                        imageVector = Icons.Default.CameraAlt,
                         contentDescription = stringResource(R.string.change_photo),
-                        modifier = Modifier.padding(8.dp),
+                        modifier = Modifier.padding(spacing.small),
                         tint = Color.White
                     )
                 }
             }
             
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
             
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
@@ -165,7 +163,11 @@ fun ProfileContent(
                     fontWeight = FontWeight.Bold
                 )
                 IconButton(onClick = onNavigateToSettings) {
-                    Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.edit_profile), modifier = Modifier.size(18.dp))
+                    Icon(
+                        imageVector = Icons.Default.Edit, 
+                        contentDescription = stringResource(R.string.edit_profile), 
+                        modifier = Modifier.size(spacing.medium + 2.dp)
+                    )
                 }
             }
 
@@ -178,21 +180,21 @@ fun ProfileContent(
             }
             
             Surface(
-                shape = RoundedCornerShape(12.dp),
+                shape = RoundedCornerShape(spacing.medium),
                 color = GradientStart.copy(alpha = 0.1f),
-                modifier = Modifier.padding(top = MaterialTheme.spacing.small)
+                modifier = Modifier.padding(top = spacing.small)
             ) {
-                val goal = state.careerPathId ?: "Not set"
+                val goal = state.careerPathId ?: stringResource(R.string.not_set)
                 Text(
                     text = stringResource(R.string.career_goal, goal),
                     style = MaterialTheme.typography.labelLarge,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                    modifier = Modifier.padding(horizontal = spacing.medium, vertical = spacing.extraSmall),
                     color = GradientStart,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
 
             // Quiz Stats
             Text(
@@ -201,10 +203,10 @@ fun ProfileContent(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(spacing.small))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                horizontalArrangement = Arrangement.spacedBy(spacing.medium)
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
@@ -222,7 +224,7 @@ fun ProfileContent(
                 )
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
 
             // Progress Stats
             Text(
@@ -231,10 +233,10 @@ fun ProfileContent(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
             )
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+            Spacer(modifier = Modifier.height(spacing.small))
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                horizontalArrangement = Arrangement.spacedBy(spacing.medium)
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
@@ -252,25 +254,25 @@ fun ProfileContent(
                 )
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
 
             // Learning Summary Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(spacing.medium),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f))
             ) {
-                Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
+                Column(modifier = Modifier.padding(spacing.medium)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Book, contentDescription = null, tint = GradientStart)
-                        Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
+                        Icon(imageVector = Icons.Default.Book, contentDescription = null, tint = GradientStart)
+                        Spacer(modifier = Modifier.width(spacing.small))
                         Text(
                             text = stringResource(R.string.todays_summary),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                    Spacer(modifier = Modifier.height(spacing.small))
                     if (state.learnedTopics.isEmpty()) {
                         Text(
                             text = stringResource(R.string.no_topics_learned),
@@ -287,7 +289,7 @@ fun ProfileContent(
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
 
             // Daily Quiz Action
             Button(
@@ -295,11 +297,15 @@ fun ProfileContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(64.dp),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(spacing.medium),
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
             ) {
-                Icon(Icons.Default.Quiz, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
-                Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+                Icon(
+                    imageVector = Icons.Default.Quiz, 
+                    contentDescription = null, 
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Spacer(modifier = Modifier.width(spacing.medium))
                 Column {
                     Text(
                         text = stringResource(R.string.daily_knowledge_quiz),
@@ -313,26 +319,30 @@ fun ProfileContent(
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
-                Icon(Icons.Default.ChevronRight, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimaryContainer)
+                Icon(
+                    imageVector = Icons.Default.ChevronRight, 
+                    contentDescription = null, 
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
 
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
+                shape = RoundedCornerShape(spacing.large),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                elevation = CardDefaults.cardElevation(defaultElevation = spacing.default),
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
             ) {
-                Column(modifier = Modifier.padding(MaterialTheme.spacing.small)) {
+                Column(modifier = Modifier.padding(spacing.small)) {
                     ListItem(
-                        headlineContent = { Text(stringResource(R.string.settings), fontWeight = FontWeight.Bold) },
-                        leadingContent = { Icon(Icons.Default.Settings, contentDescription = null) }
+                        headlineContent = { Text(text = stringResource(R.string.settings), fontWeight = FontWeight.Bold) },
+                        leadingContent = { Icon(imageVector = Icons.Default.Settings, contentDescription = null) }
                     )
                     
                     ListItem(
-                        headlineContent = { Text(stringResource(R.string.dark_mode)) },
+                        headlineContent = { Text(text = stringResource(R.string.dark_mode)) },
                         trailingContent = {
                             Switch(
                                 checked = state.isDarkMode,
@@ -342,14 +352,14 @@ fun ProfileContent(
                     )
 
                     ListItem(
-                        headlineContent = { Text(stringResource(R.string.daily_reminders)) },
-                        leadingContent = { Icon(Icons.Default.Notifications, contentDescription = null) },
+                        headlineContent = { Text(text = stringResource(R.string.daily_reminders)) },
+                        leadingContent = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null) },
                         trailingContent = { Switch(checked = true, onCheckedChange = {}) }
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+            Spacer(modifier = Modifier.height(spacing.large))
 
             Button(
                 onClick = onResetOnboarding,
@@ -365,7 +375,7 @@ fun ProfileContent(
                     color = MaterialTheme.colorScheme.onError
                 )
             }
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.height(spacing.medium))
         }
     }
 }

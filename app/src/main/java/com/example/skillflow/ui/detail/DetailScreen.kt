@@ -92,6 +92,7 @@ fun DetailContent(
     modifier: Modifier = Modifier
 ) {
     val nugget = state.nugget
+    val spacing = MaterialTheme.spacing
 
     val rotation by animateFloatAsState(
         targetValue = if (state.isFlipped) 180f else 0f,
@@ -111,7 +112,7 @@ fun DetailContent(
                         IconButton(onClick = onToggleSave) {
                             Icon(
                                 imageVector = if (nugget.isSaved) Icons.Default.Bookmark else Icons.Default.BookmarkBorder,
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.save_nugget),
                                 tint = if (nugget.isSaved) GradientStart else MaterialTheme.colorScheme.onSurface
                             )
                         }
@@ -125,103 +126,188 @@ fun DetailContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(horizontal = MaterialTheme.spacing.large)
+                .padding(horizontal = spacing.large)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (nugget == null) {
                 if (state.isLoading) LoadingView(modifier = Modifier.fillMaxSize())
-                else Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text(stringResource(R.string.nugget_not_found)) }
+                else Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { 
+                    Text(text = stringResource(R.string.nugget_not_found)) 
+                }
             } else {
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(spacing.medium))
                 
                 KnowledgeCard(nugget = nugget, isFlipped = state.isFlipped, rotation = rotation, onFlip = onFlipCard)
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                Spacer(modifier = Modifier.height(spacing.large))
 
-                Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(text = "Mastered this topic?", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Row(
+                    modifier = Modifier.fillMaxWidth(), 
+                    verticalAlignment = Alignment.CenterVertically, 
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(R.string.mastered_question), 
+                        style = MaterialTheme.typography.titleMedium, 
+                        fontWeight = FontWeight.Bold
+                    )
                     Switch(checked = nugget.isMastered, onCheckedChange = { onMarkAsMastered() })
                 }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                Spacer(modifier = Modifier.height(spacing.large))
 
                 // Notes Input
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f))
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
+                    shape = RoundedCornerShape(spacing.medium)
                 ) {
-                    Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
-                        Text(text = if (state.editingNoteId == null) "Add Study Note" else "Edit Note", style = MaterialTheme.typography.titleSmall, color = GradientStart)
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                    Column(modifier = Modifier.padding(spacing.medium)) {
+                        Text(
+                            text = if (state.editingNoteId == null) 
+                                stringResource(R.string.add_study_note) 
+                            else 
+                                stringResource(R.string.edit_note), 
+                            style = MaterialTheme.typography.titleSmall, 
+                            color = GradientStart
+                        )
+                        Spacer(modifier = Modifier.height(spacing.small))
                         OutlinedTextField(
                             value = state.noteTitle,
                             onValueChange = onNoteTitleChange,
                             modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text("Note Title") },
-                            singleLine = true
+                            placeholder = { Text(text = stringResource(R.string.note_title_placeholder)) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(spacing.small)
                         )
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                        Spacer(modifier = Modifier.height(spacing.small))
                         OutlinedTextField(
                             value = state.noteDescription,
                             onValueChange = onNoteDescChange,
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp),
-                            placeholder = { Text("Write details...") }
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp),
+                            placeholder = { Text(text = stringResource(R.string.note_details_placeholder)) },
+                            shape = RoundedCornerShape(spacing.small)
                         )
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                        Spacer(modifier = Modifier.height(spacing.medium))
                         Button(
                             onClick = onSaveNote,
                             modifier = Modifier.align(Alignment.End),
-                            shape = RoundedCornerShape(12.dp)
+                            shape = RoundedCornerShape(spacing.medium)
                         ) {
-                            Icon(if (state.editingNoteId == null) Icons.Default.Save else Icons.Default.Update, contentDescription = null)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(if (state.editingNoteId == null) "Save Note" else "Update Note")
+                            Icon(
+                                imageVector = if (state.editingNoteId == null) Icons.Default.Save else Icons.Default.Update, 
+                                contentDescription = null
+                            )
+                            Spacer(modifier = Modifier.width(spacing.small))
+                            Text(
+                                text = if (state.editingNoteId == null) 
+                                    stringResource(R.string.save_note) 
+                                else 
+                                    stringResource(R.string.update_note)
+                            )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                Spacer(modifier = Modifier.height(spacing.large))
 
                 // Notes List
                 if (state.notes.isNotEmpty()) {
-                    Text(text = "Your Saved Notes", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, modifier = Modifier.align(Alignment.Start))
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                    Text(
+                        text = stringResource(R.string.your_saved_notes), 
+                        style = MaterialTheme.typography.titleMedium, 
+                        fontWeight = FontWeight.Bold, 
+                        modifier = Modifier.align(Alignment.Start)
+                    )
+                    Spacer(modifier = Modifier.height(spacing.small))
                     state.notes.forEach { note ->
-                        NoteItem(note = note, onEdit = { onEditNote(note) }, onDelete = { onDeleteNote(note) })
-                        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+                        NoteItem(
+                            note = note, 
+                            onEdit = { onEditNote(note) }, 
+                            onDelete = { onDeleteNote(note) }
+                        )
+                        Spacer(modifier = Modifier.height(spacing.small))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+                Spacer(modifier = Modifier.height(spacing.extraLarge))
             }
         }
     }
 }
 
 @Composable
-fun NoteItem(note: UserNote, onEdit: () -> Unit, onDelete: () -> Unit) {
+fun NoteItem(
+    note: UserNote, 
+    onEdit: () -> Unit, 
+    onDelete: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     var expanded by remember { mutableStateOf(false) }
+    val spacing = MaterialTheme.spacing
+    
     Card(
-        modifier = Modifier.fillMaxWidth().clickable { expanded = !expanded },
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(spacing.medium))
+            .clickable { expanded = !expanded },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
-        Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
+        Column(modifier = Modifier.padding(spacing.medium)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(text = note.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                     if (!expanded) {
-                        Text(text = note.noteContent, style = MaterialTheme.typography.bodySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                        Text(
+                            text = note.noteContent, 
+                            style = MaterialTheme.typography.bodySmall, 
+                            maxLines = 1, 
+                            overflow = TextOverflow.Ellipsis
+                        )
                     }
                 }
-                IconButton(onClick = onEdit) { Icon(Icons.Default.Edit, contentDescription = null, modifier = Modifier.size(18.dp)) }
-                IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, contentDescription = null, modifier = Modifier.size(18.dp), tint = MaterialTheme.colorScheme.error) }
+                IconButton(onClick = onEdit) { 
+                    Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(R.string.edit_note), modifier = Modifier.size(18.dp)) 
+                }
+                IconButton(onClick = onDelete) { 
+                    Icon(
+                        imageVector = Icons.Default.Delete, 
+                        contentDescription = null, 
+                        modifier = Modifier.size(18.dp), 
+                        tint = MaterialTheme.colorScheme.error
+                    ) 
+                }
             }
             if (expanded) {
-                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = spacing.small))
                 Text(text = note.noteContent, style = MaterialTheme.typography.bodyMedium)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DetailContentPreview() {
+    SkillflowTheme {
+        DetailContent(
+            state = DetailState(
+                nugget = KnowledgeNugget("1", "Title", "Desc", "Content", "Intermediate", null, "android", false, false, true, null, 0, "2026-08-01"),
+                notes = listOf(UserNote("1", "1", "Title", "Content", 123456789L))
+            ),
+            snackbarHostState = SnackbarHostState(),
+            scrollState = rememberScrollState(),
+            onNavigateBack = {},
+            onToggleSave = {},
+            onFlipCard = {},
+            onMarkAsMastered = {},
+            onNoteTitleChange = {},
+            onNoteDescChange = {},
+            onSaveNote = {},
+            onEditNote = {},
+            onDeleteNote = {}
+        )
     }
 }

@@ -24,9 +24,6 @@ import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
-/**
- * Screen allowing users to request a password reset link.
- */
 @Composable
 fun ForgotPasswordScreen(
     onNavigateBack: () -> Unit,
@@ -45,9 +42,6 @@ fun ForgotPasswordScreen(
     )
 }
 
-/**
- * The internal content of the Forgot Password screen.
- */
 @Composable
 fun ForgotPasswordContent(
     email: String,
@@ -57,6 +51,7 @@ fun ForgotPasswordContent(
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     val backgroundGradient = Brush.verticalGradient(
         listOf(GradientStart.copy(alpha = 0.1f), MaterialTheme.colorScheme.background)
     )
@@ -75,7 +70,7 @@ fun ForgotPasswordContent(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(MaterialTheme.spacing.large)
+                    .padding(spacing.large)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
@@ -86,7 +81,7 @@ fun ForgotPasswordContent(
                     color = GradientStart,
                     fontWeight = FontWeight.ExtraBold
                 )
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                Spacer(modifier = Modifier.height(spacing.medium))
                 Text(
                     text = stringResource(R.string.reset_password_hint),
                     style = MaterialTheme.typography.bodyMedium,
@@ -94,7 +89,7 @@ fun ForgotPasswordContent(
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
+                Spacer(modifier = Modifier.height(spacing.extraLarge + spacing.small))
 
                 if (!isSubmitted) {
                     AuthTextField(
@@ -103,7 +98,7 @@ fun ForgotPasswordContent(
                         label = stringResource(R.string.email),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
+                    Spacer(modifier = Modifier.height(spacing.extraLarge + spacing.small))
 
                     AuthButton(
                         text = stringResource(R.string.send_reset_link),
@@ -113,11 +108,11 @@ fun ForgotPasswordContent(
                 } else {
                     Text(
                         text = stringResource(R.string.reset_link_sent, email),
-                        color = MaterialTheme.colorScheme.primary, // Fixed hardcoded color
+                        color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge + 8.dp))
+                    Spacer(modifier = Modifier.height(spacing.extraLarge + spacing.small))
                     Button(
                         onClick = onNavigateBack,
                         modifier = Modifier.fillMaxWidth()

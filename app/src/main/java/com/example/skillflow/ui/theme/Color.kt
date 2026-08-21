@@ -32,3 +32,11 @@ val BloomEnd = Color(0xFFF5576C)
 
 val GlassyBackground = Color(0xB3FFFFFF)
 val GlassyBackgroundDark = Color(0xB31B1B1F)
+
+// Complexity Colors
+val BeginnerGreen = Color(0xFF4CAF50)
+val BeginnerGreenDark = Color(0xFF2E7D32)
+val IntermediateOrange = Color(0xFFFF9800)
+val IntermediateOrangeDark = Color(0xFFEF6C00)
+val AdvancedRed = Color(0xFFF44336)
+val AdvancedRedDark = Color(0xFFC62828)

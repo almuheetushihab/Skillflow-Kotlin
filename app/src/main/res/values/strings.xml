@@ -46,6 +46,7 @@
     <string name="error_password_short">Password must be at least 6 characters</string>
     <string name="error_nugget_not_found">Nugget not found</string>
     <string name="error_unknown">An unknown error occurred</string>
+    <string name="retry">Retry</string>
     <string name="email_updated">Email updated locally</string>
     <string name="name_updated">Name updated locally</string>
     <string name="deletion_failed">Deletion failed</string>
@@ -57,6 +58,7 @@
     <string name="skip">Skip</string>
     <string name="get_started">Get Started</string>
     <string name="please_select_goal">Please select a career goal</string>
+    <string name="loading_career_paths">Loading career paths...</string>
 
     <!-- Home -->
     <string name="daily_goals">Daily Goals</string>
@@ -68,6 +70,30 @@
     <string name="mastered">Mastered</string>
     <string name="search_hint">Search knowledge...</string>
     <string name="search_results">Search Results</string>
+    <string name="all_learning_material">All Learning Material</string>
+    <string name="history_for">History for %1$s</string>
+    <string name="select_date">Select Date</string>
+    <string name="learned_on_this_day">Learned on this day</string>
+    <string name="all_lessons">All Lessons</string>
+    <string name="refresh">Refresh</string>
+    <string name="no_activity_for_date">No activity for this date.</string>
+    <string name="no_nuggets_found">No nuggets found.</string>
+    <string name="mastered_question">Mastered this topic?</string>
+    <string name="add_study_note">Add Study Note</string>
+    <string name="edit_note">Edit Note</string>
+    <string name="note_title_placeholder">Note Title</string>
+    <string name="note_details_placeholder">Write details...</string>
+    <string name="save_note">Save Note</string>
+    <string name="update_note">Update Note</string>
+    <string name="your_saved_notes">Your Saved Notes</string>
+    <string name="note_saved">Note saved!</string>
+    <string name="note_deleted">Note deleted</string>
+    <string name="error_saving_note">Error saving note</string>
+    <string name="select_date_hint">Select Date</string>
+    <string name="keep_momentum">Keep the momentum going!</string>
+    <string name="achieved_emoji">Achieved! 🏆</string>
+    <string name="goal">Goal</string>
+    <string name="not_set">Not set</string>
 
     <!-- Detail -->
     <string name="knowledge_nugget">Knowledge Nugget</string>

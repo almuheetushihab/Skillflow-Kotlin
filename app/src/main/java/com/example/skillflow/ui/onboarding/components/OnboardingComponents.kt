@@ -19,10 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
 import com.example.skillflow.presentation.onboarding.OnboardingState
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -31,10 +33,11 @@ fun OnboardingInfoPage(
     description: String,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(MaterialTheme.spacing.extraLarge),
+            .padding(spacing.extraLarge),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -53,7 +56,7 @@ fun OnboardingInfoPage(
             )
         }
         
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.extraLarge))
+        Spacer(modifier = Modifier.height(spacing.extraLarge))
         
         Text(
             text = title,
@@ -63,7 +66,7 @@ fun OnboardingInfoPage(
             color = MaterialTheme.colorScheme.onBackground
         )
         
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+        Spacer(modifier = Modifier.height(spacing.medium))
         
         Text(
             text = description,
@@ -80,13 +83,14 @@ fun OnboardingSelectionPage(
     onCareerPathSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(MaterialTheme.spacing.large),
+            .padding(spacing.large),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+        Spacer(modifier = Modifier.height(spacing.large))
         
         Text(
             text = stringResource(R.string.onboarding_goal_title),
@@ -95,7 +99,7 @@ fun OnboardingSelectionPage(
             modifier = Modifier.align(Alignment.Start)
         )
         
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.small))
+        Spacer(modifier = Modifier.height(spacing.small))
         
         Text(
             text = stringResource(R.string.onboarding_goal_desc),
@@ -104,20 +108,25 @@ fun OnboardingSelectionPage(
             modifier = Modifier.align(Alignment.Start)
         )
 
-        Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+        Spacer(modifier = Modifier.height(spacing.large))
 
         if (state.isLoading) {
-            Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator(color = GradientStart)
+            Column(verticalArrangement = Arrangement.spacedBy(spacing.medium)) {
+                repeat(4) {
+                    CareerPathSkeleton()
+                }
             }
         } else if (state.careerPaths.isEmpty()) {
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                Text("Loading career paths...", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = stringResource(R.string.loading_career_paths), 
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         } else {
             LazyColumn(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.medium)
+                verticalArrangement = Arrangement.spacedBy(spacing.medium)
             ) {
                 itemsIndexed(state.careerPaths) { _, path ->
                     CareerPathItem(
@@ -134,7 +143,7 @@ fun OnboardingSelectionPage(
                 text = state.error,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(vertical = MaterialTheme.spacing.small)
+                modifier = Modifier.padding(vertical = spacing.small)
             )
         }
     }
@@ -144,14 +153,16 @@ fun OnboardingSelectionPage(
 fun CareerPathItem(
     path: com.example.skillflow.domain.model.CareerPath,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(spacing.medium))
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(spacing.medium),
         border = androidx.compose.foundation.BorderStroke(
             1.dp, 
             if (isSelected) GradientStart else MaterialTheme.colorScheme.outlineVariant
@@ -161,7 +172,7 @@ fun CareerPathItem(
         )
     ) {
         Row(
-            modifier = Modifier.padding(MaterialTheme.spacing.medium),
+            modifier = Modifier.padding(spacing.medium),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Surface(
@@ -178,11 +189,19 @@ fun CareerPathItem(
                 }
             }
             
-            Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
+            Spacer(modifier = Modifier.width(spacing.medium))
             
             Column {
-                Text(text = path.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text(text = path.description, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    text = path.name, 
+                    style = MaterialTheme.typography.titleMedium, 
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = path.description, 
+                    style = MaterialTheme.typography.bodySmall, 
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
@@ -196,10 +215,11 @@ fun OnboardingBottomBar(
     isSelectionComplete: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val spacing = MaterialTheme.spacing
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(MaterialTheme.spacing.large),
+            .padding(spacing.large),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -210,7 +230,7 @@ fun OnboardingBottomBar(
             )
         }
 
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(horizontalArrangement = Arrangement.spacedBy(spacing.small)) {
             repeat(pagerState.pageCount) { index ->
                 Box(
                     modifier = Modifier
@@ -235,6 +255,28 @@ fun OnboardingBottomBar(
                 text = if (pagerState.currentPage == pagerState.pageCount - 1) 
                     stringResource(R.string.get_started) else stringResource(R.string.next),
                 color = Color.White
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnboardingInfoPagePreview() {
+    SkillflowTheme {
+        OnboardingInfoPage(title = "Welcome", description = "Learn something new today.")
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CareerPathItemPreview() {
+    SkillflowTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            CareerPathItem(
+                path = com.example.skillflow.domain.model.CareerPath("1", "Android", "Learn Android", ""),
+                isSelected = true,
+                onClick = {}
             )
         }
     }

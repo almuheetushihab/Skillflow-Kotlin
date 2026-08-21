@@ -95,8 +95,10 @@ class SkillRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun searchNuggets(query: String): Flow<List<KnowledgeNugget>> = flow {
-        emit(emptyList()) 
+    override fun searchNuggets(query: String): Flow<List<KnowledgeNugget>> {
+        return dao.searchNuggets(query).map { entities ->
+            entities.map { it.toDomain() }
+        }
     }
 
     override fun getDailyProgress(careerPathId: String, date: String): Flow<Pair<Int, Int>> {

@@ -6,6 +6,8 @@ import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.domain.repository.SkillRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -36,8 +38,29 @@ class HomeViewModel @Inject constructor(
     private val _state = MutableStateFlow(HomeState())
     val state = _state.asStateFlow()
 
+    private val _searchQuery = MutableStateFlow("")
+
     init {
         loadHomeData()
+        observeSearch()
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
+    private fun observeSearch() {
+        _searchQuery
+            .debounce(300)
+            .distinctUntilChanged()
+            .flatMapLatest { query ->
+                if (query.isBlank()) {
+                    flowOf(emptyList())
+                } else {
+                    skillRepository.searchNuggets(query)
+                }
+            }
+            .onEach { results ->
+                _state.update { it.copy(searchResults = results) }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun loadHomeData() {
@@ -102,13 +125,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onSearchQueryChange(query: String) {
+        _searchQuery.value = query
         _state.update { it.copy(searchQuery = query, isSearching = query.isNotEmpty()) }
-        if (query.isNotEmpty()) {
-            viewModelScope.launch {
-                skillRepository.searchNuggets(query).collect { results ->
-                    _state.update { it.copy(searchResults = results) }
-                }
-            }
-        }
     }
 }
