@@ -3,6 +3,7 @@ package com.example.skillflow.ui.detail
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -73,6 +74,7 @@ fun DetailScreen(
     )
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailContent(
     state: DetailState,
@@ -167,7 +169,7 @@ fun DetailContent(
 
                 Spacer(modifier = Modifier.height(spacing.large))
 
-                // Saved Notes Section
+                // Saved Notes Grid Section
                 if (state.notes.isNotEmpty()) {
                     Text(
                         text = stringResource(R.string.your_saved_notes), 
@@ -176,14 +178,24 @@ fun DetailContent(
                         modifier = Modifier.align(Alignment.Start),
                         color = MaterialTheme.colorScheme.primary
                     )
+                    
                     Spacer(modifier = Modifier.height(spacing.medium))
-                    state.notes.forEach { note ->
-                        NoteCard(
-                            note = note,
-                            onEdit = { onEditNote(note) },
-                            onDelete = { onDeleteNote(note) }
-                        )
-                        Spacer(modifier = Modifier.height(spacing.medium))
+                    
+                    // FLOW ROW creates a dynamic grid feel
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(spacing.medium),
+                        verticalArrangement = Arrangement.spacedBy(spacing.medium),
+                        maxItemsInEachRow = 2
+                    ) {
+                        state.notes.forEach { note ->
+                            NoteCard(
+                                note = note,
+                                onEdit = { onEditNote(note) },
+                                onDelete = { onDeleteNote(note) },
+                                modifier = Modifier.weight(1f, fill = false)
+                            )
+                        }
                     }
                 }
 
@@ -200,7 +212,10 @@ fun DetailContentPreview() {
         DetailContent(
             state = DetailState(
                 nugget = KnowledgeNugget("1", "Title", "Desc", "Content", "Intermediate", null, "android", false, false, true, null, 0, "2026-08-01"),
-                notes = listOf(UserNote("1", "1", "Note Title", "Some content here...", 123456789L))
+                notes = listOf(
+                    UserNote("1", "1", "Note 1", "Content 1", 123456789L),
+                    UserNote("2", "1", "Note 2", "Content 2", 123456789L)
+                )
             ),
             snackbarHostState = SnackbarHostState(),
             scrollState = rememberScrollState(),
