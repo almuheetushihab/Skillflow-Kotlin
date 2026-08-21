@@ -11,6 +11,7 @@ import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
@@ -26,7 +27,15 @@ data class HomeState(
     val totalLearned: Int = 0,
     val totalCount: Int = 0,
     val selectedDate: String? = null,
+    val availableDates: List<DateModel> = emptyList(),
     val isRefreshing: Boolean = false
+)
+
+data class DateModel(
+    val dayName: String,
+    val dateDisplay: String,
+    val fullDate: String,
+    val isSelected: Boolean = false
 )
 
 @HiltViewModel
@@ -39,10 +48,32 @@ class HomeViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     private val _searchQuery = MutableStateFlow("")
+    private val dateFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
     init {
+        generateDateStrip()
         loadHomeData()
         observeSearch()
+    }
+
+    private fun generateDateStrip() {
+        val dates = mutableListOf<DateModel>()
+        val calendar = Calendar.getInstance()
+        
+        // Add 7 previous days and today
+        for (i in 0..7) {
+            val date = calendar.time
+            dates.add(
+                DateModel(
+                    dayName = SimpleDateFormat("EEE", Locale.getDefault()).format(date),
+                    dateDisplay = SimpleDateFormat("dd", Locale.getDefault()).format(date),
+                    fullDate = dateFormatter.format(date),
+                    isSelected = false
+                )
+            )
+            calendar.add(Calendar.DAY_OF_YEAR, -1)
+        }
+        _state.update { it.copy(availableDates = dates) }
     }
 
     @OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
@@ -51,11 +82,7 @@ class HomeViewModel @Inject constructor(
             .debounce(300)
             .distinctUntilChanged()
             .flatMapLatest { query ->
-                if (query.isBlank()) {
-                    flowOf(emptyList())
-                } else {
-                    skillRepository.searchNuggets(query)
-                }
+                if (query.isBlank()) flowOf(emptyList()) else skillRepository.searchNuggets(query)
             }
             .onEach { results ->
                 _state.update { it.copy(searchResults = results) }
@@ -72,7 +99,6 @@ class HomeViewModel @Inject constructor(
 
         viewModelScope.launch {
             settingsRepository.getSelectedCareerPath().filterNotNull().collectLatest { pathId ->
-                // Observe progress to check for empty DB
                 skillRepository.getDailyProgress(pathId, "").collect { progress ->
                     _state.update { 
                         it.copy(
@@ -81,8 +107,6 @@ class HomeViewModel @Inject constructor(
                             isPathFinished = progress.second > 0 && progress.first == progress.second
                         ) 
                     }
-                    
-                    // If DB is empty, trigger a seed
                     if (progress.second == 0 && !_state.value.isRefreshing) {
                         skillRepository.seedDatabase()
                     }
@@ -113,7 +137,14 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onDateSelected(date: String?) {
-        _state.update { it.copy(selectedDate = date) }
+        _state.update { 
+            it.copy(
+                selectedDate = date,
+                availableDates = it.availableDates.map { model ->
+                    model.copy(isSelected = model.fullDate == date)
+                }
+            ) 
+        }
     }
 
     fun refresh() {

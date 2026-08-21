@@ -3,7 +3,6 @@ package com.example.skillflow.ui.detail
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,11 +15,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -33,7 +30,8 @@ import com.example.skillflow.presentation.detail.DetailViewModel
 import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.detail.components.KnowledgeCard
-import com.example.skillflow.ui.theme.GradientEnd
+import com.example.skillflow.ui.detail.components.NoteCard
+import com.example.skillflow.ui.detail.components.NoteInputCard
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
@@ -157,132 +155,39 @@ fun DetailContent(
 
                 Spacer(modifier = Modifier.height(spacing.large))
 
-                // Notes Input
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)),
-                    shape = RoundedCornerShape(spacing.medium)
-                ) {
-                    Column(modifier = Modifier.padding(spacing.medium)) {
-                        Text(
-                            text = if (state.editingNoteId == null) 
-                                stringResource(R.string.add_study_note) 
-                            else 
-                                stringResource(R.string.edit_note), 
-                            style = MaterialTheme.typography.titleSmall, 
-                            color = GradientStart
-                        )
-                        Spacer(modifier = Modifier.height(spacing.small))
-                        OutlinedTextField(
-                            value = state.noteTitle,
-                            onValueChange = onNoteTitleChange,
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = { Text(text = stringResource(R.string.note_title_placeholder)) },
-                            singleLine = true,
-                            shape = RoundedCornerShape(spacing.small)
-                        )
-                        Spacer(modifier = Modifier.height(spacing.small))
-                        OutlinedTextField(
-                            value = state.noteDescription,
-                            onValueChange = onNoteDescChange,
-                            modifier = Modifier.fillMaxWidth().heightIn(min = 120.dp),
-                            placeholder = { Text(text = stringResource(R.string.note_details_placeholder)) },
-                            shape = RoundedCornerShape(spacing.small)
-                        )
-                        Spacer(modifier = Modifier.height(spacing.medium))
-                        Button(
-                            onClick = onSaveNote,
-                            modifier = Modifier.align(Alignment.End),
-                            shape = RoundedCornerShape(spacing.medium)
-                        ) {
-                            Icon(
-                                imageVector = if (state.editingNoteId == null) Icons.Default.Save else Icons.Default.Update, 
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(spacing.small))
-                            Text(
-                                text = if (state.editingNoteId == null) 
-                                    stringResource(R.string.save_note) 
-                                else 
-                                    stringResource(R.string.update_note)
-                            )
-                        }
-                    }
-                }
+                // Premium Note Input Card
+                NoteInputCard(
+                    title = state.noteTitle,
+                    onTitleChange = onNoteTitleChange,
+                    description = state.noteDescription,
+                    onDescriptionChange = onNoteDescChange,
+                    onSave = onSaveNote,
+                    isEditing = state.editingNoteId != null
+                )
 
                 Spacer(modifier = Modifier.height(spacing.large))
 
-                // Notes List
+                // Saved Notes Section
                 if (state.notes.isNotEmpty()) {
                     Text(
                         text = stringResource(R.string.your_saved_notes), 
                         style = MaterialTheme.typography.titleMedium, 
-                        fontWeight = FontWeight.Bold, 
-                        modifier = Modifier.align(Alignment.Start)
+                        fontWeight = FontWeight.ExtraBold, 
+                        modifier = Modifier.align(Alignment.Start),
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(spacing.small))
+                    Spacer(modifier = Modifier.height(spacing.medium))
                     state.notes.forEach { note ->
-                        NoteItem(
-                            note = note, 
-                            onEdit = { onEditNote(note) }, 
+                        NoteCard(
+                            note = note,
+                            onEdit = { onEditNote(note) },
                             onDelete = { onDeleteNote(note) }
                         )
-                        Spacer(modifier = Modifier.height(spacing.small))
+                        Spacer(modifier = Modifier.height(spacing.medium))
                     }
                 }
 
                 Spacer(modifier = Modifier.height(spacing.extraLarge))
-            }
-        }
-    }
-}
-
-@Composable
-fun NoteItem(
-    note: UserNote, 
-    onEdit: () -> Unit, 
-    onDelete: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-    val spacing = MaterialTheme.spacing
-    
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(spacing.medium))
-            .clickable { expanded = !expanded },
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-    ) {
-        Column(modifier = Modifier.padding(spacing.medium)) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(text = note.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
-                    if (!expanded) {
-                        Text(
-                            text = note.noteContent, 
-                            style = MaterialTheme.typography.bodySmall, 
-                            maxLines = 1, 
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                }
-                IconButton(onClick = onEdit) { 
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(R.string.edit_note), modifier = Modifier.size(18.dp)) 
-                }
-                IconButton(onClick = onDelete) { 
-                    Icon(
-                        imageVector = Icons.Default.Delete, 
-                        contentDescription = null, 
-                        modifier = Modifier.size(18.dp), 
-                        tint = MaterialTheme.colorScheme.error
-                    ) 
-                }
-            }
-            if (expanded) {
-                HorizontalDivider(modifier = Modifier.padding(vertical = spacing.small))
-                Text(text = note.noteContent, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
@@ -295,7 +200,7 @@ fun DetailContentPreview() {
         DetailContent(
             state = DetailState(
                 nugget = KnowledgeNugget("1", "Title", "Desc", "Content", "Intermediate", null, "android", false, false, true, null, 0, "2026-08-01"),
-                notes = listOf(UserNote("1", "1", "Title", "Content", 123456789L))
+                notes = listOf(UserNote("1", "1", "Note Title", "Some content here...", 123456789L))
             ),
             snackbarHostState = SnackbarHostState(),
             scrollState = rememberScrollState(),

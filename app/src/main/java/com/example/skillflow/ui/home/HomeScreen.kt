@@ -27,6 +27,7 @@ import com.example.skillflow.presentation.home.HomeViewModel
 import com.example.skillflow.ui.common.AnimatedEntrance
 import com.example.skillflow.ui.common.NuggetCard
 import com.example.skillflow.ui.home.components.DailyProgressCard
+import com.example.skillflow.ui.home.components.DateStrip
 import com.example.skillflow.ui.home.components.NuggetCardSkeleton
 import com.example.skillflow.ui.home.components.ProgressCardSkeleton
 import com.example.skillflow.ui.theme.GradientStart
@@ -111,7 +112,7 @@ fun HomeContent(
                             text = if (state.selectedDate == null) 
                                 stringResource(R.string.all_learning_material) 
                             else 
-                                stringResource(R.string.history_for, state.selectedDate),
+                                stringResource(R.string.history_for, state.selectedDate!!),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f)
                         )
@@ -204,7 +205,15 @@ fun HomeContent(
                     } else {
                         DailyProgressCard(completedCount = state.totalLearned, totalCount = state.totalCount)
                     }
-                    Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                }
+
+                // New Interactive Date Strip
+                item {
+                    Spacer(modifier = Modifier.height(spacing.small))
+                    DateStrip(
+                        dates = state.availableDates,
+                        onDateSelected = onDateSelected
+                    )
                 }
 
                 item {
@@ -252,7 +261,7 @@ fun HomeContent(
                     item {
                         Box(
                             modifier = Modifier
-                                .fillParentMaxHeight(0.6f)
+                                .fillParentMaxHeight(0.4f)
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
