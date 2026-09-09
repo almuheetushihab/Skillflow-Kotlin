@@ -1,0 +1,149 @@
+package com.example.skillflow.ui.common
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
+import com.example.skillflow.domain.model.KnowledgeNugget
+import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.spacing
+
+@Composable
+fun NuggetCard(
+    nugget: KnowledgeNugget,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val masteredColor = GradientStart
+    val readColor = MaterialTheme.colorScheme.secondary
+    val spacing = MaterialTheme.spacing
+    
+    val statusText = when {
+        nugget.isMastered -> stringResource(R.string.status_mastered)
+        nugget.isDone -> stringResource(R.string.status_finished)
+        else -> stringResource(R.string.status_start_now)
+    }
+
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(MaterialTheme.spacing.large))
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(MaterialTheme.spacing.large),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(
+            width = if (nugget.isMastered) 2.dp else 1.dp,
+            color = when {
+                nugget.isMastered -> masteredColor.copy(alpha = 0.5f)
+                nugget.isDone -> readColor.copy(alpha = 0.3f)
+                else -> MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+            }
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(spacing.medium)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(spacing.medium))
+                    .background(
+                        when {
+                            nugget.isMastered -> masteredColor.copy(alpha = 0.15f)
+                            nugget.isDone -> readColor.copy(alpha = 0.1f)
+                            else -> MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.7f)
+                        }
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = when {
+                        nugget.isMastered -> Icons.Default.Stars
+                        nugget.isDone -> Icons.Default.Check
+                        else -> Icons.Default.MenuBook
+                    },
+                    contentDescription = statusText,
+                    tint = when {
+                        nugget.isMastered -> masteredColor
+                        nugget.isDone -> readColor
+                        else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
+                    },
+                    modifier = Modifier.size(spacing.extraLarge)
+                )
+                
+                if (nugget.isSaved) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(spacing.extraSmall)
+                            .size(spacing.small)
+                            .clip(CircleShape)
+                            .background(masteredColor)
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.width(spacing.medium))
+            
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = nugget.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                
+                Spacer(modifier = Modifier.height(spacing.extraSmall))
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    ComplexityBadge(complexity = nugget.complexity)
+                    
+                    Spacer(modifier = Modifier.width(spacing.small))
+                    
+                    Text(
+                        text = statusText,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = when {
+                            nugget.isMastered -> masteredColor
+                            nugget.isDone -> readColor
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                        },
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
+            
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                contentDescription = stringResource(R.string.knowledge_nugget),
+                modifier = Modifier.size(spacing.medium - 2.dp),
+                tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
+            )
+        }
+    }
+}
