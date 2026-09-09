@@ -16,7 +16,7 @@ import javax.inject.Singleton
 class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
 
     override fun askGemini(context: String, userQuestion: String): Flow<Result<String>> = flow {
-        val apiKey = BuildConfig.GEMINI_API_KEY
+        val apiKey = BuildConfig.GEMINI_API_KEY.trim().removeSurrounding("\"").removeSurrounding("'")
         if (apiKey.isBlank()) {
             emit(
                 Result.failure(
@@ -28,7 +28,6 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
             return@flow
         }
 
-        // Configure system instruction using the SDK content builder
         val systemInstructionContent = content {
             text(
                 "You are a professional Android Development and UI/UX Tutor for the SkillFlow app. " +
@@ -36,13 +35,20 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
             )
         }
 
-        // Primary model is gemini-1.5-flash with a fallback to gemini-1.5-pro
-        val candidateModels = listOf("gemini-1.5-flash", "gemini-1.5-pro")
-        var lastException: Throwable? = null
+        // Candidate models to try sequentially in case of model availability or 404 issues
+        val candidateModels = listOf(
+            "gemini-1.5-flash-latest",
+            "gemini-1.5-flash",
+            "gemini-2.0-flash",
+            "gemini-1.5-pro",
+            "gemini-1.0-pro"
+        )
+
+        var lastErrorMsg: String? = null
 
         for (modelName in candidateModels) {
             try {
-                Timber.d("Attempting Gemini API call with model: $modelName")
+                Timber.d("Attempting Gemini API request with model: $modelName")
                 val generativeModel = GenerativeModel(
                     modelName = modelName,
                     apiKey = apiKey,
@@ -57,24 +63,22 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
                     emit(Result.success(responseText))
                     return@flow
                 }
-            } catch (e: Exception) {
-                Timber.e(e, "Failed Gemini API call with model: $modelName")
-                lastException = e
             } catch (t: Throwable) {
-                Timber.e(t, "Serialization or runtime exception with model: $modelName")
-                lastException = t
+                Timber.w(t, "Model $modelName failed")
+                lastErrorMsg = t.localizedMessage ?: t.message
             }
         }
 
-        val userFriendlyMessage = when {
-            lastException?.message?.contains("404") == true || lastException?.message?.contains("not found") == true ->
-                "The requested Gemini AI model was not found or is not enabled for your API key. Please check your Gemini API key in local.properties."
-            lastException?.message?.contains("API_KEY") == true || lastException?.message?.contains("403") == true ->
-                "Invalid or unauthorized Gemini API Key. Please verify GEMINI_API_KEY in local.properties."
+        // Format clean error message if all candidate models fail
+        val cleanErrorMessage = when {
+            lastErrorMsg?.contains("404") == true || lastErrorMsg?.contains("NOT_FOUND") == true || lastErrorMsg?.contains("not found") == true ->
+                "The AI model is currently unavailable for your API key. Please check Google AI Studio (aistudio.google.com) to verify your API Key and enabled models."
+            lastErrorMsg?.contains("401") == true || lastErrorMsg?.contains("invalid authentication") == true ->
+                "Invalid API Key. Please verify GEMINI_API_KEY in local.properties."
             else ->
-                lastException?.localizedMessage ?: "Unable to retrieve response from SkillFlow AI Tutor."
+                "Unable to connect to SkillFlow AI Tutor right now. Please try again in a moment."
         }
 
-        emit(Result.failure(Exception(userFriendlyMessage, lastException)))
+        emit(Result.failure(Exception(cleanErrorMessage)))
     }.flowOn(Dispatchers.IO)
 }
