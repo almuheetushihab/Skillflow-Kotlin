@@ -90,6 +90,9 @@ fun SkillFlowNavHost(
                 onNavigateToDetail = { id ->
                     navController.navigate(Screen.Detail(nuggetId = id))
                 },
+                onNavigateToBookmarks = {
+                    navController.navigate(Screen.Bookmarks)
+                },
                 modifier = Modifier.padding(innerPadding)
             )
         }

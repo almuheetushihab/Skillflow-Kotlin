@@ -19,6 +19,7 @@ import javax.inject.Inject
 data class HomeState(
     val dailyNuggets: List<KnowledgeNugget> = emptyList(),
     val streakCount: Int = 0,
+    val savedCount: Int = 0,
     val isLoading: Boolean = false,
     val isSearching: Boolean = false,
     val searchQuery: String = "",
@@ -95,6 +96,10 @@ class HomeViewModel @Inject constructor(
         
         settingsRepository.getStreakCount()
             .onEach { count -> _state.update { it.copy(streakCount = count) } }
+            .launchIn(viewModelScope)
+
+        skillRepository.getSavedNuggets()
+            .onEach { savedList -> _state.update { it.copy(savedCount = savedList.size) } }
             .launchIn(viewModelScope)
 
         viewModelScope.launch {

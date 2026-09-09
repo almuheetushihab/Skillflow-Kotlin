@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -26,13 +25,12 @@ import com.example.skillflow.presentation.home.HomeState
 import com.example.skillflow.presentation.home.HomeViewModel
 import com.example.skillflow.ui.common.AnimatedEntrance
 import com.example.skillflow.ui.common.NuggetCard
-import com.example.skillflow.ui.home.components.DailyProgressCard
-import com.example.skillflow.ui.home.components.DateStrip
+import com.example.skillflow.ui.home.components.BentoGrid
+import com.example.skillflow.ui.home.components.CategoryPills
 import com.example.skillflow.ui.home.components.NuggetCardSkeleton
 import com.example.skillflow.ui.home.components.ProgressCardSkeleton
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
-import com.example.skillflow.ui.theme.SunsetEnd
 import com.example.skillflow.ui.theme.spacing
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -41,6 +39,7 @@ import java.util.Locale
 fun HomeScreen(
     onNavigateToDetail: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onNavigateToBookmarks: () -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -49,6 +48,7 @@ fun HomeScreen(
         state = state,
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onNavigateToDetail = onNavigateToDetail,
+        onNavigateToBookmarks = onNavigateToBookmarks,
         onDateSelected = viewModel::onDateSelected,
         onRefresh = viewModel::refresh,
         modifier = modifier
@@ -61,6 +61,7 @@ fun HomeContent(
     state: HomeState,
     onSearchQueryChange: (String) -> Unit,
     onNavigateToDetail: (String) -> Unit,
+    onNavigateToBookmarks: () -> Unit,
     onDateSelected: (String?) -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier
@@ -122,32 +123,16 @@ fun HomeContent(
                     IconButton(onClick = { showDatePicker = true }) {
                         Icon(
                             imageVector = Icons.Default.CalendarMonth,
-                            contentDescription = stringResource(R.string.select_date)
+                            contentDescription = stringResource(R.string.select_date),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                    Surface(
-                        shape = RoundedCornerShape(spacing.extraLarge),
-                        color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.15f),
-                        modifier = Modifier.padding(end = spacing.medium)
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(horizontal = spacing.medium - 2.dp, vertical = spacing.extraSmall + 2.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.LocalFireDepartment,
-                                contentDescription = stringResource(R.string.streak),
-                                tint = SunsetEnd,
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(spacing.extraSmall + 2.dp))
-                            Text(
-                                text = "${state.streakCount}",
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.ExtraBold,
-                                color = SunsetEnd
-                            )
-                        }
+                    IconButton(onClick = onRefresh) {
+                        Icon(
+                            imageVector = Icons.Default.RestartAlt,
+                            contentDescription = stringResource(R.string.refresh),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
                     }
                 },
                 scrollBehavior = scrollBehavior,
@@ -163,16 +148,35 @@ fun HomeContent(
                 .fillMaxSize()
                 .padding(horizontal = spacing.large),
             contentPadding = PaddingValues(
-                top = padding.calculateTopPadding() + spacing.medium,
+                top = padding.calculateTopPadding() + spacing.small,
                 bottom = padding.calculateBottomPadding() + spacing.extraLarge
             ),
             verticalArrangement = Arrangement.spacedBy(spacing.medium)
         ) {
+            // Bento Grid Header Section
+            if (!state.isSearching) {
+                item {
+                    if (state.isLoading) {
+                        ProgressCardSkeleton()
+                    } else {
+                        BentoGrid(
+                            completedCount = state.totalLearned,
+                            totalCount = state.totalCount,
+                            streakCount = state.streakCount,
+                            savedCount = state.savedCount,
+                            onSavedTileClick = onNavigateToBookmarks
+                        )
+                    }
+                }
+            }
+
+            // Search Box
             item {
                 Surface(
-                    shape = RoundedCornerShape(spacing.extraLarge),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                    modifier = Modifier.fillMaxWidth()
+                    shape = RoundedCornerShape(24.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f),
+                    modifier = Modifier.fillMaxWidth(),
+                    tonalElevation = 2.dp
                 ) {
                     TextField(
                         value = state.searchQuery,
@@ -198,24 +202,17 @@ fun HomeContent(
             }
 
             if (!state.isSearching) {
+                // Category Pills Section
                 item {
-                    Spacer(modifier = Modifier.height(spacing.extraSmall))
-                    if (state.isLoading) {
-                        ProgressCardSkeleton()
-                    } else {
-                        DailyProgressCard(completedCount = state.totalLearned, totalCount = state.totalCount)
-                    }
-                }
-
-                // New Interactive Date Strip
-                item {
-                    Spacer(modifier = Modifier.height(spacing.small))
-                    DateStrip(
-                        dates = state.availableDates,
-                        onDateSelected = onDateSelected
+                    CategoryPills(
+                        selectedDate = state.selectedDate,
+                        availableDates = state.availableDates,
+                        onDateSelected = onDateSelected,
+                        onOpenDatePicker = { showDatePicker = true }
                     )
                 }
 
+                // Header for Lessons
                 item {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -230,13 +227,6 @@ fun HomeContent(
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold
                         )
-                        IconButton(onClick = onRefresh) {
-                            Icon(
-                                imageVector = Icons.Default.RestartAlt,
-                                contentDescription = stringResource(R.string.refresh),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
                     }
                 }
             } else {
@@ -261,7 +251,7 @@ fun HomeContent(
                     item {
                         Box(
                             modifier = Modifier
-                                .fillParentMaxHeight(0.4f)
+                                .fillParentMaxHeight(0.35f)
                                 .fillMaxWidth(),
                             contentAlignment = Alignment.Center
                         ) {
@@ -300,10 +290,13 @@ fun HomeContentPreview() {
                     KnowledgeNugget("1", "Title 1", "Desc", "Content", "Beginner", null, "android", false, false, false, null, 0, "2026-08-01")
                 ),
                 totalLearned = 5,
-                totalCount = 15
+                totalCount = 15,
+                streakCount = 7,
+                savedCount = 12
             ),
             onSearchQueryChange = {},
             onNavigateToDetail = {},
+            onNavigateToBookmarks = {},
             onDateSelected = {},
             onRefresh = {}
         )
