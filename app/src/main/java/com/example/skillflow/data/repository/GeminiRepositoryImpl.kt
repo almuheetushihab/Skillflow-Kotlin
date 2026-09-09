@@ -1,6 +1,4 @@
 package com.example.skillflow.data.repository
-
-import com.example.skillflow.BuildConfig
 import com.example.skillflow.domain.repository.GeminiRepository
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
@@ -8,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.serialization.SerializationException
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,25 +29,25 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
 
         val systemInstructionContent = content {
             text(
-                "You are a professional Android Development and UI/UX Tutor for the SkillFlow app. " +
-                        "Answer the user's question based on this nugget content: $context. Keep answers concise and beginner-friendly."
+                "You are a professional Android and UI/UX Tutor for SkillFlow. " +
+                        "Answer the user's question based on this nugget content: $context. " +
+                        "Keep answers concise and beginner-friendly."
             )
         }
 
-        // Candidate models to try sequentially in case of model availability or 404 issues
         val candidateModels = listOf(
             "gemini-1.5-flash-latest",
-            "gemini-1.5-flash",
-            "gemini-2.0-flash",
-            "gemini-1.5-pro",
-            "gemini-1.0-pro"
+            "gemini-1.5-pro"
         )
 
-        var lastErrorMsg: String? = null
+        var lastError: Throwable? = null
+        var lastTriedModel: String? = null
 
         for (modelName in candidateModels) {
             try {
+                lastTriedModel = modelName
                 Timber.d("Attempting Gemini API request with model: $modelName")
+
                 val generativeModel = GenerativeModel(
                     modelName = modelName,
                     apiKey = apiKey,
@@ -62,23 +61,39 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
                     Timber.d("Successfully received response from model: $modelName")
                     emit(Result.success(responseText))
                     return@flow
+                } else {
+                    lastError = IllegalStateException("Model '$modelName' returned an empty response.")
                 }
-            } catch (t: Throwable) {
-                Timber.w(t, "Model $modelName failed")
-                lastErrorMsg = t.localizedMessage ?: t.message
+            } catch (e: SerializationException) {
+                Timber.w(e, "Serialization failed for model: $modelName")
+                lastError = e
+            } catch (e: Exception) {
+                Timber.w(e, "Request failed for model: $modelName")
+                lastError = e
             }
         }
 
-        // Format clean error message if all candidate models fail
-        val cleanErrorMessage = when {
-            lastErrorMsg?.contains("404") == true || lastErrorMsg?.contains("NOT_FOUND") == true || lastErrorMsg?.contains("not found") == true ->
-                "The AI model is currently unavailable for your API key. Please check Google AI Studio (aistudio.google.com) to verify your API Key and enabled models."
-            lastErrorMsg?.contains("401") == true || lastErrorMsg?.contains("invalid authentication") == true ->
-                "Invalid API Key. Please verify GEMINI_API_KEY in local.properties."
-            else ->
-                "Unable to connect to SkillFlow AI Tutor right now. Please try again in a moment."
+        val errorText = lastError?.message.orEmpty()
+        val message = when {
+            errorText.contains("404", ignoreCase = true) ||
+                    errorText.contains("NOT_FOUND", ignoreCase = true) ||
+                    errorText.contains("not found", ignoreCase = true) -> {
+                "Gemini model status error: '$lastTriedModel' is not available on the v1beta endpoint. " +
+                        "Tried fallback model 'gemini-1.5-pro' as well, but both failed."
+            }
+            errorText.contains("401", ignoreCase = true) ||
+                    errorText.contains("unauthorized", ignoreCase = true) ||
+                    errorText.contains("invalid api key", ignoreCase = true) -> {
+                "Invalid Gemini API key. Please verify GEMINI_API_KEY in local.properties."
+            }
+            lastError is SerializationException -> {
+                "Gemini returned an unexpected response format (serialization error). Please try again later."
+            }
+            else -> {
+                "Unable to connect to SkillFlow AI Tutor right now. ${lastError?.message ?: ""}".trim()
+            }
         }
 
-        emit(Result.failure(Exception(cleanErrorMessage)))
+        emit(Result.failure(Exception(message, lastError)))
     }.flowOn(Dispatchers.IO)
 }

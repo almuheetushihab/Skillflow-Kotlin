@@ -11,7 +11,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 /**
- * Implementation of [PlayStoreManager] using Google Play Core libraries.
+ * Implementation of [PlayStoreManager] using Google Play Store libraries.
  */
 @Singleton
 class PlayStoreManagerImpl @Inject constructor() : PlayStoreManager {
