@@ -15,13 +15,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.skillflow.R
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -32,6 +36,8 @@ fun KnowledgeCard(
     onFlip: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val revealText = stringResource(R.string.tap_to_reveal)
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -64,7 +70,7 @@ fun KnowledgeCard(
                         ) {
                             Icon(
                                 imageVector = Icons.Default.QuestionMark,
-                                contentDescription = null,
+                                contentDescription = revealText,
                                 tint = Color.White,
                                 modifier = Modifier.padding(MaterialTheme.spacing.medium)
                             )
@@ -94,7 +100,7 @@ fun KnowledgeCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.Lightbulb,
-                            contentDescription = null,
+                            contentDescription = nugget.title,
                             tint = GradientStart,
                             modifier = Modifier.size(48.dp)
                         )
@@ -109,6 +115,29 @@ fun KnowledgeCard(
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun KnowledgeCardPreview() {
+    SkillflowTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            KnowledgeCard(
+                nugget = KnowledgeNugget(
+                    id = "1",
+                    title = "Kotlin Coroutines",
+                    shortDescription = "Learn async programming",
+                    content = "Coroutines simplify async code execution on Android.",
+                    complexity = "Intermediate",
+                    careerPathId = "android",
+                    date = "2026-08-02"
+                ),
+                isFlipped = false,
+                rotation = 0f,
+                onFlip = {}
+            )
         }
     }
 }

@@ -80,7 +80,9 @@
     <string name="no_nuggets_found">কোনো নাগেট পাওয়া যায়নি।</string>
     <string name="mastered_question">আপনি কি এই বিষয়টি আয়ত্ত করেছেন?</string>
     <string name="add_study_note">পড়ার নোট যোগ করুন</string>
+    <string name="add_your_thoughts">আপনার মতামত বা নোট যোগ করুন</string>
     <string name="edit_note">নোট এডিট করুন</string>
+    <string name="delete_note">নোট মুছুন</string>
     <string name="note_title_placeholder">নোটের শিরোনাম</string>
     <string name="note_details_placeholder">বিস্তারিত লিখুন...</string>
     <string name="save_note">নোট সেভ করুন</string>
@@ -304,4 +306,10 @@
     <string name="q20_o2">Key-value পেয়ার ডাটা সংরক্ষণ করা</string>
     <string name="q20_o3">ইমেজ ক্যাশে</string>
     <string name="q20_exp">Jetpack DataStore কি-ভ্যালু পেয়ার ডাটা সেভ করার আধুনিক উপায়।</string>
+
+    <!-- Statuses -->
+    <string name="status_mastered">আয়ত্ত করা হয়েছে ✨</string>
+    <string name="status_finished">শেষ হয়েছে</string>
+    <string name="status_start_now">এখনই শুরু করুন</string>
+    <string name="all_short">সব</string>
 </resources>

@@ -1,12 +1,9 @@
 package com.example.skillflow.ui.detail
 
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -15,14 +12,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
+import com.example.skillflow.domain.model.ComplexityLevel
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.presentation.detail.DetailState
@@ -33,9 +29,7 @@ import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.detail.components.KnowledgeCard
 import com.example.skillflow.ui.detail.components.NoteCard
 import com.example.skillflow.ui.detail.components.NoteInputCard
-import com.example.skillflow.ui.theme.GradientStart
-import com.example.skillflow.ui.theme.SkillflowTheme
-import com.example.skillflow.ui.theme.spacing
+import com.example.skillflow.ui.theme.*
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
@@ -74,12 +68,11 @@ fun DetailScreen(
     )
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DetailContent(
     state: DetailState,
     snackbarHostState: SnackbarHostState,
-    scrollState: androidx.compose.foundation.ScrollState,
+    scrollState: ScrollState,
     onNavigateBack: () -> Unit,
     onToggleSave: () -> Unit,
     onFlipCard: () -> Unit,
@@ -155,9 +148,9 @@ fun DetailContent(
                     Switch(checked = nugget.isMastered, onCheckedChange = { onMarkAsMastered() })
                 }
 
-                Spacer(modifier = Modifier.height(spacing.large))
+                Spacer(modifier = Modifier.height(spacing.extraLarge + spacing.medium))
 
-                // Premium Note Input Card
+                // Clean Minimalist Note Input Card
                 NoteInputCard(
                     title = state.noteTitle,
                     onTitleChange = onNoteTitleChange,
@@ -167,33 +160,39 @@ fun DetailContent(
                     isEditing = state.editingNoteId != null
                 )
 
-                Spacer(modifier = Modifier.height(spacing.large))
-
-                // Saved Notes Grid Section
+                // Saved Notes Section
                 if (state.notes.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(spacing.extraLarge))
+
                     Text(
                         text = stringResource(R.string.your_saved_notes), 
                         style = MaterialTheme.typography.titleMedium, 
-                        fontWeight = FontWeight.ExtraBold, 
+                        fontWeight = FontWeight.Bold, 
                         modifier = Modifier.align(Alignment.Start),
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                     
                     Spacer(modifier = Modifier.height(spacing.medium))
                     
-                    // FLOW ROW creates a dynamic grid feel
-                    FlowRow(
+                    val level = ComplexityLevel.fromString(nugget.complexity)
+                    val accentColor = when (level) {
+                        ComplexityLevel.BEGINNER -> BeginnerGreen
+                        ComplexityLevel.INTERMEDIATE -> IntermediateOrange
+                        ComplexityLevel.ADVANCED -> AdvancedRed
+                    }
+
+                    // Vertical list of saved notes
+                    Column(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(spacing.medium),
-                        verticalArrangement = Arrangement.spacedBy(spacing.medium),
-                        maxItemsInEachRow = 2
+                        verticalArrangement = Arrangement.spacedBy(spacing.medium)
                     ) {
                         state.notes.forEach { note ->
                             NoteCard(
                                 note = note,
                                 onEdit = { onEditNote(note) },
                                 onDelete = { onDeleteNote(note) },
-                                modifier = Modifier.weight(1f, fill = false)
+                                accentColor = accentColor,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }

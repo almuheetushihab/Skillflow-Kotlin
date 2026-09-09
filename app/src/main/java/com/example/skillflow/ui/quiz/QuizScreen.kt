@@ -14,7 +14,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -174,9 +173,17 @@ fun QuizContent(
                         if (state.showFeedback) {
                             Spacer(modifier = Modifier.weight(1f))
                             if (isCorrect) {
-                                Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null, tint = BeginnerGreen)
+                                Icon(
+                                    imageVector = Icons.Default.CheckCircle,
+                                    contentDescription = stringResource(R.string.status_mastered),
+                                    tint = BeginnerGreen
+                                )
                             } else if (isSelected) {
-                                Icon(imageVector = Icons.Default.Cancel, contentDescription = null, tint = AdvancedRed)
+                                Icon(
+                                    imageVector = Icons.Default.Cancel,
+                                    contentDescription = stringResource(R.string.deletion_failed),
+                                    tint = AdvancedRed
+                                )
                             }
                         }
                     }
@@ -308,7 +315,7 @@ fun QuizResultScreen(
             Spacer(modifier = Modifier.height(spacing.medium))
 
             state.questions.forEachIndexed { index, question ->
-                val userAnswer = state.userAnswers[index]
+                val userAnswer = state.userAnswers.getOrNull(index)
                 val isCorrect = userAnswer == question.correctAnswerIndex
                 
                 Card(
@@ -326,7 +333,7 @@ fun QuizResultScreen(
                             Text(text = question.text, modifier = Modifier.weight(1f))
                             Icon(
                                 imageVector = if (isCorrect) Icons.Default.CheckCircle else Icons.Default.Cancel,
-                                contentDescription = null,
+                                contentDescription = if (isCorrect) stringResource(R.string.status_mastered) else stringResource(R.string.deletion_failed),
                                 tint = if (isCorrect) BeginnerGreen else AdvancedRed
                             )
                         }
@@ -378,6 +385,23 @@ fun QuizContentPreview() {
             onOptionSelected = {},
             onSubmit = {},
             onNext = {},
+            onFinish = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun QuizResultScreenPreview() {
+    SkillflowTheme {
+        QuizResultScreen(
+            state = QuizState(
+                score = 15,
+                questions = listOf(
+                    QuizQuestion("1", "1", "Sample Question", listOf("Option A", "Option B"), 0, "Explanation")
+                ),
+                userAnswers = listOf(0)
+            ),
             onFinish = {}
         )
     }

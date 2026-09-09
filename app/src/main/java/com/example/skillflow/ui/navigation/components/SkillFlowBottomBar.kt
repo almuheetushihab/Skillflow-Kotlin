@@ -9,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -17,6 +18,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.skillflow.R
 import com.example.skillflow.ui.navigation.Screen
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 /**
  * Custom Bottom Navigation Bar for the SkillFlow app.
@@ -57,6 +59,39 @@ fun SkillFlowBottomBar(
                         restoreState = true
                     }
                 }
+            )
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun SkillFlowBottomBarContentPreview() {
+    SkillflowTheme {
+        NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
+            NavigationBarItem(
+                icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
+                label = { Text("Home") },
+                selected = true,
+                onClick = {}
+            )
+            NavigationBarItem(
+                icon = { Icon(Icons.Default.Route, contentDescription = "Roadmap") },
+                label = { Text("Roadmap") },
+                selected = false,
+                onClick = {}
+            )
+            NavigationBarItem(
+                icon = { Icon(Icons.Default.Bookmark, contentDescription = "Saved") },
+                label = { Text("Saved") },
+                selected = false,
+                onClick = {}
+            )
+            NavigationBarItem(
+                icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
+                label = { Text("Profile") },
+                selected = false,
+                onClick = {}
             )
         }
     }

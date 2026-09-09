@@ -73,6 +73,7 @@ fun AuthButton(
     enabled: Boolean = true
 ) {
     val spacing = MaterialTheme.spacing
+    val disabledColor = MaterialTheme.colorScheme.outlineVariant
     Button(
         onClick = onClick,
         modifier = modifier
@@ -86,7 +87,7 @@ fun AuthButton(
             .clip(RoundedCornerShape(28.dp))
             .background(
                 if (enabled) Brush.linearGradient(listOf(GradientStart, GradientEnd))
-                else Brush.linearGradient(listOf(Color.Gray, Color.LightGray))
+                else Brush.linearGradient(listOf(disabledColor, disabledColor))
             ),
         colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
         enabled = enabled && !isLoading

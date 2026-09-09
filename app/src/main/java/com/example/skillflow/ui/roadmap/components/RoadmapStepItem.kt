@@ -1,6 +1,7 @@
 package com.example.skillflow.ui.roadmap.components
 
 import androidx.compose.animation.core.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,10 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -96,7 +99,7 @@ fun RoadmapStepItem(
                         if (isCompleted) {
                             Icon(
                                 imageVector = Icons.Default.Check,
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.status_finished),
                                 tint = Color.White,
                                 modifier = Modifier.padding(4.dp)
                             )
@@ -118,7 +121,7 @@ fun RoadmapStepItem(
                                 else MaterialTheme.colorScheme.surface
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = if (isCurrent) 4.dp else 0.dp),
-            border = if (isCurrent) null else androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            border = if (isCurrent) null else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
         ) {
             Column(modifier = Modifier.padding(MaterialTheme.spacing.medium)) {
                 Text(
@@ -137,6 +140,33 @@ fun RoadmapStepItem(
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RoadmapStepItemPreview() {
+    SkillflowTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            RoadmapStepItem(
+                title = "Kotlin Coroutines & Flow",
+                isCompleted = true,
+                isCurrent = false,
+                isLast = false
+            )
+            RoadmapStepItem(
+                title = "Modern UI with Jetpack Compose",
+                isCompleted = false,
+                isCurrent = true,
+                isLast = false
+            )
+            RoadmapStepItem(
+                title = "Release & Deployment Strategy",
+                isCompleted = false,
+                isCurrent = false,
+                isLast = true
+            )
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.example.skillflow.ui.onboarding.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
+import com.example.skillflow.domain.model.CareerPath
 import com.example.skillflow.presentation.onboarding.OnboardingState
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.SkillflowTheme
@@ -50,7 +52,7 @@ fun OnboardingInfoPage(
         ) {
             Icon(
                 imageVector = Icons.Default.Info,
-                contentDescription = null,
+                contentDescription = title,
                 modifier = Modifier.size(100.dp),
                 tint = GradientStart
             )
@@ -151,7 +153,7 @@ fun OnboardingSelectionPage(
 
 @Composable
 fun CareerPathItem(
-    path: com.example.skillflow.domain.model.CareerPath,
+    path: CareerPath,
     isSelected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -163,7 +165,7 @@ fun CareerPathItem(
             .clip(RoundedCornerShape(spacing.medium))
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(spacing.medium),
-        border = androidx.compose.foundation.BorderStroke(
+        border = BorderStroke(
             1.dp, 
             if (isSelected) GradientStart else MaterialTheme.colorScheme.outlineVariant
         ),
@@ -216,6 +218,8 @@ fun OnboardingBottomBar(
     modifier: Modifier = Modifier
 ) {
     val spacing = MaterialTheme.spacing
+    val inactiveDotColor = MaterialTheme.colorScheme.outlineVariant
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -237,7 +241,7 @@ fun OnboardingBottomBar(
                         .size(if (pagerState.currentPage == index) 12.dp else 8.dp)
                         .clip(CircleShape)
                         .background(
-                            if (pagerState.currentPage == index) GradientStart else Color.LightGray
+                            if (pagerState.currentPage == index) GradientStart else inactiveDotColor
                         )
                 )
             }
@@ -274,10 +278,25 @@ fun CareerPathItemPreview() {
     SkillflowTheme {
         Column(modifier = Modifier.padding(16.dp)) {
             CareerPathItem(
-                path = com.example.skillflow.domain.model.CareerPath("1", "Android", "Learn Android", ""),
+                path = CareerPath("1", "Android", "Learn Android", ""),
                 isSelected = true,
                 onClick = {}
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun OnboardingSelectionPagePreview() {
+    SkillflowTheme {
+        OnboardingSelectionPage(
+            state = OnboardingState(
+                careerPaths = listOf(
+                    CareerPath("1", "Android Developer", "Build apps", "")
+                )
+            ),
+            onCareerPathSelected = {}
+        )
     }
 }

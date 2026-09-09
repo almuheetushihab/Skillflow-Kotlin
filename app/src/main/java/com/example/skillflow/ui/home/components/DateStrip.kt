@@ -12,11 +12,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.skillflow.R
 import com.example.skillflow.presentation.home.DateModel
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -26,6 +30,8 @@ fun DateStrip(
     modifier: Modifier = Modifier
 ) {
     val spacing = MaterialTheme.spacing
+    val allText = stringResource(R.string.all_short)
+
     LazyRow(
         modifier = modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(spacing.small),
@@ -34,7 +40,7 @@ fun DateStrip(
         // "All" Button
         item {
             DateItem(
-                day = "All",
+                day = allText,
                 date = "∞",
                 isSelected = dates.none { it.isSelected },
                 onClick = { onDateSelected(null) }
@@ -57,14 +63,15 @@ fun DateItem(
     day: String,
     date: String,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val spacing = MaterialTheme.spacing
     val containerColor = if (isSelected) GradientStart else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
     val contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
 
     Card(
-        modifier = Modifier
+        modifier = modifier
             .width(60.dp)
             .height(80.dp)
             .clip(RoundedCornerShape(spacing.medium))
@@ -96,6 +103,22 @@ fun DateItem(
                 Spacer(modifier = Modifier.height(4.dp))
                 Box(modifier = Modifier.size(4.dp).clip(RoundedCornerShape(2.dp)).background(Color.White))
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DateStripPreview() {
+    SkillflowTheme {
+        Column(modifier = Modifier.padding(16.dp)) {
+            DateStrip(
+                dates = listOf(
+                    DateModel("Mon", "12", "2026-08-12", true),
+                    DateModel("Sun", "11", "2026-08-11", false)
+                ),
+                onDateSelected = {}
+            )
         }
     }
 }

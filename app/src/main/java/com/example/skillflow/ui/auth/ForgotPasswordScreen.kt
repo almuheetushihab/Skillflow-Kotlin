@@ -113,12 +113,10 @@ fun ForgotPasswordContent(
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(spacing.extraLarge + spacing.small))
-                    Button(
-                        onClick = onNavigateBack,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(stringResource(R.string.back_to_login))
-                    }
+                    AuthButton(
+                        text = stringResource(R.string.back_to_login),
+                        onClick = onNavigateBack
+                    )
                 }
             }
         }

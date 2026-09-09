@@ -133,7 +133,8 @@ fun CategoryPillItem(
     label: String,
     icon: ImageVector,
     isSelected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val spacing = MaterialTheme.spacing
     val containerColor by animateColorAsState(
@@ -148,7 +149,7 @@ fun CategoryPillItem(
     )
 
     Surface(
-        modifier = Modifier
+        modifier = modifier
             .height(42.dp)
             .clickable { onClick() },
         shape = CircleShape,
@@ -163,7 +164,7 @@ fun CategoryPillItem(
         ) {
             Icon(
                 imageVector = icon,
-                contentDescription = null,
+                contentDescription = label,
                 tint = if (isSelected) Color.White else GradientStart,
                 modifier = Modifier.size(18.dp)
             )

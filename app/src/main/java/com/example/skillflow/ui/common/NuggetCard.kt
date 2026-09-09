@@ -8,7 +8,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Stars
@@ -17,10 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
+import com.example.skillflow.domain.model.ComplexityLevel
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.ui.theme.*
 
@@ -34,6 +36,12 @@ fun NuggetCard(
     val readColor = MaterialTheme.colorScheme.secondary
     val spacing = MaterialTheme.spacing
     
+    val statusText = when {
+        nugget.isMastered -> stringResource(R.string.status_mastered)
+        nugget.isDone -> stringResource(R.string.status_finished)
+        else -> stringResource(R.string.status_start_now)
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -79,7 +87,7 @@ fun NuggetCard(
                         nugget.isDone -> Icons.Default.Check
                         else -> Icons.Default.MenuBook
                     },
-                    contentDescription = null,
+                    contentDescription = statusText,
                     tint = when {
                         nugget.isMastered -> masteredColor
                         nugget.isDone -> readColor
@@ -120,11 +128,7 @@ fun NuggetCard(
                     Spacer(modifier = Modifier.width(spacing.small))
                     
                     Text(
-                        text = when {
-                            nugget.isMastered -> "Mastered ✨"
-                            nugget.isDone -> "Finished"
-                            else -> "Start now"
-                        },
+                        text = statusText,
                         style = MaterialTheme.typography.bodySmall,
                         color = when {
                             nugget.isMastered -> masteredColor
@@ -138,7 +142,7 @@ fun NuggetCard(
             
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.knowledge_nugget),
                 modifier = Modifier.size(spacing.medium - 2.dp),
                 tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
             )
@@ -151,10 +155,11 @@ fun ComplexityBadge(
     complexity: String,
     modifier: Modifier = Modifier
 ) {
-    val (bgColor, textColor) = when (complexity.lowercase()) {
-        "beginner" -> BeginnerGreen.copy(alpha = 0.1f) to BeginnerGreenDark
-        "intermediate" -> IntermediateOrange.copy(alpha = 0.1f) to IntermediateOrangeDark
-        else -> AdvancedRed.copy(alpha = 0.1f) to AdvancedRedDark
+    val level = ComplexityLevel.fromString(complexity)
+    val (bgColor, textColor) = when (level) {
+        ComplexityLevel.BEGINNER -> BeginnerGreen.copy(alpha = 0.1f) to BeginnerGreenDark
+        ComplexityLevel.INTERMEDIATE -> IntermediateOrange.copy(alpha = 0.1f) to IntermediateOrangeDark
+        ComplexityLevel.ADVANCED -> AdvancedRed.copy(alpha = 0.1f) to AdvancedRedDark
     }
 
     Surface(
@@ -163,7 +168,7 @@ fun ComplexityBadge(
         modifier = modifier
     ) {
         Text(
-            text = complexity,
+            text = level.levelName,
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
             style = MaterialTheme.typography.labelSmall,
             color = textColor,

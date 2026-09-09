@@ -1,20 +1,24 @@
 package com.example.skillflow.ui.common
 
-import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.ui.theme.SkillflowTheme
 import kotlinx.coroutines.delay
 
 @Composable
 fun AnimatedEntrance(
-    index: Int,
+    modifier: Modifier = Modifier,
+    index: Int = 0,
     content: @Composable () -> Unit
 ) {
     val animatedProgress = remember { Animatable(0f) }
@@ -30,7 +34,7 @@ fun AnimatedEntrance(
     }
 
     Box(
-        modifier = Modifier.graphicsLayer {
+        modifier = modifier.graphicsLayer {
             alpha = animatedProgress.value
             scaleX = 0.8f + (animatedProgress.value * 0.2f)
             scaleY = 0.8f + (animatedProgress.value * 0.2f)
@@ -64,5 +68,17 @@ fun PulseAnimation(
         }
     ) {
         content()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun AnimationsPreview() {
+    SkillflowTheme {
+        Box(modifier = Modifier.padding(16.dp)) {
+            AnimatedEntrance(index = 0) {
+                Text(text = "Animated Item")
+            }
+        }
     }
 }

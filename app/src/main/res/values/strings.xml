@@ -80,7 +80,9 @@
     <string name="no_nuggets_found">No nuggets found.</string>
     <string name="mastered_question">Mastered this topic?</string>
     <string name="add_study_note">Add Study Note</string>
+    <string name="add_your_thoughts">Add Your Thoughts</string>
     <string name="edit_note">Edit Note</string>
+    <string name="delete_note">Delete Note</string>
     <string name="note_title_placeholder">Note Title</string>
     <string name="note_details_placeholder">Write details...</string>
     <string name="save_note">Save Note</string>
@@ -304,4 +306,10 @@
     <string name="q20_o2">Key-value pair storage</string>
     <string name="q20_o3">Image cache</string>
     <string name="q20_exp">Jetpack DataStore is a data storage solution that allows you to store key-value pairs or typed objects with Protocol Buffers.</string>
+
+    <!-- Statuses -->
+    <string name="status_mastered">Mastered ✨</string>
+    <string name="status_finished">Finished</string>
+    <string name="status_start_now">Start now</string>
+    <string name="all_short">All</string>
 </resources>
