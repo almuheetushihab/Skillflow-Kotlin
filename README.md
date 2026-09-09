@@ -36,9 +36,10 @@ In today's fast-paced world, traditional long-form courses can cause information
 * **Bookmarks & Offline Access**: Save essential nuggets for quick offline reading.
 
 ### 🎮 Gamification & Learning Progress
+* **Bento Grid Dashboard**: Asymmetrical Bento Grid header with 24dp rounded corners, soft grey/light backgrounds, featuring a large Progress card alongside balanced Streak and Saved Items tiles.
+* **Category Pills with Distinct Icons**: Simplified horizontal filter pills ("All", "Today", "History", "Pick Date") with unique icons for quick date and topic filtering.
 * **Daily Streak Tracker**: Automatically calculates learning streaks based on completion dates (`StreakCalculatorTest` verified).
 * **XP & Level Progression**: Earn XP points by completing nuggets and passing quizzes to level up your career profile.
-* **Date Strip Calendar**: Interactive weekly date selector on the dashboard for daily progress tracking.
 
 ### 🎯 Quizzes & Knowledge Evaluation
 * **Interactive MCQ Engine**: End-of-nugget quizzes with immediate answer feedback and score summaries.
@@ -131,7 +132,7 @@ com.example.skillflow
     ├── bookmarks/             # Saved Nuggets Screen
     ├── common/                # Reusable UI Cards, Shimmers, Animations & TopBars
     ├── detail/                # Knowledge Detail, Note Input & 3D Flip Card
-    ├── home/                  # Dashboard, Date Strip & Skeleton Loaders
+    ├── home/                  # Bento Grid Header, Category Pills & Skeleton Loaders
     ├── navigation/            # Type-Safe Screen Navigation Routes & NavHost
     ├── onboarding/            # Onboarding Pager & Career Selection
     ├── profile/               # Profile Summary, Settings & Privacy Policy
@@ -152,7 +153,7 @@ The app leverages **Type-Safe Jetpack Compose Navigation** with Kotlinx Serializ
    * **Login**: Email/password authentication via Firebase.
    * **Sign Up**: Account creation with validation.
    * **Forgot Password**: Password reset dispatch.
-4. **Main Dashboard (Home)**: Daily streak counter, date strip calendar, search bar, and recommended nuggets.
+4. **Main Dashboard (Home)**: Modern Bento Grid layout (Progress, Daily Streak & Saved Bookmarks tiles), Category Pills with distinct icons, search bar, and recommended nuggets.
 5. **Roadmap**: Visual progress node flow through selected career path steps.
 6. **Detail & Notes**: 3D flip card learning view with integrated personal note-taking capabilities.
 7. **Quiz Screen**: Multiple-choice assessment with instant score computation and reward prompts.
