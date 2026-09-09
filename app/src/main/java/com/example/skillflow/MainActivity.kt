@@ -22,10 +22,10 @@ import com.example.skillflow.domain.analytics.AnalyticsHelper
 import com.example.skillflow.domain.manager.PlayStoreManager
 import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
-import com.example.skillflow.screens.navigation.Screen
-import com.example.skillflow.screens.navigation.SkillFlowNavHost
-import com.example.skillflow.screens.navigation.components.SkillFlowBottomBar
-import com.example.skillflow.screens.theme.SkillflowTheme
+import com.example.skillflow.ui.navigation.Screen
+import com.example.skillflow.ui.navigation.SkillFlowNavHost
+import com.example.skillflow.ui.navigation.components.SkillFlowBottomBar
+import com.example.skillflow.ui.theme.SkillflowTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
@@ -110,7 +110,6 @@ fun SkillFlowApp(
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
-    // Track screen views for analytics
     LaunchedEffect(navController) {
         navController.currentBackStackEntryFlow.collect { entry ->
             val routeName = entry.destination.route?.substringAfterLast('.') ?: "Unknown"

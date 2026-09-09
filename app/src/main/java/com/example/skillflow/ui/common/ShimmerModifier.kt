@@ -1,4 +1,4 @@
-package com.example.skillflow.screens.commonComponents
+package com.example.skillflow.ui.common
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
