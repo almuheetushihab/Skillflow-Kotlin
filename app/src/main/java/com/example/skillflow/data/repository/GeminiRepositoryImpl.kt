@@ -1,4 +1,5 @@
 package com.example.skillflow.data.repository
+import com.example.skillflow.BuildConfig
 import com.example.skillflow.domain.repository.GeminiRepository
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
