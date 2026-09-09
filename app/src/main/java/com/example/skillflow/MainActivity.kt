@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -23,10 +22,10 @@ import com.example.skillflow.domain.analytics.AnalyticsHelper
 import com.example.skillflow.domain.manager.PlayStoreManager
 import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
-import com.example.skillflow.ui.navigation.Screen
-import com.example.skillflow.ui.navigation.SkillFlowNavHost
-import com.example.skillflow.ui.navigation.components.SkillFlowBottomBar
-import com.example.skillflow.ui.theme.SkillflowTheme
+import com.example.skillflow.screens.navigation.Screen
+import com.example.skillflow.screens.navigation.SkillFlowNavHost
+import com.example.skillflow.screens.navigation.components.SkillFlowBottomBar
+import com.example.skillflow.screens.theme.SkillflowTheme
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
