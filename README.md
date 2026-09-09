@@ -47,6 +47,8 @@ In today's fast-paced world, traditional long-form courses can cause information
 
 ### 🎨 Modern UI & UX Excellence
 * **100% Jetpack Compose & Material 3**: Declarative UI with Edge-to-Edge drawing and dynamic light/dark mode support.
+* **Professional Feature-Based Packaging**: Clean separation where screens, ViewModels, and private components reside together inside modular feature packages (`ui/features/`).
+* **Single Component Per File**: Unbundled reusable UI components into dedicated files for maximum maintainability.
 * **Custom Shimmer Skeleton Loaders**: Smooth loading states across Home (`NuggetCardSkeleton`, `ProgressCardSkeleton`), Roadmaps (`RoadmapStepSkeleton`), and Onboarding (`CareerPathSkeleton`).
 * **Multi-Language Localization**: Full dynamic runtime switching between English and Bengali (EN/BN) using `UiText` wrappers.
 
@@ -67,7 +69,7 @@ In today's fast-paced world, traditional long-form courses can cause information
 | **Language** | Kotlin 2.0+ (Coroutines & Flow) |
 | **UI Framework** | Jetpack Compose + Material 3 |
 | **SDK Versions** | `minSdk: 24`, `targetSdk: 37`, `compileSdk: 37` |
-| **Architecture** | Clean Architecture + MVVM + MVI State Management |
+| **Architecture** | Clean Architecture + MVVM + MVI State Management + Feature-Based Packaging |
 | **Dependency Injection** | Hilt (Dagger Hilt + Hilt Work + Hilt Navigation Compose) |
 | **Local Database** | Room Persistence Library |
 | **Preferences & State** | DataStore Preferences |
@@ -83,17 +85,20 @@ In today's fast-paced world, traditional long-form courses can cause information
 
 ## 🏗 Architecture & Design Patterns
 
-SkillFlow strictly adheres to **Clean Architecture** principles to promote testability, maintainability, and scalability.
+SkillFlow strictly adheres to **Clean Architecture** and **Feature-Based Packaging** principles to promote testability, maintainability, and scalability.
 
 ```mermaid
 graph TD
-    A[Presentation Layer: Jetpack Compose UI & ViewModels] -->|Observes StateFlow / SharedFlow| B[Domain Layer: Use Cases, Models & Repository Interfaces]
+    A[Presentation Layer: Jetpack Compose UI, ViewModels & Features] -->|Observes StateFlow / SharedFlow| B[Domain Layer: Use Cases, Models & Repository Interfaces]
     C[Data Layer: Room DB, Network, DataStore & WorkManager] -->|Implements Repositories| B
 ```
 
-1. **Presentation Layer (`ui/` & `presentation/`)**:
+1. **Presentation Layer (`ui/`)**:
+   * Organised using **Professional Feature-Based Packaging** (`ui/features/<feature>/`).
+   * **Co-located ViewModel & Screen**: Every Screen (`*Screen.kt`) and its ViewModel (`*ViewModel.kt`) reside in the same feature folder.
+   * **Component Unbundling**: Every component has its own dedicated `.kt` file. Private components live inside a `components/` sub-package under that feature.
+   * Shared global components live in `ui/common/`, theme files in `ui/theme/`, and routes in `ui/navigation/`.
    * Uses **MVVM** pattern with `StateFlow` for state rendering and `SharedFlow` for single-event notifications.
-   * Modularized composable screens and reusable component architecture.
 2. **Domain Layer (`domain/`)**:
    * Contains core business models (`KnowledgeNugget`, `CareerPath`, `UserNote`, `QuizQuestion`) and repository interfaces.
    * Completely independent of framework specifics.
@@ -126,19 +131,19 @@ com.example.skillflow
 │   ├── model/                 # Pure Domain Data Models
 │   ├── repository/            # Repository Interfaces
 │   └── util/                  # Resource wrappers & UiText helpers
-├── presentation/              # ViewModels (Home, Detail, Auth, Quiz, Profile, etc.)
-└── ui/
-    ├── auth/                  # Login, SignUp & Forgot Password Screens
-    ├── bookmarks/             # Saved Nuggets Screen
-    ├── common/                # Reusable UI Cards, Shimmers, Animations & TopBars
-    ├── detail/                # Knowledge Detail, Note Input & 3D Flip Card
-    ├── home/                  # Bento Grid Header, Category Pills & Skeleton Loaders
-    ├── navigation/            # Type-Safe Screen Navigation Routes & NavHost
-    ├── onboarding/            # Onboarding Pager & Career Selection
-    ├── profile/               # Profile Summary, Settings & Privacy Policy
-    ├── quiz/                  # Interactive Quiz Screen
-    ├── roadmap/               # Career Path Roadmap Step Flow
-    └── theme/                 # Material 3 Color Schemes, Typography & Spacing
+└── ui/                        # Professional Feature-Based UI Layer
+    ├── common/                # Reusable Global Components (NuggetCard, AuthButton, TopBar, Skeletons)
+    ├── navigation/            # Type-Safe Routes (Screen.kt), SkillFlowNavHost & BottomBar
+    ├── theme/                 # Material 3 Colors, Spacing, Typography & Theme
+    └── features/              # Modular Feature Packages (Screen + ViewModel + Private Components)
+        ├── auth/              # Auth Feature (Login, SignUp, ForgotPassword & AuthViewModel)
+        ├── bookmarks/         # Bookmarks Feature (BookmarksScreen & BookmarksViewModel)
+        ├── detail/            # Detail Feature (3D Flip Card, KnowledgeCard, NoteInputCard & DetailViewModel)
+        ├── home/              # Home Dashboard Feature (BentoGrid, CategoryPills, DailyProgressCard & HomeViewModel)
+        ├── onboarding/        # Onboarding Feature (Pager, CareerPathSelection & OnboardingViewModel)
+        ├── profile/           # Profile & Settings Feature (ProfileScreen, SettingsScreen, StatCard & ViewModels)
+        ├── quiz/              # Quiz Feature (Interactive Quiz, QuizResultScreen & QuizViewModel)
+        └── roadmap/           # Roadmap Feature (Visual Career Roadmap Steps & Skeletons)
 ```
 
 ---
