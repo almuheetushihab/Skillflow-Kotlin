@@ -2,25 +2,34 @@ package com.example.skillflow.ui.features.detail
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
 import com.example.skillflow.domain.model.ComplexityLevel
 import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
+import com.example.skillflow.ui.features.detail.components.AiChatBottomSheet
 import com.example.skillflow.ui.features.detail.components.KnowledgeCard
 import com.example.skillflow.ui.features.detail.components.NoteCard
 import com.example.skillflow.ui.features.detail.components.NoteInputCard
@@ -59,6 +68,9 @@ fun DetailScreen(
         onSaveNote = viewModel::saveNote,
         onEditNote = viewModel::onEditNote,
         onDeleteNote = viewModel::deleteNote,
+        onToggleAiSheet = viewModel::toggleAiBottomSheet,
+        onAiQuestionChange = viewModel::onAiQuestionChange,
+        onSendAiQuestion = viewModel::askAI,
         modifier = modifier
     )
 }
@@ -77,6 +89,9 @@ fun DetailContent(
     onSaveNote: () -> Unit,
     onEditNote: (UserNote) -> Unit,
     onDeleteNote: (UserNote) -> Unit,
+    onToggleAiSheet: (Boolean) -> Unit,
+    onAiQuestionChange: (String) -> Unit,
+    onSendAiQuestion: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val nugget = state.nugget
@@ -107,6 +122,28 @@ fun DetailContent(
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            if (nugget != null) {
+                ExtendedFloatingActionButton(
+                    onClick = { onToggleAiSheet(true) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.AutoAwesome,
+                            contentDescription = "Ask AI Assistant",
+                            tint = Color.White
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = "Ask AI Assistant",
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    },
+                    containerColor = GradientStart
+                )
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { padding ->
@@ -190,8 +227,92 @@ fun DetailContent(
                     }
                 }
 
+                // AI Assistant Banner Button below Study Notes
                 Spacer(modifier = Modifier.height(spacing.extraLarge))
+
+                Card(
+                    onClick = { onToggleAiSheet(true) },
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(spacing.medium),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(44.dp)
+                                    .clip(CircleShape)
+                                    .background(
+                                        Brush.horizontalGradient(
+                                            listOf(GradientStart, GradientEnd)
+                                        )
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.size(22.dp)
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.width(spacing.medium))
+
+                            Column {
+                                Text(
+                                    text = "Need help understanding?",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Ask SkillFlow AI Tutor for instant insights",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        Surface(
+                            shape = RoundedCornerShape(20.dp),
+                            color = GradientStart,
+                            contentColor = Color.White
+                        ) {
+                            Text(
+                                text = "Ask AI",
+                                modifier = Modifier.padding(horizontal = spacing.medium, vertical = spacing.small),
+                                style = MaterialTheme.typography.labelMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(spacing.extraLarge * 2))
             }
         }
+
+        // ModalBottomSheet for AI Chat
+        AiChatBottomSheet(
+            isSheetOpen = state.isAiBottomSheetOpen,
+            messages = state.aiMessages,
+            questionInput = state.aiQuestionInput,
+            isLoading = state.isAiLoading,
+            onQuestionChange = onAiQuestionChange,
+            onSendQuestion = onSendAiQuestion,
+            onDismiss = { onToggleAiSheet(false) }
+        )
     }
 }

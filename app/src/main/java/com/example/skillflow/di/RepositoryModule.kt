@@ -1,9 +1,11 @@
 package com.example.skillflow.di
 
 import com.example.skillflow.data.repository.AuthRepositoryImpl
+import com.example.skillflow.data.repository.GeminiRepositoryImpl
 import com.example.skillflow.data.repository.SettingsRepositoryImpl
 import com.example.skillflow.data.repository.SkillRepositoryImpl
 import com.example.skillflow.domain.repository.AuthRepository
+import com.example.skillflow.domain.repository.GeminiRepository
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.domain.repository.SkillRepository
 import dagger.Binds
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindAuthRepository(
         authRepositoryImpl: AuthRepositoryImpl
     ): AuthRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindGeminiRepository(
+        geminiRepositoryImpl: GeminiRepositoryImpl
+    ): GeminiRepository
 }
