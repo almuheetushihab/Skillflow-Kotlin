@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.skillflow.data.local.SkillDatabase
 import com.example.skillflow.domain.repository.SettingsRepository
@@ -94,6 +95,8 @@ class SettingsRepositoryImpl @Inject constructor(
         val IS_REMEMBER_ME = booleanPreferencesKey("is_remember_me")
         val QUIZ_COUNT = intPreferencesKey("quiz_count")
         val TOTAL_QUIZ_SCORE = intPreferencesKey("total_quiz_score")
+        val IS_NOTIFICATION_ENABLED = booleanPreferencesKey("is_notification_enabled")
+        val REMINDER_TIME = longPreferencesKey("reminder_time")
     }
 
     override fun getLanguage(): Flow<String> = dataStore.data.map { it[NewPreferencesKeys.LANGUAGE] ?: "en" }
@@ -151,6 +154,20 @@ class SettingsRepositoryImpl @Inject constructor(
             val current = it[NewPreferencesKeys.TOTAL_QUIZ_SCORE] ?: 0
             it[NewPreferencesKeys.TOTAL_QUIZ_SCORE] = current + score
         }
+    }
+
+    override fun isNotificationEnabled(): Flow<Boolean> =
+        dataStore.data.map { it[NewPreferencesKeys.IS_NOTIFICATION_ENABLED] ?: true }
+
+    override suspend fun setNotificationEnabled(enabled: Boolean) {
+        dataStore.edit { it[NewPreferencesKeys.IS_NOTIFICATION_ENABLED] = enabled }
+    }
+
+    override fun getReminderTime(): Flow<Long> =
+        dataStore.data.map { it[NewPreferencesKeys.REMINDER_TIME] ?: (21 * 3600 * 1000L) }
+
+    override suspend fun setReminderTime(timeInMillisFromMidnight: Long) {
+        dataStore.edit { it[NewPreferencesKeys.REMINDER_TIME] = timeInMillisFromMidnight }
     }
 
     override suspend fun clearSession() {

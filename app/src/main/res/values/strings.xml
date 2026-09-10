@@ -150,6 +150,7 @@
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
     <string name="daily_reminders">Daily Reminders</string>
+    <string name="reminder_time">Reminder Time</string>
     <string name="reset_learning_goal">Reset Learning Goal</string>
     <string name="settings">App Settings</string>
     <string name="profile_level">Profile Level</string>

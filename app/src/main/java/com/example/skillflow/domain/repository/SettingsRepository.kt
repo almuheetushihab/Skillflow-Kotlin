@@ -31,5 +31,12 @@ interface SettingsRepository {
     suspend fun incrementQuizCount()
     fun getTotalQuizScore(): Flow<Int>
     suspend fun addToTotalQuizScore(score: Int)
+    
+    // Notifications & Reminders
+    fun isNotificationEnabled(): Flow<Boolean>
+    suspend fun setNotificationEnabled(enabled: Boolean)
+    fun getReminderTime(): Flow<Long>
+    suspend fun setReminderTime(timeInMillisFromMidnight: Long)
+
     suspend fun clearSession()
 }

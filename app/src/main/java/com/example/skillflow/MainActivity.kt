@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.skillflow.domain.analytics.AnalyticsHelper
 import com.example.skillflow.domain.manager.PlayStoreManager
+import com.example.skillflow.domain.manager.ReminderManager
 import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.ui.navigation.Screen
@@ -49,6 +50,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var analyticsHelper: AnalyticsHelper
 
+    @Inject
+    lateinit var reminderManager: ReminderManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
@@ -60,6 +64,12 @@ class MainActivity : AppCompatActivity() {
             val isFirebaseUserLoggedIn = authRepository.getCurrentUserEmail() != null
             val isSessionActive = settingsRepository.isLoggedIn().first()
             val isOnboardingCompleted = settingsRepository.isOnboardingCompleted().first()
+
+            val isNotifEnabled = settingsRepository.isNotificationEnabled().first()
+            if (isNotifEnabled) {
+                val reminderTime = settingsRepository.getReminderTime().first()
+                reminderManager.scheduleReminder(reminderTime)
+            }
             
             when {
                 !isFirebaseUserLoggedIn || !isSessionActive -> Screen.Login

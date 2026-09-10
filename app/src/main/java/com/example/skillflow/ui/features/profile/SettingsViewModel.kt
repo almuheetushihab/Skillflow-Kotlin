@@ -2,6 +2,7 @@ package com.example.skillflow.ui.features.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.skillflow.domain.manager.ReminderManager
 import com.example.skillflow.domain.repository.AuthRepository
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.domain.util.Resource
@@ -16,6 +17,8 @@ data class SettingsState(
     val email: String = "",
     val name: String = "",
     val learningTime: Long = 0,
+    val isNotificationEnabled: Boolean = true,
+    val reminderTime: Long = 21 * 3600 * 1000L, // Default 9:00 PM
     val isLoading: Boolean = false,
     val error: String? = null,
     val isAccountDeleted: Boolean = false,
@@ -30,7 +33,8 @@ sealed class SettingsUiEvent {
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val authRepository: AuthRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val reminderManager: ReminderManager
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SettingsState())
@@ -45,21 +49,57 @@ class SettingsViewModel @Inject constructor(
 
     private fun loadSettings() {
         viewModelScope.launch {
-            combine(
+            val userDetailsFlow = combine(
                 settingsRepository.getLanguage(),
                 settingsRepository.getUserEmail(),
-                settingsRepository.getUserName(),
-                settingsRepository.getLearningTime()
-            ) { lang, email, name, time ->
+                settingsRepository.getUserName()
+            ) { lang, email, name ->
+                Triple(lang, email, name)
+            }
+
+            val reminderDetailsFlow = combine(
+                settingsRepository.getLearningTime(),
+                settingsRepository.isNotificationEnabled(),
+                settingsRepository.getReminderTime()
+            ) { time, notifEnabled, remTime ->
+                Triple(time, notifEnabled, remTime)
+            }
+
+            combine(userDetailsFlow, reminderDetailsFlow) { (lang, email, name), (time, notifEnabled, remTime) ->
                 _state.value.copy(
                     language = lang,
                     email = email ?: "",
                     name = name ?: "",
-                    learningTime = time
+                    learningTime = time,
+                    isNotificationEnabled = notifEnabled,
+                    reminderTime = remTime
                 )
             }.collect { newState ->
                 _state.value = newState
             }
+        }
+    }
+
+    fun setNotificationEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.setNotificationEnabled(enabled)
+            if (enabled) {
+                reminderManager.scheduleReminder(_state.value.reminderTime)
+                _eventFlow.emit(SettingsUiEvent.ShowSnackbar("Daily reminders enabled"))
+            } else {
+                reminderManager.cancelReminder()
+                _eventFlow.emit(SettingsUiEvent.ShowSnackbar("Daily reminders disabled"))
+            }
+        }
+    }
+
+    fun setReminderTime(timeInMillisFromMidnight: Long) {
+        viewModelScope.launch {
+            settingsRepository.setReminderTime(timeInMillisFromMidnight)
+            if (_state.value.isNotificationEnabled) {
+                reminderManager.scheduleReminder(timeInMillisFromMidnight)
+            }
+            _eventFlow.emit(SettingsUiEvent.ShowSnackbar("Reminder time updated"))
         }
     }
 
