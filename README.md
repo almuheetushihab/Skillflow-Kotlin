@@ -20,14 +20,22 @@
 ## 🎯 Executive Summary
 
 In today's fast-paced world, traditional long-form courses can cause information overload and burnout. **SkillFlow** solves this by breaking down complex career topics into concise, actionable lessons (Nuggets), reinforced by:
-* Interactive quizzes
-* 3D card flips & visual roadmaps
-* Integrated note-taking
+* Google Gemini AI learning assistant
+* Interactive quizzes & 3D card flips
+* Daily streak notifications & customizable reminders
+* Visual roadmaps & integrated note-taking
 * Gamification (streaks, XP, and leveling)
 
 ---
 
 ## ✨ Key Features
+
+### 🤖 AI Assistant & Smart Learning
+* **Google Gemini AI Integration**: Context-aware AI Assistant Bottom Sheet (`AiChatBottomSheet.kt`) powered by Google Generative AI Client SDK (`gemini-1.5-flash-latest` with `gemini-1.5-pro` fallback). Ask real-time questions directly related to any knowledge nugget.
+
+### ⏰ Notifications & Daily Streak Reminders
+* **WorkManager Reminder Engine**: Background daily reminder scheduler (`DailyReminderWorker` & `ReminderManagerImpl`) to maintain learning habits.
+* **Custom Time Picker & Notification Channel**: Set personalized notification time (e.g. 9:00 PM) via TimePicker in Settings, integrated with Android `NotificationHelper` (`daily_streak_reminder_channel`).
 
 ### 💎 Knowledge Nuggets & Interactive Cards
 * **3D Card Flip Animation**: Smooth front/back card rotations for engaging micro-lessons.
@@ -36,7 +44,7 @@ In today's fast-paced world, traditional long-form courses can cause information
 * **Bookmarks & Offline Access**: Save essential nuggets for quick offline reading.
 
 ### 🎮 Gamification & Learning Progress
-* **Bento Grid Dashboard**: Asymmetrical Bento Grid header with 24dp rounded corners, soft grey/light backgrounds, featuring a large Progress card alongside balanced Streak and Saved Items tiles.
+* **Bento Grid Dashboard**: Asymmetrical Bento Grid header with 24dp rounded corners, featuring a large Progress card alongside balanced Streak and Saved Items tiles.
 * **Category Pills with Distinct Icons**: Simplified horizontal filter pills ("All", "Today", "History", "Pick Date") with unique icons for quick date and topic filtering.
 * **Daily Streak Tracker**: Automatically calculates learning streaks based on completion dates (`StreakCalculatorTest` verified).
 * **XP & Level Progression**: Earn XP points by completing nuggets and passing quizzes to level up your career profile.
@@ -47,7 +55,7 @@ In today's fast-paced world, traditional long-form courses can cause information
 
 ### 🎨 Modern UI & UX Excellence
 * **100% Jetpack Compose & Material 3**: Declarative UI with Edge-to-Edge drawing and dynamic light/dark mode support.
-* **Screen-Based Package Architecture**: Strict separation where every screen has its own dedicated package (`ui/features/<feature>/<screen>/`) containing its Screen, ViewModel, and isolated components sub-package (`components/`).
+* **Screen-Based Package Architecture**: Strict separation where every screen has its own dedicated package (`ui/screens/<feature>/<screen>/`) containing its Screen, ViewModel, and isolated components sub-package (`components/`).
 * **Single Component Per File**: Unbundled reusable UI components into dedicated files for maximum maintainability.
 * **Custom Shimmer Skeleton Loaders**: Smooth loading states across Home (`NuggetCardSkeleton`, `ProgressCardSkeleton`), Roadmaps (`RoadmapStepSkeleton`), and Onboarding (`CareerPathSkeleton`).
 * **Multi-Language Localization**: Full dynamic runtime switching between English and Bengali (EN/BN) using `UiText` wrappers.
@@ -69,12 +77,14 @@ In today's fast-paced world, traditional long-form courses can cause information
 | **Language** | Kotlin 2.0+ (Coroutines & Flow) |
 | **UI Framework** | Jetpack Compose + Material 3 |
 | **SDK Versions** | `minSdk: 24`, `targetSdk: 37`, `compileSdk: 37` |
-| **Architecture** | Clean Architecture + MVVM + MVI State Management + Feature-Based Packaging |
+| **AI Integration** | Google Generative AI Client SDK (`gemini-1.5-flash-latest` / `gemini-1.5-pro`) |
+| **Architecture** | Clean Architecture + MVVM + MVI State Management + Screen-Based Package Architecture |
 | **Dependency Injection** | Hilt (Dagger Hilt + Hilt Work + Hilt Navigation Compose) |
 | **Local Database** | Room Persistence Library |
 | **Preferences & State** | DataStore Preferences |
 | **Networking & JSON** | Retrofit 2 + OkHttp 5 + Kotlinx Serialization |
-| **Background Processing**| WorkManager (`DataSeedWorker`) |
+| **Background Processing**| WorkManager (`DailyReminderWorker`, `DataSeedWorker`) |
+| **Notifications** | Android NotificationManager + Custom Notification Channel |
 | **Image Loading** | Coil Compose |
 | **Animations** | Jetpack Compose Graphics + Lottie Compose |
 | **Firebase Stack** | Firebase Auth, Analytics, Crashlytics, Cloud Messaging (FCM) |
@@ -85,28 +95,28 @@ In today's fast-paced world, traditional long-form courses can cause information
 
 ## 🏗 Architecture & Design Patterns
 
-SkillFlow strictly adheres to **Clean Architecture** and **Feature-Based Packaging** principles to promote testability, maintainability, and scalability.
+SkillFlow strictly adheres to **Clean Architecture** and **Screen-Based Package Architecture** principles to promote testability, maintainability, and scalability.
 
 ```mermaid
 graph TD
-    A[Presentation Layer: Jetpack Compose UI, ViewModels & Features] -->|Observes StateFlow / SharedFlow| B[Domain Layer: Use Cases, Models & Repository Interfaces]
-    C[Data Layer: Room DB, Network, DataStore & WorkManager] -->|Implements Repositories| B
+    A[Presentation Layer: Jetpack Compose UI, ViewModels & Screens] -->|Observes StateFlow / SharedFlow| B[Domain Layer: Use Cases, Models & Repository Interfaces]
+    C[Data Layer: Room DB, Network, DataStore, WorkManager & Gemini] -->|Implements Repositories| B
 ```
 
 1. **Presentation Layer (`ui/`)**:
-   * Organised using **Strict Screen-Based Package Architecture** (`ui/features/<feature>/<screen>/`).
+   * Organised using **Strict Screen-Based Package Architecture** (`ui/screens/<feature>/<screen>/`).
    * **Dedicated Screen Packages**: Every screen has its own sub-package containing its `*Screen.kt` and corresponding `*ViewModel.kt`.
-   * **Component Isolation**: Screen-specific UI components reside inside a dedicated `components/` sub-package within that specific screen's package. Shared feature components live in `<feature>/components/`.
+   * **Component Isolation**: Screen-specific UI components reside inside a dedicated `components/` sub-package within that specific screen's package.
    * Shared global components live in `ui/common/`, theme files in `ui/theme/`, and routes in `ui/navigation/`.
    * Uses **MVVM** pattern with `StateFlow` for state rendering and `SharedFlow` for single-event notifications.
 2. **Domain Layer (`domain/`)**:
-   * Contains core business models (`KnowledgeNugget`, `CareerPath`, `UserNote`, `QuizQuestion`) and repository interfaces.
+   * Contains core business models (`KnowledgeNugget`, `CareerPath`, `UserNote`, `QuizQuestion`), `ReminderManager`, `AnalyticsHelper`, and repository interfaces (`GeminiRepository`, `AuthRepository`, `SkillRepository`, `SettingsRepository`).
    * Completely independent of framework specifics.
 3. **Data Layer (`data/`)**:
    * **Local Data**: Room DAO (`SkillDao`) and Database (`SkillDatabase`).
-   * **Preferences**: DataStore for user theme, onboarding state, and language settings.
-   * **Worker**: `DataSeedWorker` for background JSON asset ingestion.
-   * **Repositories**: Concrete implementations handling caching, Room operations, and remote synchronization.
+   * **Preferences**: DataStore for user theme, onboarding state, reminder times, and language settings.
+   * **Workers**: `DataSeedWorker` for background JSON asset ingestion, `DailyReminderWorker` for daily notifications.
+   * **Repositories**: Concrete implementations handling caching, Room operations, Gemini AI client requests, and remote synchronization.
 
 ---
 
@@ -115,37 +125,38 @@ graph TD
 ```text
 com.example.skillflow
 ├── SkillFlowApp.kt            # Application Class & Hilt/Timber Setup
-├── MainActivity.kt             # Main Entry Point with Edge-to-Edge NavHost
+├── MainActivity.kt             # Main Entry Point with Edge-to-Edge NavHost & Reminder Initialization
 ├── data/
 │   ├── analytics/             # Firebase Analytics Helper Implementation
 │   ├── local/                 # Room Database, DAO & Entities (Nugget, Note, Career)
 │   ├── manager/               # Play Store In-App Review & Update Managers
+│   ├── notification/          # NotificationHelper & Daily Reminder Channel Configuration
 │   ├── remote/                # Retrofit API & DTO definitions
-│   ├── repository/            # Concrete Repository Implementations
+│   ├── repository/            # Repository Implementations (Skill, Auth, Settings, Gemini)
 │   ├── util/                  # Asset Managers & JSON Parsers
-│   └── worker/                # Background WorkManager Jobs
-├── di/                        # Hilt Modules (Database, Network, Firebase, Repositories)
+│   └── worker/                # WorkManager Jobs (DailyReminderWorker, DataSeedWorker)
+├── di/                        # Hilt Modules (Database, Network, Firebase, Repositories, Managers)
 ├── domain/
 │   ├── analytics/             # Analytics Interfaces
-│   ├── manager/               # Manager Interfaces
+│   ├── manager/               # Manager Interfaces (ReminderManager, PlayStoreManager)
 │   ├── model/                 # Pure Domain Data Models
-│   ├── repository/            # Repository Interfaces
+│   ├── repository/            # Repository Interfaces (GeminiRepository, AuthRepository, etc.)
 │   └── util/                  # Resource wrappers & UiText helpers
-└── ui/                        # Professional Feature-Based UI Layer
+└── ui/                        # Professional Screen-Based UI Layer
     ├── common/                # Reusable Global Components (NuggetCard, AuthButton, TopBar, Skeletons)
     ├── navigation/            # Type-Safe Routes (Screen.kt), SkillFlowNavHost & BottomBar
     ├── theme/                 # Material 3 Colors, Spacing, Typography & Theme
-    └── features/              # Modular Feature Packages (Screen-Based Package Architecture)
+    └── screens/               # Modular Screen Packages (Screen-Based Package Architecture)
         ├── auth/              # Auth Feature
         │   ├── login/         # LoginScreen.kt
         │   ├── signup/        # SignUpScreen.kt
         │   ├── forgotpassword/# ForgotPasswordScreen.kt
         │   └── AuthViewModel.kt
         ├── bookmarks/         # Bookmarks Feature (BookmarksScreen & BookmarksViewModel)
-        ├── detail/            # Detail Feature (3D Flip Card, KnowledgeCard, NoteInputCard & DetailViewModel)
+        ├── detail/            # Detail Feature & AI Assistant (3D Flip Card, KnowledgeCard, NoteInputCard, AiChatBottomSheet & DetailViewModel)
         ├── home/              # Home Dashboard Feature (BentoGrid, CategoryPills, DailyProgressCard & HomeViewModel)
         ├── onboarding/        # Onboarding Feature (Pager, CareerPathSelection & OnboardingViewModel)
-        ├── profile/           # Profile Feature
+        ├── profile/           # Profile & Settings Feature
         │   ├── profile/       # ProfileScreen.kt, ProfileViewModel.kt & components/StatCard.kt
         │   ├── settings/      # SettingsScreen.kt, SettingsViewModel.kt & components/LanguageToggleButton.kt, SettingsItem.kt
         │   └── privacypolicy/ # PrivacyPolicyScreen.kt
@@ -167,10 +178,10 @@ The app leverages **Type-Safe Jetpack Compose Navigation** with Kotlinx Serializ
    * **Forgot Password**: Password reset dispatch.
 4. **Main Dashboard (Home)**: Modern Bento Grid layout (Progress, Daily Streak & Saved Bookmarks tiles), Category Pills with distinct icons, search bar, and recommended nuggets.
 5. **Roadmap**: Visual progress node flow through selected career path steps.
-6. **Detail & Notes**: 3D flip card learning view with integrated personal note-taking capabilities.
+6. **Detail, Notes & AI Chat**: 3D flip card learning view with integrated personal note-taking and **Google Gemini AI Assistant** chat bottom sheet.
 7. **Quiz Screen**: Multiple-choice assessment with instant score computation and reward prompts.
 8. **Bookmarks**: Saved offline nuggets.
-9. **Profile & Settings**: Level/XP progress visualizer, English/Bengali language toggle, dark mode toggle, and privacy settings.
+9. **Profile & Settings**: Level/XP progress visualizer, English/Bengali language toggle, dark mode toggle, customizable daily streak reminder time, and privacy settings.
 
 ---
 
@@ -187,7 +198,8 @@ The app leverages **Type-Safe Jetpack Compose Navigation** with Kotlinx Serializ
    git clone https://github.com/your-username/Skillflow-Kotlin.git
    cd Skillflow-Kotlin
    ```
-2. **Firebase Setup**:
+2. **Gemini API & Firebase Setup**:
+   * Add `GEMINI_API_KEY=your_gemini_api_key` in `local.properties`.
    * Add your `google-services.json` file inside the `app/` directory.
 3. **Build & Run**:
    * Sync Gradle dependencies.
