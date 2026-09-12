@@ -10,18 +10,18 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.skillflow.domain.manager.PlayStoreManager
-import com.example.skillflow.ui.features.auth.forgotpassword.ForgotPasswordScreen
-import com.example.skillflow.ui.features.auth.login.LoginScreen
-import com.example.skillflow.ui.features.auth.signup.SignUpScreen
-import com.example.skillflow.ui.features.bookmarks.BookmarksScreen
-import com.example.skillflow.ui.features.detail.DetailScreen
-import com.example.skillflow.ui.features.home.HomeScreen
-import com.example.skillflow.ui.features.onboarding.OnboardingScreen
-import com.example.skillflow.ui.features.profile.privacypolicy.PrivacyPolicyScreen
-import com.example.skillflow.ui.features.profile.profile.ProfileScreen
-import com.example.skillflow.ui.features.profile.settings.SettingsScreen
-import com.example.skillflow.ui.features.quiz.QuizScreen
-import com.example.skillflow.ui.features.roadmap.RoadmapScreen
+import com.example.skillflow.ui.screens.auth.forgotpassword.ForgotPasswordScreen
+import com.example.skillflow.ui.screens.auth.login.LoginScreen
+import com.example.skillflow.ui.screens.auth.signup.SignUpScreen
+import com.example.skillflow.ui.screens.bookmarks.BookmarksScreen
+import com.example.skillflow.ui.screens.detail.DetailScreen
+import com.example.skillflow.ui.screens.home.HomeScreen
+import com.example.skillflow.ui.screens.onboarding.OnboardingScreen
+import com.example.skillflow.ui.screens.profile.privacypolicy.PrivacyPolicyScreen
+import com.example.skillflow.ui.screens.profile.profile.ProfileScreen
+import com.example.skillflow.ui.screens.profile.settings.SettingsScreen
+import com.example.skillflow.ui.screens.quiz.QuizScreen
+import com.example.skillflow.ui.screens.roadmap.RoadmapScreen
 
 /**
  * Centralized Navigation Host for the SkillFlow app.
