@@ -10,16 +10,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.skillflow.domain.manager.PlayStoreManager
-import com.example.skillflow.ui.features.auth.ForgotPasswordScreen
-import com.example.skillflow.ui.features.auth.LoginScreen
-import com.example.skillflow.ui.features.auth.SignUpScreen
+import com.example.skillflow.ui.features.auth.forgotpassword.ForgotPasswordScreen
+import com.example.skillflow.ui.features.auth.login.LoginScreen
+import com.example.skillflow.ui.features.auth.signup.SignUpScreen
 import com.example.skillflow.ui.features.bookmarks.BookmarksScreen
 import com.example.skillflow.ui.features.detail.DetailScreen
 import com.example.skillflow.ui.features.home.HomeScreen
 import com.example.skillflow.ui.features.onboarding.OnboardingScreen
-import com.example.skillflow.ui.features.profile.PrivacyPolicyScreen
-import com.example.skillflow.ui.features.profile.ProfileScreen
-import com.example.skillflow.ui.features.profile.SettingsScreen
+import com.example.skillflow.ui.features.profile.privacypolicy.PrivacyPolicyScreen
+import com.example.skillflow.ui.features.profile.profile.ProfileScreen
+import com.example.skillflow.ui.features.profile.settings.SettingsScreen
 import com.example.skillflow.ui.features.quiz.QuizScreen
 import com.example.skillflow.ui.features.roadmap.RoadmapScreen
 

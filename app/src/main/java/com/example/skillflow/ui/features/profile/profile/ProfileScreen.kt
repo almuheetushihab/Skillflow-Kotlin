@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.features.profile
+package com.example.skillflow.ui.features.profile.profile
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -26,7 +26,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.skillflow.R
 import com.example.skillflow.ui.common.SkillflowTopAppBar
-import com.example.skillflow.ui.features.profile.components.StatCard
+import com.example.skillflow.ui.features.profile.profile.components.StatCard
 import com.example.skillflow.ui.theme.GradientStart
 import com.example.skillflow.ui.theme.spacing
 import java.util.Locale

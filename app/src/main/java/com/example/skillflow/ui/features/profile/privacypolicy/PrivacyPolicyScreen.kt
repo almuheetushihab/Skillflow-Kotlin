@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.features.profile
+package com.example.skillflow.ui.features.profile.privacypolicy
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn

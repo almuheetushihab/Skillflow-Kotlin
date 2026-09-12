@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.features.profile.components
+package com.example.skillflow.ui.features.profile.profile.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*

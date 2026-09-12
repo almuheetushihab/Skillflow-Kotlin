@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.features.profile.components
+package com.example.skillflow.ui.features.profile.settings.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background

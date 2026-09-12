@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.features.profile.components
+package com.example.skillflow.ui.features.profile.settings.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*

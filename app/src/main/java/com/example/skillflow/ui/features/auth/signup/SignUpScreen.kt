@@ -1,4 +1,8 @@
-package com.example.skillflow.ui.features.auth
+package com.example.skillflow.ui.features.auth.signup
+
+import com.example.skillflow.ui.features.auth.AuthState
+import com.example.skillflow.ui.features.auth.AuthUiEvent
+import com.example.skillflow.ui.features.auth.AuthViewModel
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

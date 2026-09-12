@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.features.profile
+package com.example.skillflow.ui.features.profile.settings
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -25,8 +25,8 @@ import com.example.skillflow.R
 import com.example.skillflow.ui.common.AuthButton
 import com.example.skillflow.ui.common.AuthTextField
 import com.example.skillflow.ui.common.SkillflowTopAppBar
-import com.example.skillflow.ui.features.profile.components.LanguageToggleButton
-import com.example.skillflow.ui.features.profile.components.SettingsItem
+import com.example.skillflow.ui.features.profile.settings.components.LanguageToggleButton
+import com.example.skillflow.ui.features.profile.settings.components.SettingsItem
 import com.example.skillflow.ui.theme.spacing
 import kotlinx.coroutines.flow.collectLatest
 import java.util.Locale

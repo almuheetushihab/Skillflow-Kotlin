@@ -1,4 +1,4 @@
-package com.example.skillflow.ui.features.profile
+package com.example.skillflow.ui.features.profile.profile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
