@@ -43,8 +43,15 @@ fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
+    val isSpeaking by viewModel.isSpeaking.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scrollState = rememberScrollState()
+
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.onStopAudioClicked()
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.eventFlow.collectLatest { event ->
@@ -57,12 +64,15 @@ fun DetailScreen(
 
     DetailContent(
         state = state,
+        isSpeaking = isSpeaking,
         snackbarHostState = snackbarHostState,
         scrollState = scrollState,
         onNavigateBack = onNavigateBack,
         onToggleSave = viewModel::toggleSave,
         onFlipCard = viewModel::flipCard,
         onMarkAsMastered = viewModel::toggleMastered,
+        onPlayAudio = viewModel::onPlayAudioClicked,
+        onStopAudio = viewModel::onStopAudioClicked,
         onNoteTitleChange = viewModel::onNoteTitleChange,
         onNoteDescChange = viewModel::onNoteDescriptionChange,
         onSaveNote = viewModel::saveNote,
@@ -78,12 +88,15 @@ fun DetailScreen(
 @Composable
 fun DetailContent(
     state: DetailState,
+    isSpeaking: Boolean,
     snackbarHostState: SnackbarHostState,
     scrollState: ScrollState,
     onNavigateBack: () -> Unit,
     onToggleSave: () -> Unit,
     onFlipCard: () -> Unit,
     onMarkAsMastered: () -> Unit,
+    onPlayAudio: (String) -> Unit,
+    onStopAudio: () -> Unit,
     onNoteTitleChange: (String) -> Unit,
     onNoteDescChange: (String) -> Unit,
     onSaveNote: () -> Unit,
@@ -163,7 +176,15 @@ fun DetailContent(
             } else {
                 Spacer(modifier = Modifier.height(spacing.medium))
                 
-                KnowledgeCard(nugget = nugget, isFlipped = state.isFlipped, rotation = rotation, onFlip = onFlipCard)
+                KnowledgeCard(
+                    nugget = nugget,
+                    isFlipped = state.isFlipped,
+                    rotation = rotation,
+                    onFlip = onFlipCard,
+                    isSpeaking = isSpeaking,
+                    onPlayAudio = onPlayAudio,
+                    onStopAudio = onStopAudio
+                )
 
                 Spacer(modifier = Modifier.height(spacing.large))
 

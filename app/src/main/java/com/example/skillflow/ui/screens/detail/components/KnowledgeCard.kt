@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material.icons.filled.QuestionMark
+import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,6 +34,9 @@ fun KnowledgeCard(
     isFlipped: Boolean,
     rotation: Float,
     onFlip: () -> Unit,
+    isSpeaking: Boolean = false,
+    onPlayAudio: (String) -> Unit = {},
+    onStopAudio: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val revealText = stringResource(R.string.tap_to_reveal)
@@ -57,6 +62,24 @@ fun KnowledgeCard(
                         .background(Brush.linearGradient(listOf(GradientStart, GradientEnd))),
                     contentAlignment = Alignment.Center
                 ) {
+                    FilledIconButton(
+                        onClick = {
+                            if (isSpeaking) onStopAudio() else onPlayAudio("${nugget.title}. ${nugget.content}")
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(MaterialTheme.spacing.medium),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = Color.White.copy(alpha = 0.25f),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Icon(
+                            imageVector = if (isSpeaking) Icons.Default.Stop else Icons.AutoMirrored.Filled.VolumeUp,
+                            contentDescription = if (isSpeaking) "Stop Audio" else "Play Audio"
+                        )
+                    }
+
                     Column(
                         modifier = Modifier.padding(MaterialTheme.spacing.large + 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -92,6 +115,24 @@ fun KnowledgeCard(
                         .background(MaterialTheme.colorScheme.surface),
                     contentAlignment = Alignment.Center
                 ) {
+                    FilledIconButton(
+                        onClick = {
+                            if (isSpeaking) onStopAudio() else onPlayAudio(nugget.content)
+                        },
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(MaterialTheme.spacing.medium),
+                        colors = IconButtonDefaults.filledIconButtonColors(
+                            containerColor = GradientStart.copy(alpha = 0.15f),
+                            contentColor = GradientStart
+                        )
+                    ) {
+                        Icon(
+                            imageVector = if (isSpeaking) Icons.Default.Stop else Icons.AutoMirrored.Filled.VolumeUp,
+                            contentDescription = if (isSpeaking) "Stop Audio" else "Play Audio"
+                        )
+                    }
+
                     Column(
                         modifier = Modifier.padding(MaterialTheme.spacing.large + 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -116,3 +157,4 @@ fun KnowledgeCard(
         }
     }
 }
+

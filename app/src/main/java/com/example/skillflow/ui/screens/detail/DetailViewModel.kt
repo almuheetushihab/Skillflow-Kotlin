@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skillflow.domain.analytics.AnalyticsHelper
+import com.example.skillflow.domain.manager.TtsManager
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.domain.repository.GeminiRepository
@@ -55,6 +56,7 @@ class DetailViewModel @Inject constructor(
     private val settingsRepository: SettingsRepository,
     private val geminiRepository: GeminiRepository,
     private val analyticsHelper: AnalyticsHelper,
+    private val ttsManager: TtsManager,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -62,6 +64,8 @@ class DetailViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(DetailState())
     val state = _state.asStateFlow()
+
+    val isSpeaking: StateFlow<Boolean> = ttsManager.isSpeaking
 
     private val _eventFlow = MutableSharedFlow<DetailUiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
@@ -216,4 +220,18 @@ class DetailViewModel @Inject constructor(
                 }
         }
     }
+
+    fun onPlayAudioClicked(text: String) {
+        ttsManager.speak(text)
+    }
+
+    fun onStopAudioClicked() {
+        ttsManager.stop()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        ttsManager.stop()
+    }
 }
+
