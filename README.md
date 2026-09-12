@@ -47,7 +47,7 @@ In today's fast-paced world, traditional long-form courses can cause information
 
 ### 🎨 Modern UI & UX Excellence
 * **100% Jetpack Compose & Material 3**: Declarative UI with Edge-to-Edge drawing and dynamic light/dark mode support.
-* **Professional Feature-Based Packaging**: Clean separation where screens, ViewModels, and private components reside together inside modular feature packages (`ui/features/`).
+* **Screen-Based Package Architecture**: Strict separation where every screen has its own dedicated package (`ui/features/<feature>/<screen>/`) containing its Screen, ViewModel, and isolated components sub-package (`components/`).
 * **Single Component Per File**: Unbundled reusable UI components into dedicated files for maximum maintainability.
 * **Custom Shimmer Skeleton Loaders**: Smooth loading states across Home (`NuggetCardSkeleton`, `ProgressCardSkeleton`), Roadmaps (`RoadmapStepSkeleton`), and Onboarding (`CareerPathSkeleton`).
 * **Multi-Language Localization**: Full dynamic runtime switching between English and Bengali (EN/BN) using `UiText` wrappers.
@@ -94,9 +94,9 @@ graph TD
 ```
 
 1. **Presentation Layer (`ui/`)**:
-   * Organised using **Professional Feature-Based Packaging** (`ui/features/<feature>/`).
-   * **Co-located ViewModel & Screen**: Every Screen (`*Screen.kt`) and its ViewModel (`*ViewModel.kt`) reside in the same feature folder.
-   * **Component Unbundling**: Every component has its own dedicated `.kt` file. Private components live inside a `components/` sub-package under that feature.
+   * Organised using **Strict Screen-Based Package Architecture** (`ui/features/<feature>/<screen>/`).
+   * **Dedicated Screen Packages**: Every screen has its own sub-package containing its `*Screen.kt` and corresponding `*ViewModel.kt`.
+   * **Component Isolation**: Screen-specific UI components reside inside a dedicated `components/` sub-package within that specific screen's package. Shared feature components live in `<feature>/components/`.
    * Shared global components live in `ui/common/`, theme files in `ui/theme/`, and routes in `ui/navigation/`.
    * Uses **MVVM** pattern with `StateFlow` for state rendering and `SharedFlow` for single-event notifications.
 2. **Domain Layer (`domain/`)**:
@@ -135,13 +135,20 @@ com.example.skillflow
     ├── common/                # Reusable Global Components (NuggetCard, AuthButton, TopBar, Skeletons)
     ├── navigation/            # Type-Safe Routes (Screen.kt), SkillFlowNavHost & BottomBar
     ├── theme/                 # Material 3 Colors, Spacing, Typography & Theme
-    └── features/              # Modular Feature Packages (Screen + ViewModel + Private Components)
-        ├── auth/              # Auth Feature (Login, SignUp, ForgotPassword & AuthViewModel)
+    └── features/              # Modular Feature Packages (Screen-Based Package Architecture)
+        ├── auth/              # Auth Feature
+        │   ├── login/         # LoginScreen.kt
+        │   ├── signup/        # SignUpScreen.kt
+        │   ├── forgotpassword/# ForgotPasswordScreen.kt
+        │   └── AuthViewModel.kt
         ├── bookmarks/         # Bookmarks Feature (BookmarksScreen & BookmarksViewModel)
         ├── detail/            # Detail Feature (3D Flip Card, KnowledgeCard, NoteInputCard & DetailViewModel)
         ├── home/              # Home Dashboard Feature (BentoGrid, CategoryPills, DailyProgressCard & HomeViewModel)
         ├── onboarding/        # Onboarding Feature (Pager, CareerPathSelection & OnboardingViewModel)
-        ├── profile/           # Profile & Settings Feature (ProfileScreen, SettingsScreen, StatCard & ViewModels)
+        ├── profile/           # Profile Feature
+        │   ├── profile/       # ProfileScreen.kt, ProfileViewModel.kt & components/StatCard.kt
+        │   ├── settings/      # SettingsScreen.kt, SettingsViewModel.kt & components/LanguageToggleButton.kt, SettingsItem.kt
+        │   └── privacypolicy/ # PrivacyPolicyScreen.kt
         ├── quiz/              # Quiz Feature (Interactive Quiz, QuizResultScreen & QuizViewModel)
         └── roadmap/           # Roadmap Feature (Visual Career Roadmap Steps & Skeletons)
 ```
