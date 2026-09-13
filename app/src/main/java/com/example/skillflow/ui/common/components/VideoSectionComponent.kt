@@ -32,7 +32,9 @@ fun VideoSectionComponent(
     videoUrl: String?,
     onSaveVideo: (Uri) -> Unit,
     onRemoveVideo: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isTtsSpeaking: Boolean = false,
+    onVideoStartedPlaying: () -> Unit = {}
 ) {
     val context = LocalContext.current
     var isBottomSheetOpen by remember { mutableStateOf(false) }
@@ -59,6 +61,8 @@ fun VideoSectionComponent(
             // Video Player
             VideoPlayerComponent(
                 videoUrl = videoUrl,
+                isTtsSpeaking = isTtsSpeaking,
+                onVideoStartedPlaying = onVideoStartedPlaying,
                 modifier = Modifier.fillMaxWidth()
             )
 

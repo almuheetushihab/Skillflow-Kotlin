@@ -31,7 +31,6 @@ import com.example.skillflow.domain.model.ComplexityLevel
 import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
-import com.example.skillflow.ui.common.components.VideoPlayerComponent
 import com.example.skillflow.ui.common.components.VideoSectionComponent
 import com.example.skillflow.ui.screens.detail.components.AiChatBottomSheet
 import com.example.skillflow.ui.screens.detail.components.KnowledgeCard
@@ -189,6 +188,8 @@ fun DetailContent(
                     videoUrl = nugget.videoUrl,
                     onSaveVideo = onSaveVideo,
                     onRemoveVideo = onRemoveVideo,
+                    isTtsSpeaking = isSpeaking,
+                    onVideoStartedPlaying = onStopAudio,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = spacing.medium)

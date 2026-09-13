@@ -9,7 +9,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -19,6 +22,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -27,16 +31,25 @@ import androidx.media3.ui.PlayerView
 @Composable
 fun VideoPlayerComponent(
     videoUrl: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isTtsSpeaking: Boolean = false,
+    onVideoStartedPlaying: () -> Unit = {}
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val currentOnVideoStartedPlaying by rememberUpdatedState(onVideoStartedPlaying)
 
     val exoPlayer = remember(context, videoUrl) {
         ExoPlayer.Builder(context).build().apply {
             setMediaItem(MediaItem.fromUri(videoUrl))
             prepare()
             playWhenReady = false
+        }
+    }
+
+    LaunchedEffect(isTtsSpeaking) {
+        if (isTtsSpeaking) {
+            exoPlayer.pause()
         }
     }
 
@@ -50,10 +63,20 @@ fun VideoPlayerComponent(
             }
         }
 
+        val playerListener = object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                if (isPlaying) {
+                    currentOnVideoStartedPlaying()
+                }
+            }
+        }
+
         lifecycleOwner.lifecycle.addObserver(observer)
+        exoPlayer.addListener(playerListener)
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+            exoPlayer.removeListener(playerListener)
             exoPlayer.release()
         }
     }
