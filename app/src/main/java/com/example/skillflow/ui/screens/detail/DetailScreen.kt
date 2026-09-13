@@ -1,5 +1,6 @@
 package com.example.skillflow.ui.screens.detail
 
+import android.net.Uri
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -20,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,6 +32,7 @@ import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.common.components.VideoPlayerComponent
+import com.example.skillflow.ui.common.components.VideoSectionComponent
 import com.example.skillflow.ui.screens.detail.components.AiChatBottomSheet
 import com.example.skillflow.ui.screens.detail.components.KnowledgeCard
 import com.example.skillflow.ui.screens.detail.components.NoteCard
@@ -43,6 +46,7 @@ fun DetailScreen(
     modifier: Modifier = Modifier,
     viewModel: DetailViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     val state by viewModel.state.collectAsState()
     val isSpeaking by viewModel.isSpeaking.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -82,6 +86,8 @@ fun DetailScreen(
         onToggleAiSheet = viewModel::toggleAiBottomSheet,
         onAiQuestionChange = viewModel::onAiQuestionChange,
         onSendAiQuestion = viewModel::askAI,
+        onSaveVideo = { uri -> viewModel.saveCustomVideo(context, uri) },
+        onRemoveVideo = { viewModel.removeCustomVideo(context) },
         modifier = modifier
     )
 }
@@ -106,6 +112,8 @@ fun DetailContent(
     onToggleAiSheet: (Boolean) -> Unit,
     onAiQuestionChange: (String) -> Unit,
     onSendAiQuestion: () -> Unit,
+    onSaveVideo: (Uri) -> Unit,
+    onRemoveVideo: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val nugget = state.nugget
@@ -177,14 +185,14 @@ fun DetailContent(
             } else {
                 Spacer(modifier = Modifier.height(spacing.medium))
 
-                if (!nugget.videoUrl.isNullOrEmpty()) {
-                    VideoPlayerComponent(
-                        videoUrl = nugget.videoUrl,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = spacing.medium)
-                    )
-                }
+                VideoSectionComponent(
+                    videoUrl = nugget.videoUrl,
+                    onSaveVideo = onSaveVideo,
+                    onRemoveVideo = onRemoveVideo,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = spacing.medium)
+                )
 
                 KnowledgeCard(
                     nugget = nugget,

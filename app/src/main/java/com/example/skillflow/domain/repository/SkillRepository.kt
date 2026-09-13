@@ -13,6 +13,7 @@ interface SkillRepository {
     suspend fun toggleSaveNugget(nuggetId: String)
     suspend fun markNuggetAsDone(nuggetId: String)
     suspend fun updateMasteryStatus(nuggetId: String, isMastered: Boolean)
+    suspend fun updateNuggetVideoUrl(nuggetId: String, videoUrl: String?)
     fun getCareerPaths(): Flow<List<CareerPath>>
     fun searchNuggets(query: String): Flow<List<KnowledgeNugget>>
     fun getNuggetById(id: String): Flow<KnowledgeNugget?>

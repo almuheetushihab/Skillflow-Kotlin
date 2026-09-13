@@ -86,6 +86,10 @@ class SkillRepositoryImpl @Inject constructor(
         if (isMastered) dao.markNuggetAsDone(nuggetId)
     }
 
+    override suspend fun updateNuggetVideoUrl(nuggetId: String, videoUrl: String?) {
+        dao.updateNuggetVideoUrl(nuggetId, videoUrl)
+    }
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun getCareerPaths(): Flow<List<CareerPath>> {
         return dao.getCareerPaths().flatMapLatest { entities ->

@@ -44,6 +44,9 @@ interface SkillDao {
     @Query("UPDATE nuggets SET isMastered = :isMastered, completionDate = :completionDate WHERE id = :nuggetId")
     suspend fun updateMasteryStatus(nuggetId: String, isMastered: Boolean, completionDate: Long?)
 
+    @Query("UPDATE nuggets SET videoUrl = :videoUrl WHERE id = :nuggetId")
+    suspend fun updateNuggetVideoUrl(nuggetId: String, videoUrl: String?)
+
     @Query("SELECT * FROM career_paths ORDER BY isUnlocked DESC, name ASC")
     fun getCareerPaths(): Flow<List<CareerPathEntity>>
 

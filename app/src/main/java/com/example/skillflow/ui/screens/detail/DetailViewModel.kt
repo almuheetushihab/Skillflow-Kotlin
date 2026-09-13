@@ -1,5 +1,7 @@
 package com.example.skillflow.ui.screens.detail
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,6 +12,7 @@ import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.domain.repository.GeminiRepository
 import com.example.skillflow.domain.repository.SettingsRepository
 import com.example.skillflow.domain.repository.SkillRepository
+import com.example.skillflow.util.VideoFileHelper
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -227,6 +230,27 @@ class DetailViewModel @Inject constructor(
 
     fun onStopAudioClicked() {
         ttsManager.stop()
+    }
+
+    fun saveCustomVideo(context: Context, videoUri: Uri) {
+        viewModelScope.launch {
+            val savedPath = VideoFileHelper.saveVideoToInternalStorage(context, videoUri)
+            if (savedPath != null) {
+                repository.updateNuggetVideoUrl(nuggetId, savedPath)
+                _eventFlow.emit(DetailUiEvent.ShowSnackbar("Video saved successfully!"))
+            } else {
+                _eventFlow.emit(DetailUiEvent.ShowSnackbar("Failed to save video."))
+            }
+        }
+    }
+
+    fun removeCustomVideo(context: Context) {
+        viewModelScope.launch {
+            val currentVideoPath = _state.value.nugget?.videoUrl
+            VideoFileHelper.deleteInternalVideoFile(context, currentVideoPath)
+            repository.updateNuggetVideoUrl(nuggetId, null)
+            _eventFlow.emit(DetailUiEvent.ShowSnackbar("Video removed."))
+        }
     }
 
     override fun onCleared() {
