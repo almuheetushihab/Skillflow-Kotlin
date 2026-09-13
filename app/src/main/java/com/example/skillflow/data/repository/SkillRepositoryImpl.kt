@@ -174,6 +174,7 @@ class SkillRepositoryImpl @Inject constructor(
                         content = nuggetDto.content,
                         complexity = nuggetDto.complexity,
                         imageUrl = nuggetDto.imageUrl,
+                        videoUrl = nuggetDto.videoUrl,
                         careerPathId = nuggetDto.categoryId,
                         isDone = false,
                         isSaved = false,

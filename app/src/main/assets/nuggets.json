@@ -4,6 +4,7 @@
     "title": "Kotlin Fundamentals",
     "content": "Kotlin is a modern, statically typed language. Key features include null safety, extension functions, and higher-order functions which make Android development more concise and robust.",
     "careerPathId": "android",
+    "videoUrl": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
     "date": "2026-08-03"
   },
   {

@@ -34,5 +34,14 @@
     "name": "Data Scientist",
     "description": "Extract actionable insights from complex data sets using AI and ML.",
     "iconUrl": ""
+  },
+
+  {
+    "id": "machine-learning",
+    "name": "Machine Learning Engineer",
+    "description": "Develop and deploy machine learning models to solve real-world problems.",
+    "iconUrl": ""
   }
+
+
 ]

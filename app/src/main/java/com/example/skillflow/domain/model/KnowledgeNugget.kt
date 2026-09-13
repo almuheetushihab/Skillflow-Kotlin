@@ -10,6 +10,7 @@ data class KnowledgeNugget(
     val content: String,
     val complexity: String, // Beginner, Intermediate, Advanced
     val imageUrl: String? = null,
+    val videoUrl: String? = null,
     val careerPathId: String,
     val isDone: Boolean = false,
     val isSaved: Boolean = false,

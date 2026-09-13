@@ -29,6 +29,7 @@ import com.example.skillflow.domain.model.ComplexityLevel
 import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
+import com.example.skillflow.ui.common.components.VideoPlayerComponent
 import com.example.skillflow.ui.screens.detail.components.AiChatBottomSheet
 import com.example.skillflow.ui.screens.detail.components.KnowledgeCard
 import com.example.skillflow.ui.screens.detail.components.NoteCard
@@ -175,7 +176,16 @@ fun DetailContent(
                 }
             } else {
                 Spacer(modifier = Modifier.height(spacing.medium))
-                
+
+                if (!nugget.videoUrl.isNullOrEmpty()) {
+                    VideoPlayerComponent(
+                        videoUrl = nugget.videoUrl,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = spacing.medium)
+                    )
+                }
+
                 KnowledgeCard(
                     nugget = nugget,
                     isFlipped = state.isFlipped,

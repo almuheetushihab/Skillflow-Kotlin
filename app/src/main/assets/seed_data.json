@@ -13,6 +13,7 @@
           "content": "The Activity lifecycle consists of states like onCreate, onStart, onResume, onPause, onStop, and onDestroy. Managing these correctly prevents memory leaks and ensures a smooth user experience when switching apps.",
           "complexity": "Beginner",
           "category_id": "android",
+          "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
           "quizzes": [
             {
               "id": "q_a1_1",

@@ -32,6 +32,8 @@ data class NuggetSeedDto(
     val categoryId: String,
     @SerialName("image_url")
     val imageUrl: String? = null,
+    @SerialName("video_url")
+    val videoUrl: String? = null,
     val quizzes: List<QuizSeedDto>
 )
 
