@@ -33,6 +33,12 @@ In today's fast-paced world, traditional long-form courses can cause information
 ### 🤖 AI Assistant & Smart Learning
 * **Google Gemini AI Integration**: Context-aware AI Assistant Bottom Sheet (`AiChatBottomSheet.kt`) powered by Google Generative AI Client SDK (`gemini-1.5-flash-latest` with `gemini-1.5-pro` fallback). Ask real-time questions directly related to any knowledge nugget.
 
+### 🎥 Video & Audio Learning (ExoPlayer & TTS)
+* **Text-to-Speech (TTS) Audio Engine**: Listen to Knowledge Nuggets read aloud using Android `TextToSpeech` managed by `TtsManager` (`TtsManagerImpl`) with real-time `isSpeaking` state flow observation.
+* **Media3 ExoPlayer Video Integration**: Smooth 16:9 reference video playback component (`VideoPlayerComponent`) powered by AndroidX Media3 ExoPlayer with lifecycle-aware auto-pausing.
+* **Custom Video Attachments**: Attach reference videos to any knowledge nugget (`VideoSectionComponent` & `VideoFileHelper`). Choose from device gallery (`PickVisualMedia`) or record directly with the camera (`CaptureVideo`), stored securely in app internal storage.
+* **Smart Audio Clash Prevention**: Seamless interoperability between ExoPlayer and TTS. Starting a video automatically stops active TTS speech, while activating TTS automatically pauses video playback (`Player.Listener` & `LaunchedEffect` observation).
+
 ### ⏰ Notifications & Daily Streak Reminders
 * **WorkManager Reminder Engine**: Background daily reminder scheduler (`DailyReminderWorker` & `ReminderManagerImpl`) to maintain learning habits.
 * **Custom Time Picker & Notification Channel**: Set personalized notification time (e.g. 9:00 PM) via TimePicker in Settings, integrated with Android `NotificationHelper` (`daily_streak_reminder_channel`).
@@ -78,6 +84,8 @@ In today's fast-paced world, traditional long-form courses can cause information
 | **UI Framework** | Jetpack Compose + Material 3 |
 | **SDK Versions** | `minSdk: 24`, `targetSdk: 37`, `compileSdk: 37` |
 | **AI Integration** | Google Generative AI Client SDK (`gemini-1.5-flash-latest` / `gemini-1.5-pro`) |
+| **Video & Media** | AndroidX Media3 ExoPlayer (`media3-exoplayer` & `media3-ui`) |
+| **Speech Engine** | Android Text-to-Speech (`TextToSpeech` & `TtsManager`) |
 | **Architecture** | Clean Architecture + MVVM + MVI State Management + Screen-Based Package Architecture |
 | **Dependency Injection** | Hilt (Dagger Hilt + Hilt Work + Hilt Navigation Compose) |
 | **Local Database** | Room Persistence Library |
@@ -129,21 +137,21 @@ com.example.skillflow
 ├── data/
 │   ├── analytics/             # Firebase Analytics Helper Implementation
 │   ├── local/                 # Room Database, DAO & Entities (Nugget, Note, Career)
-│   ├── manager/               # Play Store In-App Review & Update Managers
+│   ├── manager/               # TtsManagerImpl, Play Store In-App Review & Update Managers
 │   ├── notification/          # NotificationHelper & Daily Reminder Channel Configuration
 │   ├── remote/                # Retrofit API & DTO definitions
 │   ├── repository/            # Repository Implementations (Skill, Auth, Settings, Gemini)
-│   ├── util/                  # Asset Managers & JSON Parsers
+│   ├── util/                  # VideoFileHelper, Asset Managers & JSON Parsers
 │   └── worker/                # WorkManager Jobs (DailyReminderWorker, DataSeedWorker)
-├── di/                        # Hilt Modules (Database, Network, Firebase, Repositories, Managers)
+├── di/                        # Hilt Modules (Database, Network, Firebase, Repositories, Managers, Tts)
 ├── domain/
 │   ├── analytics/             # Analytics Interfaces
-│   ├── manager/               # Manager Interfaces (ReminderManager, PlayStoreManager)
+│   ├── manager/               # Manager Interfaces (TtsManager, ReminderManager, PlayStoreManager)
 │   ├── model/                 # Pure Domain Data Models
 │   ├── repository/            # Repository Interfaces (GeminiRepository, AuthRepository, etc.)
 │   └── util/                  # Resource wrappers & UiText helpers
 └── ui/                        # Professional Screen-Based UI Layer
-    ├── common/                # Reusable Global Components (NuggetCard, AuthButton, TopBar, Skeletons)
+    ├── common/                # Reusable Global Components (VideoPlayerComponent, VideoSectionComponent, NuggetCard, AuthButton, TopBar, Skeletons)
     ├── navigation/            # Type-Safe Routes (Screen.kt), SkillFlowNavHost & BottomBar
     ├── theme/                 # Material 3 Colors, Spacing, Typography & Theme
     └── screens/               # Modular Screen Packages (Screen-Based Package Architecture)
@@ -153,7 +161,7 @@ com.example.skillflow
         │   ├── forgotpassword/# ForgotPasswordScreen.kt
         │   └── AuthViewModel.kt
         ├── bookmarks/         # Bookmarks Feature (BookmarksScreen & BookmarksViewModel)
-        ├── detail/            # Detail Feature & AI Assistant (3D Flip Card, KnowledgeCard, NoteInputCard, AiChatBottomSheet & DetailViewModel)
+        ├── detail/            # Detail Feature & AI Assistant (3D Flip Card, KnowledgeCard, VideoSectionComponent, NoteInputCard, AiChatBottomSheet & DetailViewModel)
         ├── home/              # Home Dashboard Feature (BentoGrid, CategoryPills, DailyProgressCard & HomeViewModel)
         ├── onboarding/        # Onboarding Feature (Pager, CareerPathSelection & OnboardingViewModel)
         ├── profile/           # Profile & Settings Feature
@@ -178,7 +186,7 @@ The app leverages **Type-Safe Jetpack Compose Navigation** with Kotlinx Serializ
    * **Forgot Password**: Password reset dispatch.
 4. **Main Dashboard (Home)**: Modern Bento Grid layout (Progress, Daily Streak & Saved Bookmarks tiles), Category Pills with distinct icons, search bar, and recommended nuggets.
 5. **Roadmap**: Visual progress node flow through selected career path steps.
-6. **Detail, Notes & AI Chat**: 3D flip card learning view with integrated personal note-taking and **Google Gemini AI Assistant** chat bottom sheet.
+6. **Detail, Notes, Video & AI Chat**: 3D flip card learning view with Media3 ExoPlayer video playback, TTS audio reader, audio clash prevention, integrated personal note-taking, and **Google Gemini AI Assistant** chat bottom sheet.
 7. **Quiz Screen**: Multiple-choice assessment with instant score computation and reward prompts.
 8. **Bookmarks**: Saved offline nuggets.
 9. **Profile & Settings**: Level/XP progress visualizer, English/Bengali language toggle, dark mode toggle, customizable daily streak reminder time, and privacy settings.
