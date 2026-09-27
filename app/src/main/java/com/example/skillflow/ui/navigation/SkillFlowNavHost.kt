@@ -16,6 +16,7 @@ import com.example.skillflow.ui.screens.auth.signup.SignUpScreen
 import com.example.skillflow.ui.screens.bookmarks.BookmarksScreen
 import com.example.skillflow.ui.screens.detail.DetailScreen
 import com.example.skillflow.ui.screens.home.HomeScreen
+import com.example.skillflow.ui.screens.leaderboard.LeaderboardScreen
 import com.example.skillflow.ui.screens.onboarding.OnboardingScreen
 import com.example.skillflow.ui.screens.profile.privacypolicy.PrivacyPolicyScreen
 import com.example.skillflow.ui.screens.profile.profile.ProfileScreen
@@ -154,6 +155,12 @@ fun SkillFlowNavHost(
             QuizScreen(
                 onFinish = { navController.popBackStack() },
                 playStoreManager = playStoreManager,
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
+        composable<Screen.Leaderboard> {
+            LeaderboardScreen(
+                onNavigateBack = { navController.popBackStack() },
                 modifier = Modifier.padding(innerPadding)
             )
         }

@@ -50,6 +50,7 @@ In today's fast-paced world, traditional long-form courses can cause information
 * **Bookmarks & Offline Access**: Save essential nuggets for quick offline reading.
 
 ### 🎮 Gamification & Learning Progress
+* **Social Leaderboard**: Global Hall of Fame (`LeaderboardScreen.kt`) featuring a Top 3 `PodiumComponent` (Gold, Silver, Bronze), dynamic list items (`LeaderboardListItem.kt`), and a sticky bottom card (`CurrentUserRankCard.kt`) showing the active user's rank and XP.
 * **Bento Grid Dashboard**: Asymmetrical Bento Grid header with 24dp rounded corners, featuring a large Progress card alongside balanced Streak and Saved Items tiles.
 * **Category Pills with Distinct Icons**: Simplified horizontal filter pills ("All", "Today", "History", "Pick Date") with unique icons for quick date and topic filtering.
 * **Daily Streak Tracker**: Automatically calculates learning streaks based on completion dates (`StreakCalculatorTest` verified).
@@ -163,6 +164,7 @@ com.example.skillflow
         ├── bookmarks/         # Bookmarks Feature (BookmarksScreen & BookmarksViewModel)
         ├── detail/            # Detail Feature & AI Assistant (3D Flip Card, KnowledgeCard, VideoSectionComponent, NoteInputCard, AiChatBottomSheet & DetailViewModel)
         ├── home/              # Home Dashboard Feature (BentoGrid, CategoryPills, DailyProgressCard & HomeViewModel)
+        ├── leaderboard/       # Leaderboard Feature (LeaderboardScreen, LeaderboardViewModel, PodiumComponent, LeaderboardListItem & CurrentUserRankCard)
         ├── onboarding/        # Onboarding Feature (Pager, CareerPathSelection & OnboardingViewModel)
         ├── profile/           # Profile & Settings Feature
         │   ├── profile/       # ProfileScreen.kt, ProfileViewModel.kt & components/StatCard.kt
@@ -187,9 +189,10 @@ The app leverages **Type-Safe Jetpack Compose Navigation** with Kotlinx Serializ
 4. **Main Dashboard (Home)**: Modern Bento Grid layout (Progress, Daily Streak & Saved Bookmarks tiles), Category Pills with distinct icons, search bar, and recommended nuggets.
 5. **Roadmap**: Visual progress node flow through selected career path steps.
 6. **Detail, Notes, Video & AI Chat**: 3D flip card learning view with Media3 ExoPlayer video playback, TTS audio reader, audio clash prevention, integrated personal note-taking, and **Google Gemini AI Assistant** chat bottom sheet.
-7. **Quiz Screen**: Multiple-choice assessment with instant score computation and reward prompts.
-8. **Bookmarks**: Saved offline nuggets.
-9. **Profile & Settings**: Level/XP progress visualizer, English/Bengali language toggle, dark mode toggle, customizable daily streak reminder time, and privacy settings.
+7. **Social Leaderboard**: Global Hall of Fame with Top 3 Podium and sticky bottom user rank bar.
+8. **Quiz Screen**: Multiple-choice assessment with instant score computation and reward prompts.
+9. **Bookmarks**: Saved offline nuggets.
+10. **Profile & Settings**: Level/XP progress visualizer, English/Bengali language toggle, dark mode toggle, customizable daily streak reminder time, and privacy settings.
 
 ---
 

@@ -42,4 +42,7 @@ sealed interface Screen {
 
     @Serializable
     data object PrivacyPolicy : Screen
+
+    @Serializable
+    data object Leaderboard : Screen
 }
