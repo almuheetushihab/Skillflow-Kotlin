@@ -168,6 +168,23 @@
           ]
         },
         {
+          "id": "a9",
+          "title": "Kotlin Flow",
+          "short_description": "Reactive data streams.",
+          "content": "Flow is a stream of data that can be computed asynchronously. It is similar to an Iterator but uses suspend functions for asynchronous values.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a9_1",
+              "text": "Which Flow type is best for representing UI state?",
+              "options": ["SharedFlow", "StateFlow", "Cold Flow", "Channel"],
+              "correct_answer_index": 1,
+              "explanation": "StateFlow is a state-holder observable flow that emits the current and new state updates."
+            }
+          ]
+        },
+        {
           "id": "a10",
           "title": "WorkManager",
           "short_description": "Schedule deferrable background tasks.",
