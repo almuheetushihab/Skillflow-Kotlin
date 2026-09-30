@@ -15,8 +15,9 @@ interface TtsManager {
      * Speaks the provided text using TextToSpeech.
      *
      * @param text The text content to be read aloud.
+     * @param languageCode The ISO language code ("en" for English, "bn" for Bangla).
      */
-    fun speak(text: String)
+    fun speak(text: String, languageCode: String = "en")
 
     /**
      * Stops any ongoing speech immediately.

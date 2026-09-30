@@ -75,6 +75,7 @@ fun DetailScreen(
         onToggleSave = viewModel::toggleSave,
         onFlipCard = viewModel::flipCard,
         onMarkAsMastered = viewModel::toggleMastered,
+        onToggleLanguage = viewModel::toggleLanguage,
         onPlayAudio = viewModel::onPlayAudioClicked,
         onStopAudio = viewModel::onStopAudioClicked,
         onNoteTitleChange = viewModel::onNoteTitleChange,
@@ -101,7 +102,8 @@ fun DetailContent(
     onToggleSave: () -> Unit,
     onFlipCard: () -> Unit,
     onMarkAsMastered: () -> Unit,
-    onPlayAudio: (String) -> Unit,
+    onToggleLanguage: () -> Unit,
+    onPlayAudio: (String, String) -> Unit,
     onStopAudio: () -> Unit,
     onNoteTitleChange: (String) -> Unit,
     onNoteDescChange: (String) -> Unit,
@@ -200,8 +202,13 @@ fun DetailContent(
                     isFlipped = state.isFlipped,
                     rotation = rotation,
                     onFlip = onFlipCard,
+                    selectedLanguage = state.selectedLanguage,
+                    translatedTitle = state.translatedTitle,
+                    translatedContent = state.translatedContent,
+                    isTranslating = state.isTranslating,
+                    onToggleLanguage = onToggleLanguage,
                     isSpeaking = isSpeaking,
-                    onPlayAudio = onPlayAudio,
+                    onPlayAudio = { text, lang -> onPlayAudio(text, lang) },
                     onStopAudio = onStopAudio
                 )
 

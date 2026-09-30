@@ -27,6 +27,7 @@ class TtsManagerImpl @Inject constructor(
     private var tts: TextToSpeech? = null
     private var isInitialized = false
     private var pendingText: String? = null
+    private var pendingLanguageCode: String = "en"
 
     init {
         tts = TextToSpeech(context, this)
@@ -58,8 +59,9 @@ class TtsManagerImpl @Inject constructor(
             })
             isInitialized = true
             pendingText?.let { text ->
+                val lang = pendingLanguageCode
                 pendingText = null
-                speakInternal(text)
+                speakInternal(text, lang)
             }
         } else {
             isInitialized = false
@@ -67,21 +69,37 @@ class TtsManagerImpl @Inject constructor(
         }
     }
 
-    override fun speak(text: String) {
+    override fun speak(text: String, languageCode: String) {
         if (text.isBlank()) return
 
         if (!isInitialized) {
             pendingText = text
+            pendingLanguageCode = languageCode
             if (tts == null) {
                 tts = TextToSpeech(context, this)
             }
             return
         }
 
-        speakInternal(text)
+        speakInternal(text, languageCode)
     }
 
-    private fun speakInternal(text: String) {
+    private fun speakInternal(text: String, languageCode: String) {
+        val targetLocale = if (languageCode.equals("bn", ignoreCase = true)) {
+            Locale.forLanguageTag("bn-BD")
+        } else {
+            Locale.US
+        }
+
+        val langResult = tts?.setLanguage(targetLocale)
+        if (langResult == TextToSpeech.LANG_MISSING_DATA || langResult == TextToSpeech.LANG_NOT_SUPPORTED) {
+            if (languageCode.equals("bn", ignoreCase = true)) {
+                tts?.setLanguage(Locale.forLanguageTag("bn"))
+            } else {
+                tts?.setLanguage(Locale.US)
+            }
+        }
+
         val utteranceId = UUID.randomUUID().toString()
         val result = tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
         if (result == TextToSpeech.ERROR) {

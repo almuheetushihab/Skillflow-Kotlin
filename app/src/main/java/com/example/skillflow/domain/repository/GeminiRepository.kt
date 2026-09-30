@@ -8,4 +8,10 @@ interface GeminiRepository {
      * Returns a Flow emitting Result containing the response text or failure.
      */
     fun askGemini(context: String, userQuestion: String): Flow<Result<String>>
+
+    /**
+     * Translates title and content into natural, clear Bengali (Bangla).
+     * Returns a Flow emitting Result containing Pair(translatedTitle, translatedContent).
+     */
+    fun translateToBangla(title: String, content: String): Flow<Result<Pair<String, String>>>
 }

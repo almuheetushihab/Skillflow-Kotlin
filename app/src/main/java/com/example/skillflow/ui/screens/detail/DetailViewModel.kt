@@ -35,6 +35,12 @@ data class DetailState(
     val isFlipped: Boolean = false,
     val isLoading: Boolean = false,
     val error: String? = null,
+    // Translation state
+    val selectedLanguage: String = "en",
+    val translatedTitle: String? = null,
+    val translatedContent: String? = null,
+    val isTranslating: Boolean = false,
+    val translationError: String? = null,
     // AI Learning Assistant state
     val isAiBottomSheetOpen: Boolean = false,
     val aiQuestionInput: String = "",
@@ -224,8 +230,49 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    fun onPlayAudioClicked(text: String) {
-        ttsManager.speak(text)
+    fun toggleLanguage() {
+        val currentLang = _state.value.selectedLanguage
+        val newLang = if (currentLang == "en") "bn" else "en"
+        _state.update { it.copy(selectedLanguage = newLang) }
+
+        if (newLang == "bn" && _state.value.translatedTitle == null) {
+            translateCurrentNugget()
+        }
+    }
+
+    private fun translateCurrentNugget() {
+        val nugget = _state.value.nugget ?: return
+        _state.update { it.copy(isTranslating = true, translationError = null) }
+
+        viewModelScope.launch {
+            geminiRepository.translateToBangla(nugget.title, nugget.content)
+                .collect { result ->
+                    result.onSuccess { (transTitle, transContent) ->
+                        _state.update {
+                            it.copy(
+                                translatedTitle = transTitle,
+                                translatedContent = transContent,
+                                isTranslating = false,
+                                translationError = null
+                            )
+                        }
+                    }.onFailure { error ->
+                        val errorMsg = error.localizedMessage ?: "Failed to translate to Bangla."
+                        _state.update {
+                            it.copy(
+                                isTranslating = false,
+                                selectedLanguage = "en",
+                                translationError = errorMsg
+                            )
+                        }
+                        _eventFlow.emit(DetailUiEvent.ShowSnackbar(errorMsg))
+                    }
+                }
+        }
+    }
+
+    fun onPlayAudioClicked(text: String, languageCode: String = _state.value.selectedLanguage) {
+        ttsManager.speak(text, languageCode)
     }
 
     fun onStopAudioClicked() {
