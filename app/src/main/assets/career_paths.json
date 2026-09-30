@@ -6,24 +6,6 @@
     "iconUrl": ""
   },
   {
-    "id": "ios",
-    "name": "iOS Developer",
-    "description": "Build premium mobile experiences using Swift and SwiftUI.",
-    "iconUrl": ""
-  },
-  {
-    "id": "backend",
-    "name": "Backend Engineer",
-    "description": "Design and build scalable server-side systems and APIs.",
-    "iconUrl": ""
-  },
-  {
-    "id": "frontend",
-    "name": "Frontend Developer",
-    "description": "Create engaging web interfaces using React, Vue, or Angular.",
-    "iconUrl": ""
-  },
-  {
     "id": "uiux",
     "name": "UI/UX Designer",
     "description": "Craft beautiful, intuitive, and accessible user experiences.",
@@ -41,7 +23,19 @@
     "name": "Machine Learning Engineer",
     "description": "Develop and deploy machine learning models to solve real-world problems.",
     "iconUrl": ""
+  },
+  {
+    "id": "ielts",
+    "name": "IELTS Academic Prep",
+    "description": "Master Listening, Reading, Writing, and Speaking skills.",
+    "iconUrl": "ic_design"
+  },
+  {
+    "id": "interview_prep",
+    "name": "CV Interview Masterclass",
+    "description": "Tailored interview preparation based on your target role.",
+    "iconUrl": "ic_android"
   }
-
-
 ]
+
+

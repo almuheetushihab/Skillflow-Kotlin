@@ -156,7 +156,7 @@ class SkillRepositoryImpl @Inject constructor(
                         name = pathDto.title,
                         description = pathDto.description,
                         iconUrl = pathDto.iconUrl,
-                        isUnlocked = pathDto.id == "android"
+                        isUnlocked = true
                     )
                 ))
 
