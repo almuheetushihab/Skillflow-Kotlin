@@ -3,8 +3,10 @@ package com.example.skillflow.ui.screens.detail.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.Lightbulb
@@ -58,6 +60,9 @@ fun KnowledgeCard(
     } else {
         nugget.content
     }
+
+    val frontScrollState = rememberScrollState()
+    val backScrollState = rememberScrollState()
 
     Card(
         modifier = modifier
@@ -128,13 +133,17 @@ fun KnowledgeCard(
                         }
                     } else {
                         Column(
-                            modifier = Modifier.padding(MaterialTheme.spacing.large + 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 64.dp, bottom = 20.dp, start = 24.dp, end = 24.dp)
+                                .verticalScroll(frontScrollState),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
                             Surface(
                                 shape = CircleShape,
                                 color = Color.White.copy(alpha = 0.2f),
-                                modifier = Modifier.size(64.dp)
+                                modifier = Modifier.size(56.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.QuestionMark,
@@ -143,10 +152,10 @@ fun KnowledgeCard(
                                     modifier = Modifier.padding(MaterialTheme.spacing.medium)
                                 )
                             }
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
                             Text(
                                 text = displayTitle,
-                                style = MaterialTheme.typography.displaySmall,
+                                style = if (displayTitle.length > 50) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displaySmall,
                                 textAlign = TextAlign.Center,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -211,22 +220,31 @@ fun KnowledgeCard(
                         }
                     } else {
                         Column(
-                            modifier = Modifier.padding(MaterialTheme.spacing.large + 8.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(top = 64.dp, bottom = 20.dp, start = 24.dp, end = 24.dp)
+                                .verticalScroll(backScrollState),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Lightbulb,
                                 contentDescription = displayTitle,
                                 tint = GradientStart,
-                                modifier = Modifier.size(48.dp)
+                                modifier = Modifier.size(44.dp)
                             )
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacing.large))
+                            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                            
+                            val fontSize = if (displayContent.length > 180) 18.sp else 20.sp
+                            val lineHeight = if (displayContent.length > 180) 28.sp else 30.sp
+
                             Text(
                                 text = displayContent,
-                                style = MaterialTheme.typography.headlineSmall,
-                                lineHeight = 32.sp,
+                                fontSize = fontSize,
+                                lineHeight = lineHeight,
                                 textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Medium
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.onSurface
                             )
                         }
                     }

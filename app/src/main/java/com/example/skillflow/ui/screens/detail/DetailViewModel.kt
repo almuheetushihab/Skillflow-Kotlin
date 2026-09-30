@@ -88,7 +88,17 @@ class DetailViewModel @Inject constructor(
         
         repository.getNuggetById(nuggetId)
             .onEach { nugget ->
-                _state.update { it.copy(isLoading = false, nugget = nugget) }
+                _state.update { 
+                    it.copy(
+                        isLoading = false, 
+                        nugget = nugget,
+                        translatedTitle = null,
+                        translatedContent = null
+                    ) 
+                }
+                if (_state.value.selectedLanguage == "bn") {
+                    translateCurrentNugget()
+                }
             }
             .launchIn(viewModelScope)
         
@@ -235,7 +245,10 @@ class DetailViewModel @Inject constructor(
         val newLang = if (currentLang == "en") "bn" else "en"
         _state.update { it.copy(selectedLanguage = newLang) }
 
-        if (newLang == "bn" && _state.value.translatedTitle == null) {
+        val currentTrans = _state.value.translatedContent
+        val origContent = _state.value.nugget?.content
+
+        if (newLang == "bn" && (currentTrans == null || currentTrans == origContent)) {
             translateCurrentNugget()
         }
     }

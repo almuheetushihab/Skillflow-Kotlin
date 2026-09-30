@@ -153,7 +153,8 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
                         return@flow
                     } catch (_: Exception) {
                         // Fallback parsing if non-strict JSON
-                        emit(Result.success(Pair(title, responseText)))
+                        val fallback = fallbackBanglaTranslation(title, responseText)
+                        emit(Result.success(fallback))
                         return@flow
                     }
                 }
@@ -174,49 +175,157 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
     }
 
     private fun translateTitleOffline(title: String): String {
-        return when (title.trim()) {
-            "Kotlin Fundamentals" -> "কোটলিন ফান্ডামেন্টালস"
-            "Jetpack Compose Basics" -> "জেটপ্যাক কম্পোজ বেসিকস"
-            "Clean Architecture" -> "ক্লিন আর্কিটেকচার"
-            "Hilt Dependency Injection" -> "হিল্ট ডিপেন্ডেন্সি ইনজেকশন"
-            "Coroutines & Flow" -> "করুটিন এবং ফ্লো"
-            "Retrofit Networking" -> "রেট্রোফিট নেটওয়ার্কিং"
-            "Room Database" -> "রুম ডাটাবেস"
-            "ViewModel & State" -> "ভিউমডেল এবং স্টেট"
-            "Navigation Component" -> "নেভিগেশন উপাদান"
-            "WorkManager" -> "ওয়ার্কম্যানেজার"
-            "Swift Fundamentals" -> "সুইফট ফান্ডামেন্টালস"
-            "SwiftUI Essentials" -> "সুইফটইউআই এসেনশিয়ালস"
-            "ARC & Memory Management" -> "ARC এবং মেমোরি ম্যানেজমেন্ট"
-            "RESTful API Design" -> "রেস্টফুল API ডিজাইন"
-            "Microservices Architecture" -> "মাইক্রোসার্ভিসেস আর্কিটেকচার"
-            "SQL vs NoSQL" -> "SQL বনাম NoSQL"
-            "React Hooks" -> "রিয়েক্ট হুকস"
-            "CSS Flexbox" -> "সিএসএস ফ্লেক্সবক্স"
-            "Typography Hierarchy" -> "টাইপোগ্রাফি হায়ারার্কি"
-            "Color Theory" -> "কালার থিওরি"
-            "Python for Data Science" -> "ডাটা সায়েন্সের জন্য পাইথন"
-            "Machine Learning Basics" -> "মেশিন লার্নিং বেসিকস"
-            else -> translateTextPhraseByPhrase(title)
-        }
+        val trimmed = title.trim()
+        val titleMap = mapOf(
+            "Variables: val vs var" to "ভেরিয়েবল: val বনাম var",
+            "String Templates" to "স্ট্রিং টেমপ্লেটস",
+            "The 'when' Expression" to "'when' এক্সপ্রেশন",
+            "Null Safety" to "নাল সেফটি (Null Safety)",
+            "Singleton Pattern with 'object'" to "'object' দিয়ে সিঙ্গেলটন প্যাটার্ন",
+            "Companion Objects" to "কম্প্যানিয়ন অবজেক্টস",
+            "Activity Lifecycle" to "অ্যাক্টিভিটি লাইফসাইকেল",
+            "Compose State" to "কম্পোজ স্টেট",
+            "ViewModel Pattern" to "ভিউমডেল প্যাটার্ন",
+            "Jetpack Navigation" to "জেটপ্যাক নেভিগেশন",
+            "DataStore" to "ডাটা স্টোর",
+            "Data Classes" to "ডাটা ক্লাসেস",
+            "Extension Functions" to "এক্সটেনশন ফাংশনস",
+            "Lateinit vs Lazy" to "Lateinit বনাম Lazy",
+            "Higher-Order Functions & Lambdas" to "হায়ার-অর্ডার ফাংশন এবং ল্যাম্বডা",
+            "Collections & Transformations" to "কালেকশনস এবং ট্রান্সফরমেশনস",
+            "Kotlin Coroutines" to "কোটলিন করুটিনস",
+            "Kotlin Flow" to "কোটলিন ফ্লো",
+            "Room Database" to "রুম ডাটাবেস",
+            "Retrofit Networking" to "রেট্রোফিট নেটওয়ার্কিং",
+            "WorkManager" to "ওয়ার্কম্যানেজার",
+            "Hilt Dependency Injection" to "হিল্ট ডিপেন্ডেন্সি ইনজেকশন",
+            "Solid Principles - SRP" to "সলিড প্রিন্সিপালস - SRP",
+            "Testing - JUnit" to "টেস্টিং - JUnit",
+            "Smart Casts" to "স্মার্ট কাস্টস",
+            "Scope Functions (let, apply, run...)" to "স্কোপ ফাংশনস (let, apply, run...)",
+            "Sealed Classes & Interfaces" to "সিল্ড ক্লাসেস এবং ইন্টারফেস",
+            "Inline Functions" to "ইনলাইন ফাংশনস",
+            "Kotlin Fundamentals" to "কোটলিন ফান্ডামেন্টালস",
+            "Jetpack Compose Basics" to "জেটপ্যাক কম্পোজ বেসিকস",
+            "Clean Architecture" to "ক্লিন আর্কিটেকচার",
+            "Swift Fundamentals" to "সুইফট ফান্ডামেন্টালস",
+            "SwiftUI Essentials" to "সুইফটইউআই এসেনশিয়ালস",
+            "ARC & Memory Management" to "ARC এবং মেমোরি ম্যানেজমেন্ট",
+            "RESTful API Design" to "রেস্টফুল API ডিজাইন",
+            "Microservices Architecture" to "মাইক্রোসার্ভিসেস আর্কিটেকচার",
+            "SQL vs NoSQL" to "SQL বনাম NoSQL",
+            "React Hooks" to "রিয়েক্ট হুকস",
+            "CSS Flexbox" to "সিএসএস ফ্লেক্সবক্স",
+            "Typography Hierarchy" to "টাইপোগ্রাফি হায়ারার্কি",
+            "Color Theory" to "কালার থিওরি",
+            "Python for Data Science" to "ডাটা সায়েন্সের জন্য পাইথন",
+            "Machine Learning Basics" to "মেশিন লার্নিং বেসিকস"
+        )
+        return titleMap[trimmed] ?: translateTextPhraseByPhrase(trimmed)
     }
 
     private fun translateContentOffline(content: String): String {
-        val knownMap = mapOf(
-            "Both are hot flows. StateFlow requires an initial value, replays the latest value to new collectors, and only emits when the value actually changes (distinctUntilChanged). It holds UI State. SharedFlow has no initial value" to
-                "উভয়ই হট ফ্লো (Hot Flows)। StateFlow-এর একটি প্রাথমিক মান (initial value) প্রয়োজন হয়, নতুন সংগ্রাহকদের কাছে সর্বশেষ মান পুনরায় প্রদান করে এবং কেবল মান আসলে পরিবর্তিত হলেই এটি নির্গত (emit) করে (distinctUntilChanged)। এটি UI স্টেট ধারণ করে। SharedFlow-এর প্রাথমিক মান থাকে না।",
+        val text = content.trim()
 
-            "When asked 'Tell me about yourself', use the Present-Past-Future formula: Start with your current role as an Associate Software Engineer at Softzino Technologies building native Android apps with Kotlin" to
+        val exactMap = mapOf(
+            "In Kotlin, 'val' creates a read-only" to
+                "কোটলিনে 'val' দিয়ে শুধুমাত্র পাঠযোগ্য (immutable) ভেরিয়েবল তৈরি করা হয়, অর্থাৎ একবার মান নির্ধারণ করার পর তা আর পরিবর্তন করা যায় না। 'var' দিয়ে পরিবর্তনযোগ্য (mutable) ভেরিয়েবল তৈরি করা হয়। আপনার কোডকে আরও নিরাপদ এবং নির্ভরযোগ্য করতে ডিফল্টভাবে 'val' ব্যবহার করা সর্বোত্তম অনুশীলন।",
+
+            "Kotlin allows embedding variables" to
+                "কোটলিনে \$ চিহ্ন ব্যবহার করে সরাসরি স্ট্রিংয়ের ভেতরে ভেরিয়েবল এবং এক্সপ্রেশন যুক্ত করা যায়। যেমন: \"Hello \$name! 2+2 is \${2+2}\"।",
+
+            "'when' replaces the C-style switch" to
+                "'when' সি-স্টাইলের switch স্টেটমেন্টের বিকল্প হিসেবে কাজ করে। এটি একটি এক্সপ্রেশন, যা মান রিটার্ন করতে পারে। এটি টাইপ চেক (is String), রেঞ্জ (in 1..10) ইত্যাদি সমর্থন করে এবং এতে 'break' স্টেটমেন্টের প্রয়োজন হয় না।",
+
+            "Kotlin distinguishes between nullable types" to
+                "কোটলিন নাল হতে পারে এমন টাইপ (String?) এবং নাল হতে পারে না এমন টাইপের (String) মধ্যে পার্থক্য করে। নাল টাইপের মেথড কল করতে সেফ কল অপারেটর (?.) এবং নাল হলে ডিফল্ট মান দিতে এলভিস অপারেটর (?:) ব্যবহার করুন।",
+
+            "In Java, implementing the Singleton pattern" to
+                "জাভাতে সিঙ্গেলটন প্যাটার্ন তৈরি করতে অনেক বাড়তি কোড লিখতে হয়। কিন্তু কোটলিনে শুধু 'object MySingleton' ঘোষণা করলেই এটি স্বয়ংক্রিয়ভাবে সিঙ্গেলটন তৈরি করে নেয়।",
+
+            "Kotlin does not have 'static' keywords" to
+                "কোটলিনে 'static' কিওয়ার্ড নেই। এর পরিবর্তে ক্লাসের ভেতরে 'companion object' ব্যবহার করে অবজেক্ট তৈরি না করেই মেথড ও প্রপার্টি কল করা যায়।",
+
+            "The Activity lifecycle consists of states" to
+                "অ্যাক্টিভিটি লাইফসাইকেলে onCreate, onStart, onResume, onPause, onStop এবং onDestroy ধাপসমূহ থাকে। এগুলো সঠিকভাবে পরিচালনা করলে মেমোরি লিক রোধ করা যায়।",
+
+            "In Compose, state is any value that can change" to
+                "কম্পোজে স্টেট হলো এমন কোনো মান যা সময়ের সাথে পরিবর্তিত হতে পারে। স্টেট আপডেট হলে কম্পোজ স্বয়ংক্রিয়ভাবে ইউআই পুনর্গঠন (recomposition) করে।",
+
+            "ViewModels store and manage UI-related data" to
+                "ভিউমডেল ইউআই সংক্রান্ত ডাটা সংরক্ষণ করে যা স্ক্রিন রোটেশনের মতো কনফিগারেশন পরিবর্তনেও নষ্ট হয় না।",
+
+            "The Navigation component helps you implement" to
+                "নেভিগেশন উপাদান অ্যাপের এক স্ক্রিন থেকে অন্য স্ক্রিনে সহজে যাতায়াত পরিচালনা করতে সাহায্য করে।",
+
+            "DataStore is a data storage solution" to
+                "ডাটা-স্টোর হলো আধুনিক ডাটা সংরক্ষণের মাধ্যম যা SharedPreferences এর বিকল্প হিসেবে Coroutines এবং Flow ব্যবহার করে ডাটা সেভ করে।",
+
+            "Adding the 'data' keyword to a class" to
+                "ক্লাসের আগে 'data' কিওয়ার্ড ব্যবহার করলে স্বয়ংক্রিয়ভাবে equals(), hashCode(), toString() এবং copy() ফাংশন তৈরি হয়ে যায়।",
+
+            "Extension functions allow you to add new functions" to
+                "এক্সটেনশন ফাংশন কোনো বিদ্যমান ক্লাসে নতুন ফাংশন যোগ করতে দেয় মূল কোড পরিবর্তন না করেই।",
+
+            "'lateinit var' is used for variables" to
+                "'lateinit var' এমন ভেরিয়েবলের জন্য ব্যবহার করা হয় যা পরে ইনিশিয়ালাইজ করা হবে। 'val x by lazy' প্রথম ব্যবহারের সময় মান হিসেব করে স্মরণ রাখে।",
+
+            "A higher-order function is a function" to
+                "হায়ার-অর্ডার ফাংশন এমন একটি ফাংশন যা অন্য ফাংশনকে প্যারামিটার হিসেবে গ্রহণ করে বা রিটার্ন করে।",
+
+            "Kotlin standard library offers powerful list operations" to
+                "কোটলিন স্ট্যান্ডার্ড লাইব্রেরিতে লিস্ট ফিল্টার এবং রূপান্তরের জন্য map, filter এবং flatten এর মতো শক্তিশালী ফাংশন রয়েছে।",
+
+            "Coroutines allow you to write asynchronous code" to
+                "করুটিন ব্যবহার করে অ্যাসিনক্রোনাস ব্যাকগ্রাউন্ড কোডকে সিঙ্ক্রোনাস কোডের মতো সহজে এবং কম মেমোরিতে চালানো যায়।",
+
+            "Flow is a stream of data that can be computed" to
+                "ফ্লো হলো ডাটার রিঅ্যাক্টিভ স্ট্রিম যা অ্যাসিনক্রোনাস ডাটা প্রসেস এবং হ্যান্ডেল করতে ব্যবহার করা হয়।",
+
+            "Room provides an abstraction layer over SQLite" to
+                "রুম ডাটাবেস SQLite এর ওপর একটি সহজ লেয়ার প্রদান করে যা অফলাইন ডাটা লোকালি সংরক্ষণ করতে ব্যবহৃত হয়।",
+
+            "Retrofit is a type-safe HTTP client" to
+                "রেট্রোফিট হলো টাইপ-সেফ এইচটিটিপি ক্লায়েন্ট যা অ্যান্ড্রয়েড অ্যাপকে ইন্টারনেটের সাথে যুক্ত করে API রিকোয়েস্ট পাঠাতে সাহায্য করে।",
+
+            "WorkManager is the recommended solution" to
+                "অ্যাপ বন্ধ থাকলেও ব্যাকগ্রাউন্ডে নিশ্চিতভাবে কাজ সম্পাদন করতে WorkManager ব্যবহার করা হয়।",
+
+            "Hilt is a DI library for Android" to
+                "হিল্ট হলো অ্যান্ড্রয়েডের জন্য ডিপেন্ডেন্সি ইনজেকশন লাইব্রেরি যা কোডের ম্যানুয়াল অবজেক্ট তৈরি কমিয়ে দেয়।",
+
+            "A class should have only one reason to change" to
+                "একটি ক্লাসের কেবল একটি নির্দিষ্ট দায়িত্ব থাকা উচিত (Single Responsibility Principle)।",
+
+            "JUnit is the standard testing framework" to
+                "জেইউনিট হলো অ্যান্ড্রয়েডের জন্য স্ট্যান্ডার্ড ইউনিট টেস্টিং ফ্রেমওয়ার্ক।",
+
+            "If you check the type of an object using the 'is'" to
+                "কোটলিন 'is' চেক ব্যবহারের পর স্বয়ংক্রিয়ভাবে অবজেক্টকে নির্দিষ্ট টাইপে কাস্ট (Smart Cast) করে নেয়।",
+
+            "Kotlin provides 5 scope functions: let, run, with" to
+                "কোটলিনে ৫টি স্কোপ ফাংশন রয়েছে: let, run, with, apply এবং also যা অবজেক্টের কনটেক্সটে কোড এক্সিকিউট করতে সাহায্য করে।",
+
+            "Sealed classes restrict inheritance" to
+                "সিল্ড ক্লাস সাবক্লাসের সংখ্যা সীমিত রাখে এবং ইউআই স্টেট (Loading, Success, Error) রিপ্রেজেন্ট করতে জনপ্রিয়।",
+
+            "Using 'inline' tells the compiler to copy" to
+                "ইনলাইন ফাংশন ল্যাম্বডা অবজেক্ট তৈরির মেমোরি ওভারহেড দূর করে সরাসরি কল সাইটে ইনলাইন করে।",
+
+            "Both are hot flows" to
+                "উভয়ই হট ফ্লো (Hot Flows)। StateFlow-এর একটি প্রাথমিক মান (initial value) প্রয়োজন হয়, নতুন সংগ্রাহকদের কাছে সর্বশেষ মান পুনরায় প্রদান করে এবং কেবল মান আসলে পরিবর্তিত হলেই এটি নির্গত করে (distinctUntilChanged)। এটি UI স্টেট ধারণ করে। SharedFlow-এর প্রাথমিক মান থাকে না।",
+
+            "When asked 'Tell me about yourself'" to
                 "যখন আপনাকে 'Tell me about yourself' জিজ্ঞাসা করা হবে, তখন Present-Past-Future ফর্মুলা ব্যবহার করুন: Softzino Technologies-এ Kotlin দিয়ে নেটিভ অ্যান্ড্রয়েড অ্যাপ তৈরিকারী অ্যাসোসিয়েট সফটওয়্যার ইঞ্জিনিয়ার হিসেবে আপনার বর্তমান ভূমিকা দিয়ে শুরু করুন।"
         )
 
-        for ((key, value) in knownMap) {
-            if (content.trim().startsWith(key.substring(0, minOf(key.length, 30)))) {
-                return value
+        for ((keyPrefix, translatedValue) in exactMap) {
+            if (text.startsWith(keyPrefix, ignoreCase = true) || text.contains(keyPrefix, ignoreCase = true)) {
+                return translatedValue
             }
         }
 
-        return translateTextPhraseByPhrase(content)
+        return translateTextPhraseByPhrase(text)
     }
 
     private fun translateTextPhraseByPhrase(text: String): String {
