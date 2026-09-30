@@ -8,6 +8,123 @@
       "knowledge_nuggets": [
         {
           "id": "a1",
+          "title": "Variables: val vs var",
+          "short_description": "Understand mutability and variable declarations.",
+          "content": "In Kotlin, 'val' creates a read-only (immutable) variable, meaning its value cannot be changed once assigned. 'var' creates a mutable variable. Best practice is to use 'val' by default to make your code safer and more predictable.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a1_1",
+              "text": "Which keyword should you use to declare a variable whose value will NEVER change?",
+              "options": ["var", "val", "const var", "static"],
+              "correct_answer_index": 1,
+              "explanation": "'val' stands for value and creates an immutable reference."
+            },
+            {
+              "id": "q_a1_2",
+              "text": "What happens if you try to reassign a value to a 'val' variable?",
+              "options": ["It compiles successfully", "It throws a runtime error", "It causes a compile-time error", "It creates a new variable"],
+              "correct_answer_index": 2,
+              "explanation": "Since 'val' is immutable, the compiler will not allow you to reassign it."
+            }
+          ]
+        },
+        {
+          "id": "a2",
+          "title": "String Templates",
+          "short_description": "Concatenate strings the smart way.",
+          "content": "Kotlin allows embedding variables and expressions directly into string literals using the $ symbol. For example: \"Hello $name! 2+2 is ${2+2}\".",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a2_1",
+              "text": "How do you evaluate an expression inside a String template?",
+              "options": ["$expression", "${expression}", "#expression", "+ expression +"],
+              "correct_answer_index": 1,
+              "explanation": "Use curly braces ${} to evaluate complex expressions inside a string."
+            }
+          ]
+        },
+        {
+          "id": "a3",
+          "title": "The 'when' Expression",
+          "short_description": "Kotlin's powerful replacement for switch statements.",
+          "content": "'when' replaces the C-style switch statement. It is an expression, meaning it returns a value. It supports complex matching like checking types (is String), ranges (in 1..10), and doesn't require a 'break' statement.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a3_1",
+              "text": "Does a 'when' expression in Kotlin require a 'break' statement at the end of each branch?",
+              "options": ["Yes", "No", "Only for integers", "Only inside loops"],
+              "correct_answer_index": 1,
+              "explanation": "No, Kotlin's 'when' automatically stops execution after a matching branch is found. No 'break' is needed."
+            }
+          ]
+        },
+        {
+          "id": "a4",
+          "title": "Null Safety",
+          "short_description": "The end of NullPointerExceptions.",
+          "content": "Kotlin distinguishes between nullable types (String?) and non-nullable types (String). Use the safe call operator (?.) to call methods on nullable objects, and the Elvis operator (?:) to provide a default value if an object is null.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+          "quizzes": [
+            {
+              "id": "q_a4_1",
+              "text": "What will 'val length = name?.length ?: 0' return if 'name' is null?",
+              "options": ["NullPointerException", "null", "0", "-1"],
+              "correct_answer_index": 2,
+              "explanation": "The Elvis operator (?:) returns the right side (0) because the left side resulted in null."
+            },
+            {
+              "id": "q_a4_2",
+              "text": "What does the !! (Not-null assertion) operator do?",
+              "options": ["Safely casts the type", "Throws an NPE if the value is null", "Returns a boolean", "Converts null to 0"],
+              "correct_answer_index": 1,
+              "explanation": "!! forces the compiler to treat the value as non-null, throwing an exception if it actually is null. Avoid using it!"
+            }
+          ]
+        },
+        {
+          "id": "a5",
+          "title": "Singleton Pattern with 'object'",
+          "short_description": "Create singletons effortlessly.",
+          "content": "In Java, implementing the Singleton pattern requires boilerplate code (private constructor, static instance, thread-safety). In Kotlin, simply declaring 'object MySingleton' handles all of this automatically under the hood.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a5_1",
+              "text": "Which keyword is used in Kotlin to declare a Singleton?",
+              "options": ["singleton", "class", "object", "static"],
+              "correct_answer_index": 2,
+              "explanation": "The 'object' declaration creates a class and an instance of that class at the same time, perfectly implementing the Singleton pattern safely."
+            }
+          ]
+        },
+        {
+          "id": "a6",
+          "title": "Companion Objects",
+          "short_description": "Kotlin's alternative to static members.",
+          "content": "Kotlin does not have 'static' keywords. Instead, you can define a 'companion object' inside a class to hold methods and properties that are tied to the class rather than instances.",
+          "complexity": "Beginner",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a6_1",
+              "text": "What replaces static methods in Kotlin?",
+              "options": ["Global functions", "Companion objects", "Static keyword", "Data classes"],
+              "correct_answer_index": 1,
+              "explanation": "Companion objects allow you to call functions using the class name, similar to static methods in Java."
+            }
+          ]
+        },
+        {
+          "id": "a7",
           "title": "Activity Lifecycle",
           "short_description": "Understand how Activities are created and destroyed.",
           "content": "The Activity lifecycle consists of states like onCreate, onStart, onResume, onPause, onStop, and onDestroy. Managing these correctly prevents memory leaks and ensures a smooth user experience when switching apps.",
@@ -16,14 +133,14 @@
           "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
           "quizzes": [
             {
-              "id": "q_a1_1",
+              "id": "q_a7_1",
               "text": "Which method is called first when an Activity is created?",
               "options": ["onStart", "onResume", "onCreate", "onPause"],
               "correct_answer_index": 2,
               "explanation": "onCreate() is the first callback and where you initialize your activity."
             },
             {
-              "id": "q_a1_2",
+              "id": "q_a7_2",
               "text": "Which state is an Activity in when it is partially obscured but still visible?",
               "options": ["Paused", "Stopped", "Resumed", "Destroyed"],
               "correct_answer_index": 0,
@@ -32,92 +149,7 @@
           ]
         },
         {
-          "id": "a2",
-          "title": "ViewModel Pattern",
-          "short_description": "Manage UI data in a lifecycle-aware way.",
-          "content": "ViewModels store and manage UI-related data so it survives configuration changes like screen rotations. They decouple your UI logic from the Activity/Fragment lifecycle.",
-          "complexity": "Beginner",
-          "category_id": "android",
-          "quizzes": [
-            {
-              "id": "q_a2_1",
-              "text": "Does a ViewModel survive a screen rotation?",
-              "options": ["No", "Yes", "Only on old Android versions", "Depends on the Fragment"],
-              "correct_answer_index": 1,
-              "explanation": "Yes, ViewModels are specifically designed to survive configuration changes."
-            }
-          ]
-        },
-        {
-          "id": "a3",
-          "title": "Hilt Dependency Injection",
-          "short_description": "Standardize DI in your Android apps.",
-          "content": "Hilt is a DI library for Android that reduces the boilerplate of manual dependency injection. It is built on top of Dagger and provides a standard way to incorporate DI into your app.",
-          "complexity": "Intermediate",
-          "category_id": "android",
-          "quizzes": [
-            {
-              "id": "q_a3_1",
-              "text": "Which annotation is used to mark the Application class for Hilt?",
-              "options": ["@HiltAndroidApp", "@AndroidEntryPoint", "@Inject", "@Module"],
-              "correct_answer_index": 0,
-              "explanation": "@HiltAndroidApp triggers Hilt's code generation."
-            }
-          ]
-        },
-        {
-          "id": "a4",
-          "title": "Retrofit Networking",
-          "short_description": "Connect your app to the internet.",
-          "content": "Retrofit is a type-safe HTTP client for Android. it turns your HTTP API into a Java/Kotlin interface, making network requests easy to handle and test.",
-          "complexity": "Intermediate",
-          "category_id": "android",
-          "quizzes": [
-            {
-              "id": "q_a4_1",
-              "text": "Which library is often used with Retrofit for JSON parsing?",
-              "options": ["Glide", "Room", "Gson/Kotlinx Serialization", "Timber"],
-              "correct_answer_index": 2,
-              "explanation": "Converter factories like Gson or Kotlinx Serialization handle JSON mapping."
-            }
-          ]
-        },
-        {
-          "id": "a5",
-          "title": "Room Database",
-          "short_description": "Offline data persistence made easy.",
-          "content": "Room provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite. It handles boilerplate and provides compile-time checks.",
-          "complexity": "Intermediate",
-          "category_id": "android",
-          "quizzes": [
-            {
-              "id": "q_a5_1",
-              "text": "What does a DAO stand for in Room?",
-              "options": ["Data Access Object", "Direct Android Object", "Database Access Orgnizer", "Data Action Observer"],
-              "correct_answer_index": 0,
-              "explanation": "DAOs define the methods that access the database."
-            }
-          ]
-        },
-        {
-          "id": "a6",
-          "title": "Jetpack Navigation",
-          "short_description": "Manage app navigation flows.",
-          "content": "The Navigation component helps you implement navigation, from simple button clicks to complex patterns, such as app bars and the navigation drawer.",
-          "complexity": "Beginner",
-          "category_id": "android",
-          "quizzes": [
-            {
-              "id": "q_a6_1",
-              "text": "What is the new recommended way to define routes in Navigation 2.8.0+?",
-              "options": ["Strings", "Integer IDs", "Type-safe Objects/Classes", "XML files"],
-              "correct_answer_index": 2,
-              "explanation": "Navigation now supports type-safe routes using Kotlin Serialization."
-            }
-          ]
-        },
-        {
-          "id": "a7",
+          "id": "a8",
           "title": "Compose State",
           "short_description": "The heart of reactive UI.",
           "content": "In Compose, state is any value that can change over time. When state updates, Compose automatically re-executes the functions (recomposition) to reflect the changes in the UI.",
@@ -125,7 +157,7 @@
           "category_id": "android",
           "quizzes": [
             {
-              "id": "q_a7_1",
+              "id": "q_a8_1",
               "text": "Which function is used to keep state across recompositions?",
               "options": ["remember", "persist", "save", "hold"],
               "correct_answer_index": 0,
@@ -134,53 +166,36 @@
           ]
         },
         {
-          "id": "a8",
-          "title": "Kotlin Coroutines",
-          "short_description": "Simplified asynchronous programming.",
-          "content": "Coroutines allow you to write asynchronous code as if it were synchronous. They are highly efficient and provide built-in cancellation and structured concurrency.",
-          "complexity": "Intermediate",
-          "category_id": "android",
-          "quizzes": [
-            {
-              "id": "q_a8_1",
-              "text": "What keyword is used to define a coroutine-friendly function?",
-              "options": ["async", "await", "suspend", "defer"],
-              "correct_answer_index": 2,
-              "explanation": "suspend functions can be paused and resumed without blocking."
-            }
-          ]
-        },
-        {
           "id": "a9",
-          "title": "Kotlin Flow",
-          "short_description": "Reactive data streams.",
-          "content": "Flow is a stream of data that can be computed asynchronously. It is similar to an Iterator but uses suspend functions for asynchronous values.",
-          "complexity": "Intermediate",
+          "title": "ViewModel Pattern",
+          "short_description": "Manage UI data in a lifecycle-aware way.",
+          "content": "ViewModels store and manage UI-related data so it survives configuration changes like screen rotations. They decouple your UI logic from the Activity/Fragment lifecycle.",
+          "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
             {
               "id": "q_a9_1",
-              "text": "Which Flow type is best for representing UI state?",
-              "options": ["SharedFlow", "StateFlow", "Cold Flow", "Channel"],
+              "text": "Does a ViewModel survive a screen rotation?",
+              "options": ["No", "Yes", "Only on old Android versions", "Depends on the Fragment"],
               "correct_answer_index": 1,
-              "explanation": "StateFlow is a state-holder observable flow that emits the current and new state updates."
+              "explanation": "Yes, ViewModels are specifically designed to survive configuration changes."
             }
           ]
         },
         {
           "id": "a10",
-          "title": "WorkManager",
-          "short_description": "Schedule deferrable background tasks.",
-          "content": "WorkManager is the recommended solution for persistent work. It handles tasks that need to run even if the app exits or the device restarts, like data syncing.",
-          "complexity": "Intermediate",
+          "title": "Jetpack Navigation",
+          "short_description": "Manage app navigation flows.",
+          "content": "The Navigation component helps you implement navigation, from simple button clicks to complex patterns, such as app bars and the navigation drawer.",
+          "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
             {
               "id": "q_a10_1",
-              "text": "Is WorkManager suitable for immediate, high-priority tasks?",
-              "options": ["Yes", "No, it's for deferrable work", "Only if the app is open", "Only on Wi-Fi"],
-              "correct_answer_index": 1,
-              "explanation": "WorkManager is for tasks that can wait but must eventually run."
+              "text": "What is the new recommended way to define routes in Navigation 2.8.0+?",
+              "options": ["Strings", "Integer IDs", "Type-safe Objects/Classes", "XML files"],
+              "correct_answer_index": 2,
+              "explanation": "Navigation now supports type-safe routes using Kotlin Serialization."
             }
           ]
         },
@@ -203,23 +218,193 @@
         },
         {
           "id": "a12",
-          "title": "Clean Architecture",
-          "short_description": "Organize your app for scale.",
-          "content": "Clean Architecture divides the app into layers (Data, Domain, Presentation). The Domain layer contains business logic and is independent of UI or external libraries.",
-          "complexity": "Advanced",
+          "title": "Data Classes",
+          "short_description": "Hold data with zero boilerplate.",
+          "content": "Adding the 'data' keyword to a class automatically generates equals(), hashCode(), toString(), componentN() functions, and a copy() function. It is perfect for DTOs and holding state in modern architectures.",
+          "complexity": "Intermediate",
           "category_id": "android",
           "quizzes": [
             {
               "id": "q_a12_1",
-              "text": "Which layer should NOT know about Android frameworks?",
-              "options": ["Presentation", "Data", "Domain", "Remote"],
+              "text": "Which built-in function allows you to duplicate a Data Class object while modifying specific properties?",
+              "options": ["clone()", "duplicate()", "copy()", "replicate()"],
               "correct_answer_index": 2,
-              "explanation": "The Domain layer should be pure Kotlin/Java with no dependencies on the platform."
+              "explanation": "The copy() function lets you copy an object, altering some of its properties while keeping the rest unchanged."
             }
           ]
         },
         {
           "id": "a13",
+          "title": "Extension Functions",
+          "short_description": "Add functionality to classes without inheriting.",
+          "content": "Extension functions allow you to add new functions to an existing class (even from third-party libraries) without modifying its source code. Example: fun String.removeSpaces() = this.replace(\" \", \"\")",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a13_1",
+              "text": "Can extension functions access private variables or methods of the class they are extending?",
+              "options": ["Yes, always", "No, they cannot", "Only if placed in the same file", "Only for Data Classes"],
+              "correct_answer_index": 1,
+              "explanation": "Extension functions are resolved statically and do not truly modify the class, so they cannot access private members."
+            }
+          ]
+        },
+        {
+          "id": "a14",
+          "title": "Lateinit vs Lazy",
+          "short_description": "Delayed initialization strategies.",
+          "content": "'lateinit var' is used for variables that will be initialized later (e.g., in Android onCreate). 'val x by lazy' computes its value only upon first access and remembers it.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a14_1",
+              "text": "Which initialization delegate is thread-safe by default?",
+              "options": ["lateinit", "lazy", "Both", "Neither"],
+              "correct_answer_index": 1,
+              "explanation": "'lazy' is synchronized and thread-safe by default."
+            }
+          ]
+        },
+        {
+          "id": "a15",
+          "title": "Higher-Order Functions & Lambdas",
+          "short_description": "Functions as first-class citizens.",
+          "content": "A higher-order function is a function that takes another function as a parameter or returns one. Lambdas are anonymous functions. If a lambda is the last parameter of a function, you can place it outside the parentheses (Trailing Lambda).",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a15_1",
+              "text": "In a lambda with a single parameter, what is the implicit name of that parameter?",
+              "options": ["this", "that", "it", "val"],
+              "correct_answer_index": 2,
+              "explanation": "If a lambda has only one parameter, Kotlin implicitly names it 'it' to keep the code concise."
+            }
+          ]
+        },
+        {
+          "id": "a16",
+          "title": "Collections & Transformations",
+          "short_description": "Master map, filter, and functional APIs.",
+          "content": "Kotlin standard library offers powerful list operations. Use 'map' to transform every item, 'filter' to remove items matching a condition, and 'flatten' to combine nested lists into one.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a16_1",
+              "text": "Which functional operator would you use to transform a List<User> into a List<String> containing only their names?",
+              "options": ["filter", "reduce", "map", "forEach"],
+              "correct_answer_index": 2,
+              "explanation": "'map' applies a transformation function to each element and returns a new list of the results."
+            }
+          ]
+        },
+        {
+          "id": "a17",
+          "title": "Kotlin Coroutines",
+          "short_description": "Simplified asynchronous programming.",
+          "content": "Coroutines allow you to write asynchronous code as if it were synchronous. They are highly efficient and provide built-in cancellation and structured concurrency.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a17_1",
+              "text": "What keyword is used to define a coroutine-friendly function?",
+              "options": ["async", "await", "suspend", "defer"],
+              "correct_answer_index": 2,
+              "explanation": "suspend functions can be paused and resumed without blocking."
+            }
+          ]
+        },
+        {
+          "id": "a18",
+          "title": "Kotlin Flow",
+          "short_description": "Reactive data streams.",
+          "content": "Flow is a stream of data that can be computed asynchronously. It is similar to an Iterator but uses suspend functions for asynchronous values.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a18_1",
+              "text": "Which Flow type is best for representing UI state?",
+              "options": ["SharedFlow", "StateFlow", "Cold Flow", "Channel"],
+              "correct_answer_index": 1,
+              "explanation": "StateFlow is a state-holder observable flow that emits the current and new state updates."
+            }
+          ]
+        },
+        {
+          "id": "a19",
+          "title": "Room Database",
+          "short_description": "Offline data persistence made easy.",
+          "content": "Room provides an abstraction layer over SQLite to allow fluent database access while harnessing the full power of SQLite. It handles boilerplate and provides compile-time checks.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a19_1",
+              "text": "What does a DAO stand for in Room?",
+              "options": ["Data Access Object", "Direct Android Object", "Database Access Orgnizer", "Data Action Observer"],
+              "correct_answer_index": 0,
+              "explanation": "DAOs define the methods that access the database."
+            }
+          ]
+        },
+        {
+          "id": "a20",
+          "title": "Retrofit Networking",
+          "short_description": "Connect your app to the internet.",
+          "content": "Retrofit is a type-safe HTTP client for Android. it turns your HTTP API into a Java/Kotlin interface, making network requests easy to handle and test.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a20_1",
+              "text": "Which library is often used with Retrofit for JSON parsing?",
+              "options": ["Glide", "Room", "Gson/Kotlinx Serialization", "Timber"],
+              "correct_answer_index": 2,
+              "explanation": "Converter factories like Gson or Kotlinx Serialization handle JSON mapping."
+            }
+          ]
+        },
+        {
+          "id": "a21",
+          "title": "WorkManager",
+          "short_description": "Schedule deferrable background tasks.",
+          "content": "WorkManager is the recommended solution for persistent work. It handles tasks that need to run even if the app exits or the device restarts, like data syncing.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a21_1",
+              "text": "Is WorkManager suitable for immediate, high-priority tasks?",
+              "options": ["Yes", "No, it's for deferrable work", "Only if the app is open", "Only on Wi-Fi"],
+              "correct_answer_index": 1,
+              "explanation": "WorkManager is for tasks that can wait but must eventually run."
+            }
+          ]
+        },
+        {
+          "id": "a22",
+          "title": "Hilt Dependency Injection",
+          "short_description": "Standardize DI in your Android apps.",
+          "content": "Hilt is a DI library for Android that reduces the boilerplate of manual dependency injection. It is built on top of Dagger and provides a standard way to incorporate DI into your app.",
+          "complexity": "Intermediate",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a22_1",
+              "text": "Which annotation is used to mark the Application class for Hilt?",
+              "options": ["@HiltAndroidApp", "@AndroidEntryPoint", "@Inject", "@Module"],
+              "correct_answer_index": 0,
+              "explanation": "@HiltAndroidApp triggers Hilt's code generation."
+            }
+          ]
+        },
+        {
+          "id": "a23",
           "title": "Solid Principles - SRP",
           "short_description": "Single Responsibility Principle.",
           "content": "A class should have only one reason to change. This means a class should only perform one primary task, making it easier to maintain and test.",
@@ -227,7 +412,7 @@
           "category_id": "android",
           "quizzes": [
             {
-              "id": "q_a13_1",
+              "id": "q_a23_1",
               "text": "What happens if you violate SRP?",
               "options": ["Faster code", "Less files", "God objects and high coupling", "Better UI"],
               "correct_answer_index": 2,
@@ -236,7 +421,7 @@
           ]
         },
         {
-          "id": "a14",
+          "id": "a24",
           "title": "Testing - JUnit",
           "short_description": "Write reliable unit tests.",
           "content": "JUnit is the standard testing framework for Android. Unit tests verify the smallest parts of your app in isolation, usually the business logic in your Domain or ViewModels.",
@@ -244,7 +429,7 @@
           "category_id": "android",
           "quizzes": [
             {
-              "id": "q_a14_1",
+              "id": "q_a24_1",
               "text": "Where do unit tests usually reside in the project structure?",
               "options": ["androidTest", "test", "main", "res"],
               "correct_answer_index": 1,
@@ -253,7 +438,92 @@
           ]
         },
         {
-          "id": "a15",
+          "id": "a25",
+          "title": "Smart Casts",
+          "short_description": "Let the compiler do the casting.",
+          "content": "If you check the type of an object using the 'is' keyword, the Kotlin compiler automatically tracks this and casts the variable to the target type within the checked scope.",
+          "complexity": "Advanced",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a25_1",
+              "text": "Which operator is used to check if an object is of a certain type?",
+              "options": ["as", "typeof", "is", "instanceof"],
+              "correct_answer_index": 2,
+              "explanation": "The 'is' operator checks the type, and smart casting automatically applies it."
+            }
+          ]
+        },
+        {
+          "id": "a26",
+          "title": "Scope Functions (let, apply, run...)",
+          "short_description": "Execute code within the context of an object.",
+          "content": "Kotlin provides 5 scope functions: let, run, with, apply, and also. 'apply' is used for object configuration (returns the object). 'let' is great for executing a block only if the object is non-null (returns the lambda result).",
+          "complexity": "Advanced",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a26_1",
+              "text": "Which scope function is best suited for configuring an object (e.g., setting UI properties) and returns the object itself ('this')?",
+              "options": ["let", "apply", "run", "also"],
+              "correct_answer_index": 1,
+              "explanation": "'apply' refers to the context object as 'this' and returns the object itself, making it perfect for initialization."
+            }
+          ]
+        },
+        {
+          "id": "a27",
+          "title": "Sealed Classes & Interfaces",
+          "short_description": "Represent restricted class hierarchies.",
+          "content": "Sealed classes restrict inheritance. All subclasses must be known at compile-time (declared in the same package/file). They are extensively used in Android to represent UI States (e.g., Loading, Success, Error).",
+          "complexity": "Advanced",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a27_1",
+              "text": "When using a Sealed Class in a 'when' expression to handle all possible subclasses, do you need an 'else' branch?",
+              "options": ["Yes, it's always required", "No, the compiler knows all subclasses", "Only if there are more than 3 subclasses", "Yes, to prevent crashes"],
+              "correct_answer_index": 1,
+              "explanation": "Because sealed class hierarchies are strictly bounded, the compiler can verify that you have covered all possible cases, making the 'else' branch unnecessary."
+            }
+          ]
+        },
+        {
+          "id": "a28",
+          "title": "Inline Functions",
+          "short_description": "Optimize higher-order functions.",
+          "content": "Using 'inline' tells the compiler to copy the function's bytecode directly into the call site. This eliminates the memory overhead of creating lambda objects in higher-order functions.",
+          "complexity": "Advanced",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a28_1",
+              "text": "What is the main benefit of using the 'inline' keyword?",
+              "options": ["Reduces lambda memory overhead", "Makes code run async", "Secures the function", "Creates an extension"],
+              "correct_answer_index": 0,
+              "explanation": "Inlining prevents object allocation for lambdas, improving performance."
+            }
+          ]
+        },
+        {
+          "id": "a29",
+          "title": "Clean Architecture",
+          "short_description": "Organize your app for scale.",
+          "content": "Clean Architecture divides the app into layers (Data, Domain, Presentation). The Domain layer contains business logic and is independent of UI or external libraries.",
+          "complexity": "Advanced",
+          "category_id": "android",
+          "quizzes": [
+            {
+              "id": "q_a29_1",
+              "text": "Which layer should NOT know about Android frameworks?",
+              "options": ["Presentation", "Data", "Domain", "Remote"],
+              "correct_answer_index": 2,
+              "explanation": "The Domain layer should be pure Kotlin/Java with no dependencies on the platform."
+            }
+          ]
+        },
+        {
+          "id": "a30",
           "title": "Advanced R8/Proguard",
           "short_description": "Shrink and secure your code.",
           "content": "R8 is the built-in tool that shrinks, desugars, and obfuscates your code. Obfuscation renames classes and members to make reverse engineering more difficult.",
@@ -261,7 +531,7 @@
           "category_id": "android",
           "quizzes": [
             {
-              "id": "q_a15_1",
+              "id": "q_a30_1",
               "text": "What is the primary goal of obfuscation?",
               "options": ["Faster execution", "Smaller size", "Make code harder to read for humans", "Fix bugs"],
               "correct_answer_index": 2,
@@ -444,6 +714,546 @@
               "options": ["More CSS", "Faster design and dev alignment", "Random UI colors", "No need for designers"],
               "correct_answer_index": 1,
               "explanation": "It ensures consistency and speed across large products."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ielts",
+      "title": "IELTS Academic Prep",
+      "description": "Master Listening, Reading, Writing, and Speaking strategies to achieve Band 7.5+ for your study abroad journey.",
+      "icon_url": "ic_design",
+      "knowledge_nuggets": [
+        {
+          "id": "i1",
+          "title": "IELTS Academic Format",
+          "short_description": "Understand the 4 modules and band scoring.",
+          "content": "IELTS Academic tests 4 skills: Listening (30 mins), Reading (60 mins), Writing (60 mins), and Speaking (11-14 mins). Each module is scored from Band 0 to 9, and your overall score is rounded to the nearest 0.5 or whole band (e.g., 6.25 becomes 6.5, while 6.125 becomes 6.0).",
+          "complexity": "Beginner",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i1_1",
+              "text": "If your average score across all four modules is 6.75, what will your final Overall Band Score be?",
+              "options": ["6.5", "6.75", "7.0", "6.0"],
+              "correct_answer_index": 2,
+              "explanation": "In IELTS, an average ending in .75 is always rounded up to the next whole band (7.0)."
+            },
+            {
+              "id": "q_i1_2",
+              "text": "How much total time is given for the IELTS Reading module?",
+              "options": ["30 minutes", "45 minutes", "60 minutes", "90 minutes"],
+              "correct_answer_index": 2,
+              "explanation": "You get exactly 60 minutes to answer 40 questions across 3 passages, with no extra time to transfer answers."
+            }
+          ]
+        },
+        {
+          "id": "i2",
+          "title": "Listening: Distractors",
+          "short_description": "Spot self-corrections in audio tracks.",
+          "content": "A very common trap in IELTS Listening is the 'distractor'—where a speaker gives a piece of information and then corrects themselves (e.g., 'Let's meet on Tuesday... oh wait, I have a class, let's make it Thursday'). Always wait for the speaker to finish the sentence before locking in your answer.",
+          "complexity": "Beginner",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i2_1",
+              "text": "Speaker: 'The postcode isSW1 4BT... sorry, my mistake, it's SW1 4BP.' What is the correct answer?",
+              "options": ["SW1 4BT", "SW1 4BP", "SW1 4B", "Both are correct"],
+              "correct_answer_index": 1,
+              "explanation": "The first postcode is a distractor. Words like 'sorry', 'however', or 'actually' signal a correction."
+            }
+          ]
+        },
+        {
+          "id": "i3",
+          "title": "Listening: Word Limit Rules",
+          "short_description": "Never lose marks over instruction rules.",
+          "content": "Always read instructions like 'NO MORE THAN TWO WORDS AND/OR A NUMBER'. If the instruction says 'ONE WORD ONLY' and you write 'a hospital' instead of 'hospital', your answer will be marked completely wrong even though you heard the right word.",
+          "complexity": "Beginner",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i3_1",
+              "text": "Instruction: 'NO MORE THAN ONE WORD AND/OR A NUMBER'. Which answer is valid?",
+              "options": ["25 blue buses", "25 buses", "Twenty five buses", "The 25 buses"],
+              "correct_answer_index": 1,
+              "explanation": "'25 buses' consists of one number (25) and one word (buses), fitting the exact instruction."
+            }
+          ]
+        },
+        {
+          "id": "i4",
+          "title": "Reading: Skimming & Scanning",
+          "short_description": "Read faster without reading every word.",
+          "content": "You do not have time to read all 3 passages word-for-word. Use 'Skimming' (reading titles, headings, and first sentences rapidly) to get the main idea. Use 'Scanning' to hunt for specific keywords like names, dates, numbers, and technical terms.",
+          "complexity": "Beginner",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i4_1",
+              "text": "What is the best technique to quickly find a scientist's name (e.g., 'Dr. Smith') in a long passage?",
+              "options": ["Reading every paragraph slowly", "Scanning", "Skimming", "Guessing"],
+              "correct_answer_index": 1,
+              "explanation": "Scanning helps you locate specific nouns, capital letters, and numbers without reading full sentences."
+            }
+          ]
+        },
+        {
+          "id": "i5",
+          "title": "Speaking Part 1: The A-R-E Method",
+          "short_description": "Avoid one-word answers in the interview.",
+          "content": "In Speaking Part 1, the examiner asks familiar questions about your home, studies, or hobbies. Never reply with just 'Yes' or 'No'. Use the A-R-E method: Answer the question directly, give a Reason, and provide a short Example (aim for 2 to 3 natural sentences).",
+          "complexity": "Beginner",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i5_1",
+              "text": "How long should a typical response be in Speaking Part 1?",
+              "options": ["Just 1 word", "2 to 3 sentences", "2 minutes long", "At least 10 sentences"],
+              "correct_answer_index": 1,
+              "explanation": "2 to 3 well-connected sentences show fluency without rambling."
+            }
+          ]
+        },
+        {
+          "id": "i6",
+          "title": "Reading: True, False, Not Given",
+          "short_description": "Master the trickiest Reading question type.",
+          "content": "TRUE means the passage proves the statement. FALSE means the passage directly contradicts (says the opposite of) the statement. NOT GIVEN means the specific information is simply not mentioned—never use your own outside knowledge to assume an answer!",
+          "complexity": "Intermediate",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i6_1",
+              "text": "Passage: 'Most students prefer digital textbooks.' Statement: 'All students prefer digital textbooks.' What is the answer?",
+              "options": ["True", "False", "Not Given", "None"],
+              "correct_answer_index": 1,
+              "explanation": "'Most' directly contradicts 'All'. Watch out for extreme qualifiers like all, always, never, and only."
+            }
+          ]
+        },
+        {
+          "id": "i7",
+          "title": "Reading: Matching Headings",
+          "short_description": "Identify the main theme of paragraphs.",
+          "content": "When matching headings to paragraphs, always read the paragraph's first two sentences and last sentence first, as they usually contain the topic sentence. Beware of headings that just repeat a minor detail or example from the middle of the paragraph.",
+          "complexity": "Intermediate",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i7_1",
+              "text": "What does a correct heading represent?",
+              "options": ["A specific date in the paragraph", "The central idea of the whole paragraph", "A exact word match", "The last word of the paragraph"],
+              "correct_answer_index": 1,
+              "explanation": "Headings summarize the main purpose of the entire paragraph, not a single detail."
+            }
+          ]
+        },
+        {
+          "id": "i8",
+          "title": "Writing Task 1: The Overview",
+          "short_description": "The most important paragraph in Task 1.",
+          "content": "In Academic Writing Task 1 (150+ words, 20 mins), you summarize a chart, graph, map, or process. To score Band 7+ in Task Achievement, you MUST include a clear 'Overview' paragraph highlighting 2-3 main trends (highest/lowest points or overall changes) without mentioning specific numbers.",
+          "complexity": "Intermediate",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i8_1",
+              "text": "What should you AVOID putting inside your Task 1 Overview paragraph?",
+              "options": ["Overall trends", "Specific percentages and raw data numbers", "Comparisons", "The word 'Overall'"],
+              "correct_answer_index": 1,
+              "explanation": "Save specific data and numbers for the Body Paragraphs; the Overview is only for big-picture trends."
+            }
+          ]
+        },
+        {
+          "id": "i9",
+          "title": "Writing Task 1: Vocabulary of Trends",
+          "short_description": "Describe upward and downward changes.",
+          "content": "Avoid repeating basic words like 'went up' or 'went down'. Use precise verbs and adverbs: 'rose dramatically', 'plummeted', 'fluctuated wildly', 'remained stable', or 'peaked at'. Never give personal opinions or reasons not shown in the chart.",
+          "complexity": "Intermediate",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i9_1",
+              "text": "Which word best describes a sudden, very large drop in a line graph?",
+              "options": ["Soared", "Plummeted", "Stabilized", "Peaked"],
+              "correct_answer_index": 1,
+              "explanation": "'Plummeted' means fell or dropped straight down at high speed."
+            }
+          ]
+        },
+        {
+          "id": "i10",
+          "title": "Speaking Part 2: The Cue Card",
+          "short_description": "Speak non-stop for 2 minutes confidently.",
+          "content": "In Part 2, you get 1 minute to prepare and must speak for 1-2 minutes on a given topic. If you run out of things to say, use the Past-Present-Future (PPF) strategy: briefly mention your past experience with the topic, describe the present situation, and share future hopes related to it.",
+          "complexity": "Intermediate",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i10_1",
+              "text": "How much preparation time do you get before speaking in Part 2?",
+              "options": ["30 seconds", "1 minute", "2 minutes", "No time"],
+              "correct_answer_index": 1,
+              "explanation": "You are given pencil, paper, and exactly 1 minute to jot down keyword notes."
+            }
+          ]
+        },
+        {
+          "id": "i11",
+          "title": "Writing Task 2: Essay Structure",
+          "short_description": "Plan your 250-word essay for high bands.",
+          "content": "Task 2 carries 66% of your total Writing score (40 mins, 250+ words). Use a proven 4-paragraph structure: 1) Introduction (Paraphrase prompt + clear Thesis/Opinion), 2) Body Paragraph 1 (Main idea + explanation + specific example), 3) Body Paragraph 2, and 4) Conclusion (Summarize main points).",
+          "complexity": "Intermediate",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i11_1",
+              "text": "Which Writing task carries more weight in your final Writing Band score?",
+              "options": ["Task 1", "Task 2 (worth twice as much as Task 1)", "Both are equal", "Depends on the examiner"],
+              "correct_answer_index": 1,
+              "explanation": "Task 2 accounts for two-thirds of your writing grade, so manage your time wisely!"
+            }
+          ]
+        },
+        {
+          "id": "i12",
+          "title": "Coherence & Cohesion",
+          "short_description": "Connect ideas smoothly without overusing linkers.",
+          "content": "Coherence is how logical your ideas are; Cohesion is how sentences connect. Use linking words naturally (However, Furthermore, Consequently, For instance). However, do not start every single sentence with a mechanical linker—use pronouns ('this issue', 'such measures') for natural flow.",
+          "complexity": "Advanced",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i12_1",
+              "text": "Which linking word is used to introduce a contrasting or opposite idea?",
+              "options": ["Moreover", "Consequently", "Nevertheless", "For instance"],
+              "correct_answer_index": 2,
+              "explanation": "'Nevertheless' (like 'However') introduces a contrast to the previous statement."
+            }
+          ]
+        },
+        {
+          "id": "i13",
+          "title": "Lexical Resource & Collocations",
+          "short_description": "Use natural word partnerships instead of memorizing rare words.",
+          "content": "Examiners don't want archaic dictionary words; they want 'Collocations'—words that naturally go together in English (e.g., 'heavy rain' instead of 'strong rain', 'play a pivotal role', 'mitigate the problem', 'sedentary lifestyle'). Incorrectly using big words lowers your score.",
+          "complexity": "Advanced",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i13_1",
+              "text": "Which of the following is a natural academic collocation?",
+              "options": ["Do a mistake", "Make a mistake", "Create a mistake", "Build a mistake"],
+              "correct_answer_index": 1,
+              "explanation": "In English, 'make a mistake' is the natural collocation, whereas 'do a mistake' is incorrect."
+            }
+          ]
+        },
+        {
+          "id": "i14",
+          "title": "Grammatical Range & Accuracy",
+          "short_description": "Boost your score with complex sentence structures.",
+          "content": "To hit Band 7+ in Grammar, you must mix simple and complex sentences. Practice using subordinate clauses (Although..., While..., Despite...), relative clauses (which, who, that), and conditionals ('If governments invested more in public transport, traffic congestion would decrease').",
+          "complexity": "Advanced",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i14_1",
+              "text": "Which sentence is a grammatically correct complex sentence?",
+              "options": ["Although it rained, but we went out.", "Although it rained, we went out.", "Despite it rained, we went out.", "It rained, however we went out."],
+              "correct_answer_index": 1,
+              "explanation": "In English, you never use 'but' after 'Although' in the same sentence."
+            }
+          ]
+        },
+        {
+          "id": "i15",
+          "title": "Speaking Part 3: Abstract Discussion",
+          "short_description": "Handle deep, analytical questions like a pro.",
+          "content": "In Part 3, the examiner asks broad, societal questions (e.g., 'How will technology change education in the future?'). Don't talk about yourself here; talk about people in general. Use 'hedging' phrases to sound academic: 'It is widely believed that...', 'That largely depends on...', or 'In all likelihood...'",
+          "complexity": "Advanced",
+          "category_id": "ielts",
+          "quizzes": [
+            {
+              "id": "q_i15_1",
+              "text": "In Speaking Part 3, should your answers focus on your personal life or society in general?",
+              "options": ["Only my personal life", "Society and general trends", "My childhood memories", "Yes/No answers only"],
+              "correct_answer_index": 1,
+              "explanation": "Part 1 & 2 are personal, whereas Part 3 tests your ability to discuss abstract, general, and societal topics."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "interview_prep",
+      "title": "CV Interview Masterclass",
+      "description": "Tailored interview preparation based on your CV: Kotlin, Jetpack Compose, Barnoi POS, BariPlus, MVVM, Hilt, Room, and React Native.",
+      "icon_url": "ic_android",
+      "knowledge_nuggets": [
+        {
+          "id": "ip1",
+          "title": "Self-Intro & Project Pitch",
+          "short_description": "How to introduce yourself and highlight Play Store apps.",
+          "content": "When asked 'Tell me about yourself', use the Present-Past-Future formula: Start with your current role as an Associate Software Engineer at Softzino Technologies building native Android apps with Kotlin & Compose (like Barnoi POS). Mention your 3+ years of overall tech experience and your published Play Store apps—BariPlus (5K+ downloads, 4.8 rating in React Native) and Bidyava (Kotlin eLearning app). Conclude with why you are excited about this new role.",
+          "complexity": "Beginner",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip1_1",
+              "text": "What is the most impactful metric from your CV to mention during your introduction?",
+              "options": ["High school grades", "Published apps with 5K+ downloads & 4.8★ rating", "Basic HTML skills", "OS preferences"],
+              "correct_answer_index": 1,
+              "explanation": "Production experience with real users and high ratings (BariPlus & Bidyava) immediately proves you can deliver end-to-end products."
+            }
+          ]
+        },
+        {
+          "id": "ip2",
+          "title": "StateFlow vs SharedFlow",
+          "short_description": "A guaranteed interview question from your Barnoi POS stack.",
+          "content": "Both are hot flows. StateFlow requires an initial value, replays the latest value to new collectors, and only emits when the value actually changes (distinctUntilChanged). It holds UI State. SharedFlow has no initial value by default, is highly configurable (replay cache, buffer), and emits even if the value is identical—making it ideal for one-time UI events like navigation, snackbars, or payment failure alerts in Barnoi POS.",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip2_1",
+              "text": "In Barnoi POS, if a payment fails and you want to show a Snackbar ONLY ONCE (not again on screen rotation), which should you use?",
+              "options": ["StateFlow", "SharedFlow / Channel", "LiveData", "remember"],
+              "correct_answer_index": 1,
+              "explanation": "SharedFlow (with replay = 0) or a Channel ensures one-time events are not re-triggered upon configuration changes."
+            },
+            {
+              "id": "q_ip2_2",
+              "text": "What happens if you emit the exact same value twice in a row to a StateFlow?",
+              "options": ["It collects twice", "It ignores the second emission", "It throws an exception", "It clears the cache"],
+              "correct_answer_index": 1,
+              "explanation": "StateFlow uses structural equality (.equals()) and conflates identical consecutive values."
+            }
+          ]
+        },
+        {
+          "id": "ip3",
+          "title": "Compose Recomposition & Stability",
+          "short_description": "How to explain UI performance optimization in Jetpack Compose.",
+          "content": "Recomposition is the process of calling your composable functions again when inputs (state) change. To optimize Compose UI: 1) Use State Hoisting to keep composables stateless, 2) Pass immutable data or mark classes with @Immutable / @Stable so Compose can skip unnecessary recompositions, 3) Use 'key' inside LazyColumn (e.g., product list in POS), and 4) Use 'derivedStateOf' when state changes faster than the UI needs to update.",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip3_1",
+              "text": "Why does passing a standard Kotlin 'List<T>' sometimes cause unnecessary recomposition in Compose?",
+              "options": ["List is too slow", "Compose compiler sees List interface as unstable because it could be backed by a MutableList", "Lists cannot be used in Compose", "It lacks a primary key"],
+              "correct_answer_index": 1,
+              "explanation": "Because List is an interface that MutableList implements, Compose cannot guarantee immutability without @Immutable wrappers or Kotlinx ImmutableLists."
+            }
+          ]
+        },
+        {
+          "id": "ip4",
+          "title": "Compose Side-Effects",
+          "short_description": "Master LaunchedEffect, DisposableEffect, and rememberUpdatedState.",
+          "content": "A side-effect is any change to the state of the app that happens outside the scope of a composable function. Use 'LaunchedEffect(key)' to run suspend functions safely inside a composable (cancels and restarts if key changes). Use 'DisposableEffect' when cleanup is required (e.g., disconnecting a Bluetooth printer listener or stopping ExoPlayer). Use 'SideEffect' to publish Compose state to non-compose code.",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip4_1",
+              "text": "Which Side-Effect handler is best for registering and unregistering a broadcast receiver or hardware callback?",
+              "options": ["LaunchedEffect", "DisposableEffect", "produceState", "derivedStateOf"],
+              "correct_answer_index": 1,
+              "explanation": "DisposableEffect provides an 'onDispose' block specifically designed to clean up listeners and prevent memory leaks."
+            }
+          ]
+        },
+        {
+          "id": "ip5",
+          "title": "Coroutines: Dispatchers & Scopes",
+          "short_description": "Explain threading, viewModelScope, and structured concurrency.",
+          "content": "Dispatchers determine which thread a coroutine runs on: Dispatchers.Main (UI interactions), Dispatchers.IO (Network, Room DB, File I/O), and Dispatchers.Default (CPU-intensive work like sorting large POS inventories or parsing huge JSONs). 'supervisorScope' ensures that if one child coroutine fails, the sibling coroutines are not cancelled.",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip5_1",
+              "text": "In a ViewModel, if one parallel API call fails inside a supervisorScope, what happens to the other running API call?",
+              "options": ["It gets cancelled immediately", "It continues running normally", "The app crashes", "The ViewModel is cleared"],
+              "correct_answer_index": 1,
+              "explanation": "Unlike coroutineScope, a supervisorScope does not propagate cancellation from one failing child to its siblings."
+            }
+          ]
+        },
+        {
+          "id": "ip6",
+          "title": "Offline-First Architecture & Room",
+          "short_description": "Defend your Softzino experience on local caching strategies.",
+          "content": "Your CV highlights 'offline-first capabilities using Room Database'. In an interview, explain the Single Source of Truth (SSOT) pattern: The UI ONLY observes data from Room Database (via Flow<List<Entity>>). When requesting data, the Repository fetches from the Retrofit API in the background, saves the response into Room inside a transaction, and Room automatically emits the updated data to the UI.",
+          "complexity": "Advanced",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip6_1",
+              "text": "In a true Offline-First architecture, where does the ViewModel directly read data from?",
+              "options": ["Directly from Retrofit API", "From the Local Database (Single Source of Truth)", "From SharedPreferences", "From the Activity"],
+              "correct_answer_index": 1,
+              "explanation": "The local database acts as the Single Source of Truth; network responses update the database, which then notifies the UI via Flow."
+            }
+          ]
+        },
+        {
+          "id": "ip7",
+          "title": "Retrofit, OkHttp & Interceptors",
+          "short_description": "Explain API caching, auth tokens, and Moshi parsing.",
+          "content": "Retrofit uses OkHttp under the hood. In interviews, you will be asked how you handle JWT Auth Tokens and API Caching (mentioned in your CV). Answer: 'I use an OkHttp Interceptor to automatically attach the Bearer token to every request header, and an Authenticator (or refresh token interceptor) to handle 401 Unauthorized responses by refreshing the token seamlessly. For parsing, I prefer Moshi because it supports Kotlin codegen and is faster than reflection-based Gson.'",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip7_1",
+              "text": "Why is Moshi with codegen preferred over Gson in modern Kotlin Android apps?",
+              "options": ["Moshi uses reflection", "Moshi understands Kotlin null-safety, default values, and avoids slow runtime reflection", "Gson does not support JSON", "Moshi is built into Android OS"],
+              "correct_answer_index": 1,
+              "explanation": "Gson is written in Java and ignores Kotlin's non-null types and default parameter values unless specially configured, whereas Moshi is Kotlin-friendly."
+            }
+          ]
+        },
+        {
+          "id": "ip8",
+          "title": "Dagger Hilt: @Binds vs @Provides",
+          "short_description": "Common Dependency Injection interview questions.",
+          "content": "You use '@Provides' in a Hilt Module when creating an instance of a third-party class (like Retrofit, OkHttp, or RoomDatabase) where you don't own the constructor. You use '@Binds' on an abstract function when you want to tell Hilt which implementation class to use for an Interface (e.g., binding PosRepositoryImpl to PosRepository). '@Binds' generates less code and is more efficient.",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip8_1",
+              "text": "When binding a Repository Interface to its Implementation class in Hilt, which annotation is more efficient?",
+              "options": ["@Provides", "@Binds", "@Inject", "@EntryPoint"],
+              "correct_answer_index": 1,
+              "explanation": "@Binds is used on abstract methods and generates minimal boilerplate code compared to @Provides."
+            }
+          ]
+        },
+        {
+          "id": "ip9",
+          "title": "Barnoi POS: Deep Dive Defense",
+          "short_description": "How to answer architecture questions about your POS project.",
+          "content": "Interviewers will ask: 'What was the hardest challenge in Barnoi POS?' Great answer: 'Managing complex cart state with multi-payment splits (Cash, Card, MFS, Voucher, Store Credit), discount calculations, and exchanges/refunds without UI lag. I solved this using an immutable UI state in the ViewModel powered by StateFlow, handling barcode scanner inputs asynchronously, and isolating thermal printer ESC/POS byte-stream commands in a dedicated hardware manager.'",
+          "complexity": "Advanced",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip9_1",
+              "text": "When handling financial calculations (discounts, tax, multi-payments) in a POS app, which data type avoids floating-point precision bugs?",
+              "options": ["Float", "Double", "BigDecimal (or Long in cents/poisha)", "String"],
+              "correct_answer_index": 2,
+              "explanation": "Float and Double suffer from binary floating-point inaccuracy (e.g., 0.1 + 0.2 = 0.30000000000000004). BigDecimal or integer cents ensure exact currency math."
+            }
+          ]
+        },
+        {
+          "id": "ip10",
+          "title": "Bidyava: Exam Timer & State",
+          "short_description": "Defending your eLearning & BCS model test app.",
+          "content": "For Bidyava, interviewers often ask: 'How did you handle the live exam countdown timer so it doesn't reset on screen rotation or lag the UI?' Answer: 'I ran the timer inside the ViewModel using Kotlin Coroutines/Flow rather than the UI layer, or calculated remaining time using SystemClock.elapsedRealtime() against the exam end-timestamp. This ensures configuration changes or brief backgrounding never corrupt the remaining exam time.'",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip10_1",
+              "text": "Why is relying purely on 'delay(1000)' in a loop risky for a strict exam countdown timer?",
+              "options": ["It crashes the app", "Thread scheduling delays and backgrounding can cause time drift; comparing against system timestamps is more accurate", "delay() blocks the main thread", "It only works on Wi-Fi"],
+              "correct_answer_index": 1,
+              "explanation": "Comparing current elapsed time against a target timestamp prevents cumulative drift if the CPU is busy."
+            }
+          ]
+        },
+        {
+          "id": "ip11",
+          "title": "React Native: Architecture & BariPlus",
+          "short_description": "Key React Native questions for cross-platform roles.",
+          "content": "Since BariPlus has 5K+ downloads in React Native, expect questions on RN performance and architecture: 1) Old Bridge vs New Architecture: The old architecture serialized JSON asynchronously over a Bridge, causing bottlenecks. The New Architecture uses JSI (JavaScript Interface) in C++ for synchronous, direct communication between JS and Native modules, plus Fabric (new renderer) and TurboModules. 2) FlatList optimization: Use keyExtractor, getItemLayout, windowSize, and React.memo.",
+          "complexity": "Advanced",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip11_1",
+              "text": "What replaces the asynchronous JSON Bridge in React Native's New Architecture?",
+              "options": ["Redux", "JSI (JavaScript Interface)", "Expo Router", "Axios"],
+              "correct_answer_index": 1,
+              "explanation": "JSI allows JavaScript to hold references to C++ Host Objects and invoke native methods directly and synchronously."
+            }
+          ]
+        },
+        {
+          "id": "ip12",
+          "title": "Memory Leaks in Android",
+          "short_description": "How leaks happen and how to detect them.",
+          "content": "A memory leak happens when the Garbage Collector (GC) cannot free an object because a longer-lived object still holds a reference to it. Common causes: 1) Passing Activity 'Context' to a Singleton, 2) Uncancelled Coroutines or RxJava subscriptions, 3) Unregistered listeners/receivers. Use LeakCanary in debug builds and Android Studio Memory Profiler to detect leaks.",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip12_1",
+              "text": "Why should you never store a reference to a View or Activity Context inside a ViewModel?",
+              "options": ["It causes a syntax error", "ViewModel outlives the Activity on rotation, causing a severe memory leak of the entire Activity", "It slows down Gradle build", "Views are immutable"],
+              "correct_answer_index": 1,
+              "explanation": "Because the ViewModel survives configuration changes, holding an Activity reference prevents the old destroyed Activity from being garbage collected."
+            }
+          ]
+        },
+        {
+          "id": "ip13",
+          "title": "MVVM vs MVI Architecture",
+          "short_description": "Compare modern presentation patterns.",
+          "content": "In MVVM, the View observes multiple streams or a UI state from the ViewModel and calls functions on the ViewModel. In MVI (Model-View-Intent), there is a strict Unidirectional Data Flow (UDF) with a single immutable 'UiState' data class and a single entry point for user actions via sealed classes/interfaces called 'Intents' or 'Events'. Jetpack Compose pairs naturally with MVI/UDF.",
+          "complexity": "Advanced",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip13_1",
+              "text": "What is the core advantage of having a single immutable UiState object in MVVM/MVI?",
+              "options": ["Less Kotlin files", "Eliminates inconsistent or conflicting UI states (Single Source of Truth for the screen)", "No need for ViewModels", "Faster network speed"],
+              "correct_answer_index": 1,
+              "explanation": "A single state object guarantees the UI is always rendering a predictable, reproducible snapshot of data."
+            }
+          ]
+        },
+        {
+          "id": "ip14",
+          "title": "DSA & Time Complexity (HackerRank)",
+          "short_description": "Back up your 90+ HackerRank solutions claim.",
+          "content": "Since your CV mentions 90+ HackerRank DSA solutions, interviewers will test your Big-O knowledge and basic data structures. Remember: HashMap/HashSet lookup is O(1) average time—always use a HashMap to optimize nested O(n^2) loops down to O(n) (e.g., Two Sum, finding duplicates, frequency counting). Binary Search on a sorted array is O(log n). Sorting an array takes O(n log n).",
+          "complexity": "Intermediate",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip14_1",
+              "text": "How can you reduce an O(n²) nested loop that searches for pairs with a given sum into O(n) time complexity?",
+              "options": ["Use a LinkedList", "Use a HashMap / HashSet to store seen complements", "Sort the array twice", "Use recursion"],
+              "correct_answer_index": 1,
+              "explanation": "Storing visited elements in a HashSet/HashMap allows O(1) complement lookups, bringing total time complexity down to O(n)."
+            }
+          ]
+        },
+        {
+          "id": "ip15",
+          "title": "Play Store Release, R8 & Signing",
+          "short_description": "Prove your real-world app publishing expertise.",
+          "content": "Having published BariPlus and Bidyava, you may be asked about the release pipeline: 1) Android App Bundle (.aab) vs APK: Play Store uses .aab to generate optimized split APKs for each user's device density/ABI, reducing download size. 2) R8/Proguard shrinks unused code, optimizes bytecode, and obfuscates class names. When using Retrofit/Moshi, you must add @Keep or Proguard rules for DTOs so R8 doesn't strip or rename serialized fields in release builds!",
+          "complexity": "Advanced",
+          "category_id": "interview_prep",
+          "quizzes": [
+            {
+              "id": "q_ip15_1",
+              "text": "An app works fine in Debug mode, but crashes or fails to parse API JSON in the Release APK/AAB. What is the most likely culprit?",
+              "options": ["Slow internet", "R8/Proguard obfuscated or stripped the API data model (DTO) classes", "Room database is full", "Compose version mismatch"],
+              "correct_answer_index": 1,
+              "explanation": "In release builds with isMinifyEnabled = true, R8 renames fields unless protected by @Keep, @JsonClass(generateAdapter = true), or Proguard rules."
             }
           ]
         }
