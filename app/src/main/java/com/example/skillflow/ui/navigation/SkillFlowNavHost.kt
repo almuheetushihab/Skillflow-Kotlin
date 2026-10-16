@@ -118,7 +118,7 @@ fun SkillFlowNavHost(
         composable<Screen.Profile> {
             ProfileScreen(
                 onResetOnboarding = {
-                    navController.navigate(Screen.Login) {
+                    navController.navigate(Screen.Onboarding) {
                         popUpTo(0) { inclusive = true }
                     }
                 },

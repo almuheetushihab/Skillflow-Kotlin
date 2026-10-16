@@ -37,7 +37,7 @@ class SkillFlowApp : Application(), Configuration.Provider {
         val workRequest = OneTimeWorkRequestBuilder<DataSeedWorker>().build()
         WorkManager.getInstance(this).enqueueUniqueWork(
             "DataSeedWork",
-            ExistingWorkPolicy.REPLACE, // Force seeding on each app start for now to ensure data is there
+            ExistingWorkPolicy.KEEP,
             workRequest
         )
     }

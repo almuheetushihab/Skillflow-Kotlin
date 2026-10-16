@@ -146,6 +146,14 @@ class SkillRepositoryImpl @Inject constructor(
         Timber.d("Manual seeding triggered...")
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         return try {
+            try {
+                val careerPathsContent = context.assets.open("career_paths.json").bufferedReader().use { it.readText() }
+                val allPaths = json.decodeFromString<List<CareerPath>>(careerPathsContent)
+                dao.insertCareerPaths(allPaths.map { it.toEntity().copy(isUnlocked = true) })
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to load career_paths.json during seed")
+            }
+
             val content = context.assets.open("seed_data.json").bufferedReader().use { it.readText() }
             val seedData = json.decodeFromString<SeedDataDto>(content)
             
