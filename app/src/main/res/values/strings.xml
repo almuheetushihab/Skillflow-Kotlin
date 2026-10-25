@@ -91,6 +91,11 @@
     <string name="note_saved">Note saved!</string>
     <string name="note_deleted">Note deleted</string>
     <string name="error_saving_note">Error saving note</string>
+    <string name="tap_to_read_full">Tap to read full note</string>
+    <string name="view_note">View Note</string>
+    <string name="copy_note">Copy Note</string>
+    <string name="copied_to_clipboard">Copied to clipboard!</string>
+    <string name="close">Close</string>
     <string name="select_date_hint">Select Date</string>
     <string name="keep_momentum">Keep the momentum going!</string>
     <string name="achieved_emoji">Achieved! 🏆</string>

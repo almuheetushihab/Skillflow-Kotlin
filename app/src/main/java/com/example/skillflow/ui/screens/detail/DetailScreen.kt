@@ -21,8 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -36,6 +38,7 @@ import com.example.skillflow.ui.screens.detail.components.AiChatBottomSheet
 import com.example.skillflow.ui.screens.detail.components.KnowledgeCard
 import com.example.skillflow.ui.screens.detail.components.NoteCard
 import com.example.skillflow.ui.screens.detail.components.NoteInputCard
+import com.example.skillflow.ui.screens.detail.components.ViewNoteDialog
 import com.example.skillflow.ui.theme.*
 import kotlinx.coroutines.flow.collectLatest
 
@@ -46,6 +49,7 @@ fun DetailScreen(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
     val state by viewModel.state.collectAsState()
     val isSpeaking by viewModel.isSpeaking.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -66,6 +70,8 @@ fun DetailScreen(
         }
     }
 
+    val copiedMessage = stringResource(R.string.copied_to_clipboard)
+
     DetailContent(
         state = state,
         isSpeaking = isSpeaking,
@@ -82,7 +88,12 @@ fun DetailScreen(
         onNoteDescChange = viewModel::onNoteDescriptionChange,
         onSaveNote = viewModel::saveNote,
         onEditNote = viewModel::onEditNote,
+        onCancelEditNote = viewModel::cancelEditNote,
         onDeleteNote = viewModel::deleteNote,
+        onCopyNoteText = { text ->
+            clipboardManager.setText(AnnotatedString(text))
+            viewModel.showSnackbarMessage(copiedMessage)
+        },
         onToggleAiSheet = viewModel::toggleAiBottomSheet,
         onAiQuestionChange = viewModel::onAiQuestionChange,
         onSendAiQuestion = viewModel::askAI,
@@ -109,7 +120,9 @@ fun DetailContent(
     onNoteDescChange: (String) -> Unit,
     onSaveNote: () -> Unit,
     onEditNote: (UserNote) -> Unit,
+    onCancelEditNote: () -> Unit,
     onDeleteNote: (UserNote) -> Unit,
+    onCopyNoteText: (String) -> Unit,
     onToggleAiSheet: (Boolean) -> Unit,
     onAiQuestionChange: (String) -> Unit,
     onSendAiQuestion: () -> Unit,
@@ -119,6 +132,7 @@ fun DetailContent(
 ) {
     val nugget = state.nugget
     val spacing = MaterialTheme.spacing
+    var selectedNoteForView by remember { mutableStateOf<UserNote?>(null) }
 
     val rotation by animateFloatAsState(
         targetValue = if (state.isFlipped) 180f else 0f,
@@ -235,7 +249,8 @@ fun DetailContent(
                     description = state.noteDescription,
                     onDescriptionChange = onNoteDescChange,
                     onSave = onSaveNote,
-                    isEditing = state.editingNoteId != null
+                    isEditing = state.editingNoteId != null,
+                    onCancelEdit = onCancelEditNote
                 )
 
                 if (state.notes.isNotEmpty()) {
@@ -265,12 +280,33 @@ fun DetailContent(
                         state.notes.forEach { note ->
                             NoteCard(
                                 note = note,
+                                onClick = { selectedNoteForView = note },
                                 onEdit = { onEditNote(note) },
                                 onDelete = { onDeleteNote(note) },
                                 accentColor = accentColor,
                                 modifier = Modifier.fillMaxWidth()
                             )
                         }
+                    }
+
+                    // View Note Full Modal Dialog
+                    selectedNoteForView?.let { noteToView ->
+                        ViewNoteDialog(
+                            note = noteToView,
+                            onDismiss = { selectedNoteForView = null },
+                            onEdit = { note ->
+                                onEditNote(note)
+                                selectedNoteForView = null
+                            },
+                            onDelete = { note ->
+                                onDeleteNote(note)
+                                selectedNoteForView = null
+                            },
+                            onCopy = { text ->
+                                onCopyNoteText(text)
+                            },
+                            accentColor = accentColor
+                        )
                     }
                 }
 

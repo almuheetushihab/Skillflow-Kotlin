@@ -13,7 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.example.skillflow.R
 import com.example.skillflow.ui.navigation.Screen
@@ -49,12 +48,14 @@ fun SkillFlowBottomBar(
                 label = { Text(label, style = MaterialTheme.typography.labelMedium) },
                 selected = currentDestination?.hierarchy?.any { it.hasRoute(screen::class) } == true,
                 onClick = {
-                    navController.navigate(screen) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                    if (currentDestination?.hasRoute(screen::class) != true) {
+                        navController.navigate(screen) {
+                            popUpTo<Screen.Home> {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
                     }
                 }
             )

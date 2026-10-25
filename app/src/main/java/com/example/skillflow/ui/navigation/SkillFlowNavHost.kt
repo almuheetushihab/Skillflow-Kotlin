@@ -80,7 +80,7 @@ fun SkillFlowNavHost(
             OnboardingScreen(
                 onNavigateToHome = {
                     navController.navigate(Screen.Home) {
-                        popUpTo(Screen.Onboarding) { inclusive = true }
+                        popUpTo(0) { inclusive = true }
                     }
                 },
                 modifier = Modifier.padding(innerPadding)

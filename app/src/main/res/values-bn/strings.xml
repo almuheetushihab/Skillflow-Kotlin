@@ -91,6 +91,11 @@
     <string name="note_saved">নোট সেভ করা হয়েছে!</string>
     <string name="note_deleted">নোট ডিলিট করা হয়েছে</string>
     <string name="error_saving_note">নোট সেভ করতে সমস্যা হয়েছে</string>
+    <string name="tap_to_read_full">সম্পূর্ণ নোট পড়তে ট্যাপ করুন</string>
+    <string name="view_note">নোট দেখুন</string>
+    <string name="copy_note">নোট কপি করুন</string>
+    <string name="copied_to_clipboard">ক্লিপবোর্ডে কপি করা হয়েছে!</string>
+    <string name="close">বন্ধ করুন</string>
     <string name="select_date_hint">তারিখ নির্বাচন করুন</string>
     <string name="keep_momentum">আপনার গতি বজায় রাখুন!</string>
     <string name="achieved_emoji">অর্জন করেছেন! 🏆</string>

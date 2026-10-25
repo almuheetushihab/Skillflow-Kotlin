@@ -140,6 +140,22 @@ class DetailViewModel @Inject constructor(
         }
     }
 
+    fun cancelEditNote() {
+        _state.update { 
+            it.copy(
+                noteTitle = "",
+                noteDescription = "",
+                editingNoteId = null
+            ) 
+        }
+    }
+
+    fun showSnackbarMessage(message: String) {
+        viewModelScope.launch {
+            _eventFlow.emit(DetailUiEvent.ShowSnackbar(message))
+        }
+    }
+
     fun saveNote() {
         val currentState = _state.value
         if (currentState.noteTitle.isBlank() || currentState.noteDescription.isBlank()) return
