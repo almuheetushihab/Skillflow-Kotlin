@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -99,22 +100,30 @@ fun ViewNoteDialog(
 
                         Spacer(modifier = Modifier.width(spacing.medium))
 
-                        Column {
+                        Column(
+                            modifier = Modifier.weight(1f)
+                        ) {
                             Text(
                                 text = note.title,
                                 style = MaterialTheme.typography.titleLarge,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = MaterialTheme.colorScheme.onSurface,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                             if (formattedDate.isNotBlank()) {
                                 Text(
                                     text = formattedDate,
                                     style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
                     }
+
+                    Spacer(modifier = Modifier.width(spacing.small))
 
                     IconButton(
                         onClick = onDismiss,
@@ -138,11 +147,11 @@ fun ViewNoteDialog(
 
                 Spacer(modifier = Modifier.height(spacing.medium))
 
-                // Scrollable Content
+                // Scrollable Content Box
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(min = 120.dp, max = 320.dp)
+                        .heightIn(min = 120.dp, max = 300.dp)
                         .background(
                             color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
                             shape = RoundedCornerShape(16.dp)
@@ -161,59 +170,50 @@ fun ViewNoteDialog(
 
                 Spacer(modifier = Modifier.height(spacing.large))
 
-                // Action Buttons
-                Row(
+                // Responsive Action Buttons Block
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalArrangement = Arrangement.spacedBy(spacing.small)
                 ) {
-                    // Left action: Copy
-                    OutlinedButton(
-                        onClick = { onCopy(note.noteContent) },
-                        shape = RoundedCornerShape(12.dp),
-                        contentPadding = PaddingValues(horizontal = spacing.medium, vertical = spacing.small)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ContentCopy,
-                            contentDescription = stringResource(R.string.copy_note),
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(modifier = Modifier.width(spacing.extraSmall))
-                        Text(
-                            text = stringResource(R.string.copy_note),
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    }
-
                     Row(
+                        modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(spacing.small),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        // Delete Button
-                        IconButton(
-                            onClick = {
-                                onDelete(note)
-                                onDismiss()
-                            }
+                        // Copy Button (50% width)
+                        OutlinedButton(
+                            onClick = { onCopy(note.noteContent) },
+                            modifier = Modifier.weight(1f),
+                            shape = RoundedCornerShape(12.dp),
+                            contentPadding = PaddingValues(vertical = 12.dp, horizontal = spacing.small)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.DeleteOutline,
-                                contentDescription = stringResource(R.string.delete_note),
-                                tint = MaterialTheme.colorScheme.error
+                                imageVector = Icons.Default.ContentCopy,
+                                contentDescription = stringResource(R.string.copy_note),
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(spacing.extraSmall))
+                            Text(
+                                text = stringResource(R.string.copy_note),
+                                style = MaterialTheme.typography.labelLarge,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
 
-                        // Edit Button
+                        // Edit Button (50% width)
                         Button(
                             onClick = {
                                 onEdit(note)
                                 onDismiss()
                             },
+                            modifier = Modifier.weight(1f),
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary
+                                containerColor = GradientStart,
+                                contentColor = Color.White
                             ),
-                            contentPadding = PaddingValues(horizontal = spacing.medium, vertical = spacing.small)
+                            contentPadding = PaddingValues(vertical = 12.dp, horizontal = spacing.small)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Edit,
@@ -223,10 +223,36 @@ fun ViewNoteDialog(
                             Spacer(modifier = Modifier.width(spacing.extraSmall))
                             Text(
                                 text = stringResource(R.string.edit_note),
-                                style = MaterialTheme.typography.labelMedium,
-                                fontWeight = FontWeight.Bold
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
+                    }
+
+                    // Delete Action Button
+                    TextButton(
+                        onClick = {
+                            onDelete(note)
+                            onDismiss()
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.DeleteOutline,
+                            contentDescription = stringResource(R.string.delete_note),
+                            modifier = Modifier.size(16.dp)
+                        )
+                        Spacer(modifier = Modifier.width(spacing.extraSmall))
+                        Text(
+                            text = stringResource(R.string.delete_note),
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.SemiBold
+                        )
                     }
                 }
             }
