@@ -96,6 +96,8 @@
     <string name="copy_note">নোট কপি করুন</string>
     <string name="copied_to_clipboard">ক্লিপবোর্ডে কপি করা হয়েছে!</string>
     <string name="close">বন্ধ করুন</string>
+    <string name="social_leaderboard">সোশ্যাল লিডারবোর্ড</string>
+    <string name="leaderboard_subtitle">সেরা লার্নারদের তালিকা ও র‍্যাঙ্ক দেখুন</string>
     <string name="select_date_hint">তারিখ নির্বাচন করুন</string>
     <string name="keep_momentum">আপনার গতি বজায় রাখুন!</string>
     <string name="achieved_emoji">অর্জন করেছেন! 🏆</string>

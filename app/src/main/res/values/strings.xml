@@ -96,6 +96,8 @@
     <string name="copy_note">Copy Note</string>
     <string name="copied_to_clipboard">Copied to clipboard!</string>
     <string name="close">Close</string>
+    <string name="social_leaderboard">Social Leaderboard</string>
+    <string name="leaderboard_subtitle">See top learners &amp; your global rank</string>
     <string name="select_date_hint">Select Date</string>
     <string name="keep_momentum">Keep the momentum going!</string>
     <string name="achieved_emoji">Achieved! 🏆</string>

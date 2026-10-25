@@ -128,6 +128,9 @@ fun SkillFlowNavHost(
                 onNavigateToQuiz = {
                     navController.navigate(Screen.Quiz)
                 },
+                onNavigateToLeaderboard = {
+                    navController.navigate(Screen.Leaderboard)
+                },
                 modifier = Modifier.padding(innerPadding)
             )
         }

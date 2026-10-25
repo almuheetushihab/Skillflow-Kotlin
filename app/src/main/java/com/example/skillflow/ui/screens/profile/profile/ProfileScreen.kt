@@ -36,6 +36,7 @@ fun ProfileScreen(
     onResetOnboarding: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToQuiz: () -> Unit,
+    onNavigateToLeaderboard: () -> Unit = {},
     modifier: Modifier = Modifier,
     viewModel: ProfileViewModel = hiltViewModel()
 ) {
@@ -52,6 +53,7 @@ fun ProfileScreen(
         onToggleDarkMode = viewModel::toggleDarkMode,
         onNavigateToSettings = onNavigateToSettings,
         onNavigateToQuiz = onNavigateToQuiz,
+        onNavigateToLeaderboard = onNavigateToLeaderboard,
         onResetOnboarding = {
             viewModel.resetOnboarding()
             onResetOnboarding()
@@ -67,6 +69,7 @@ fun ProfileContent(
     onToggleDarkMode: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onNavigateToQuiz: () -> Unit,
+    onNavigateToLeaderboard: () -> Unit,
     onResetOnboarding: () -> Unit,
     onChangePhoto: () -> Unit,
     modifier: Modifier = Modifier
@@ -280,6 +283,42 @@ fun ProfileContent(
                         )
                     }
                 }
+            }
+
+            Spacer(modifier = Modifier.height(spacing.medium))
+
+            Button(
+                onClick = onNavigateToLeaderboard,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(64.dp),
+                shape = RoundedCornerShape(spacing.medium),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.EmojiEvents, 
+                    contentDescription = null, 
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer
+                )
+                Spacer(modifier = Modifier.width(spacing.medium))
+                Column {
+                    Text(
+                        text = stringResource(R.string.social_leaderboard),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer
+                    )
+                    Text(
+                        text = stringResource(R.string.leaderboard_subtitle),
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onTertiaryContainer.copy(alpha = 0.7f)
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = Icons.Default.ChevronRight, 
+                    contentDescription = null, 
+                    tint = MaterialTheme.colorScheme.onTertiaryContainer
+                )
             }
 
             Spacer(modifier = Modifier.height(spacing.medium))
