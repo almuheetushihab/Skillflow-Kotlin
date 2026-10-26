@@ -9,8 +9,10 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.skillflow.data.local.SkillDatabase
 import com.example.skillflow.domain.repository.SettingsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SettingsRepositoryImpl @Inject constructor(
@@ -170,7 +172,7 @@ class SettingsRepositoryImpl @Inject constructor(
         dataStore.edit { it[NewPreferencesKeys.REMINDER_TIME] = timeInMillisFromMidnight }
     }
 
-    override suspend fun clearSession() {
+    override suspend fun clearSession() = withContext(Dispatchers.IO) {
         dataStore.edit { it.clear() }
         database.clearAllTables()
     }
