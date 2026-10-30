@@ -20,7 +20,7 @@
 ## 🎯 Executive Summary
 
 In today's fast-paced world, traditional long-form courses can cause information overload and burnout. **SkillFlow** solves this by breaking down complex career topics into concise, actionable lessons (Nuggets), reinforced by:
-* Google Gemini AI learning assistant
+* Google Gemini AI learning assistant & multi-language translation engine
 * Interactive quizzes & 3D card flips
 * Daily streak notifications & customizable reminders
 * Visual roadmaps & integrated note-taking
@@ -32,6 +32,7 @@ In today's fast-paced world, traditional long-form courses can cause information
 
 ### 🤖 AI Assistant & Smart Learning
 * **Google Gemini AI Integration**: Context-aware AI Assistant Bottom Sheet (`AiChatBottomSheet.kt`) powered by Google Generative AI Client SDK (`gemini-1.5-flash-latest` with `gemini-1.5-pro` fallback). Ask real-time questions directly related to any knowledge nugget.
+* **AI & Offline Bangla Translation**: Real-time translation of Knowledge Nuggets into Bengali (`translateToBangla` in `GeminiRepositoryImpl.kt`) powered by Gemini AI with strict JSON output parsing, backed by an intelligent offline dictionary for instant translation fallback.
 
 ### 🎥 Video & Audio Learning (ExoPlayer & TTS)
 * **Text-to-Speech (TTS) Audio Engine**: Listen to Knowledge Nuggets read aloud using Android `TextToSpeech` managed by `TtsManager` (`TtsManagerImpl`) with real-time `isSpeaking` state flow observation.
@@ -45,7 +46,7 @@ In today's fast-paced world, traditional long-form courses can cause information
 
 ### 💎 Knowledge Nuggets & Interactive Cards
 * **3D Card Flip Animation**: Smooth front/back card rotations for engaging micro-lessons.
-* **Smart Filtering & Search**: Find nuggets instantly by career path, difficulty level, or search keywords.
+* **Smart Filtering & Search**: Find nuggets instantly by career path, difficulty level, search keywords, or specific date.
 * **In-App Note Taking**: Create, edit, and delete custom personal notes attached directly to specific knowledge nuggets (`UserNoteEntity`).
 * **Bookmarks & Offline Access**: Save essential nuggets for quick offline reading.
 
@@ -65,15 +66,16 @@ In today's fast-paced world, traditional long-form courses can cause information
 * **Screen-Based Package Architecture**: Strict separation where every screen has its own dedicated package (`ui/screens/<feature>/<screen>/`) containing its Screen, ViewModel, and isolated components sub-package (`components/`).
 * **Single Component Per File**: Unbundled reusable UI components into dedicated files for maximum maintainability.
 * **Custom Shimmer Skeleton Loaders**: Smooth loading states across Home (`NuggetCardSkeleton`, `ProgressCardSkeleton`), Roadmaps (`RoadmapStepSkeleton`), and Onboarding (`CareerPathSkeleton`).
-* **Multi-Language Localization**: Full dynamic runtime switching between English and Bengali (EN/BN) using `UiText` wrappers.
+* **Multi-Language Localization**: Full dynamic runtime switching between English and Bengali (EN/BN) using `UiText` wrappers and `AppCompatDelegate.setApplicationLocales`.
 
 ### 🔒 Secure Authentication & Data Privacy
 * **Firebase Auth**: Complete authentication suite including Login, Sign Up, and Password Reset.
 * **Full Account Deletion**: One-click account removal compliant with Google Play Policy (purges Firebase Auth data along with local Room DB & DataStore entries).
+* **Privacy Policy**: In-app Privacy Policy disclosure screen (`PrivacyPolicyScreen.kt`).
 
 ### 📦 Play Store & Background Work
 * **Automatic JSON Data Seeding**: `DataSeedWorker` populates Room database on initial application launch using **WorkManager**.
-* **In-App Updates**: Flexible and Immediate Play Store update prompt mechanisms.
+* **In-App Updates**: Flexible and Immediate Play Store update prompt mechanisms (`PlayStoreManagerImpl`).
 
 ---
 
@@ -142,7 +144,7 @@ com.example.skillflow
 │   ├── notification/          # NotificationHelper & Daily Reminder Channel Configuration
 │   ├── remote/                # Retrofit API & DTO definitions
 │   ├── repository/            # Repository Implementations (Skill, Auth, Settings, Gemini)
-│   ├── util/                  # VideoFileHelper, Asset Managers & JSON Parsers
+│   ├── util/                  # Asset Managers & JSON Parsers (JsonAssetManager)
 │   └── worker/                # WorkManager Jobs (DailyReminderWorker, DataSeedWorker)
 ├── di/                        # Hilt Modules (Database, Network, Firebase, Repositories, Managers, Tts)
 ├── domain/
@@ -151,27 +153,24 @@ com.example.skillflow
 │   ├── model/                 # Pure Domain Data Models
 │   ├── repository/            # Repository Interfaces (GeminiRepository, AuthRepository, etc.)
 │   └── util/                  # Resource wrappers & UiText helpers
-└── ui/                        # Professional Screen-Based UI Layer
-    ├── common/                # Reusable Global Components (VideoPlayerComponent, VideoSectionComponent, NuggetCard, AuthButton, TopBar, Skeletons)
-    ├── navigation/            # Type-Safe Routes (Screen.kt), SkillFlowNavHost & BottomBar
-    ├── theme/                 # Material 3 Colors, Spacing, Typography & Theme
-    └── screens/               # Modular Screen Packages (Screen-Based Package Architecture)
-        ├── auth/              # Auth Feature
-        │   ├── login/         # LoginScreen.kt
-        │   ├── signup/        # SignUpScreen.kt
-        │   ├── forgotpassword/# ForgotPasswordScreen.kt
-        │   └── AuthViewModel.kt
-        ├── bookmarks/         # Bookmarks Feature (BookmarksScreen & BookmarksViewModel)
-        ├── detail/            # Detail Feature & AI Assistant (3D Flip Card, KnowledgeCard, VideoSectionComponent, NoteInputCard, AiChatBottomSheet & DetailViewModel)
-        ├── home/              # Home Dashboard Feature (BentoGrid, CategoryPills, DailyProgressCard & HomeViewModel)
-        ├── leaderboard/       # Leaderboard Feature (LeaderboardScreen, LeaderboardViewModel, PodiumComponent, LeaderboardListItem & CurrentUserRankCard)
-        ├── onboarding/        # Onboarding Feature (Pager, CareerPathSelection & OnboardingViewModel)
-        ├── profile/           # Profile & Settings Feature
-        │   ├── profile/       # ProfileScreen.kt, ProfileViewModel.kt & components/StatCard.kt
+├── ui/                        # Professional Screen-Based UI Layer
+│   ├── common/                # Reusable Global Components (VideoPlayerComponent, VideoSectionComponent, NuggetCard, AuthButton, TopBar, Skeletons)
+│   ├── navigation/            # Type-Safe Routes (Screen.kt), SkillFlowNavHost & BottomBar
+│   ├── theme/                 # Material 3 Colors, Spacing, Typography & Theme
+│   └── screens/               # Modular Screen Packages (Screen-Based Package Architecture)
+│       ├── auth/              # Auth Feature (LoginScreen, SignUpScreen, ForgotPasswordScreen, AuthViewModel)
+│       ├── bookmarks/         # Bookmarks Feature (BookmarksScreen & BookmarksViewModel)
+│       ├── detail/            # Detail Feature & AI Assistant (3D Flip Card, KnowledgeCard, VideoSectionComponent, NoteInputCard, AiChatBottomSheet & DetailViewModel)
+│       ├── home/              # Home Dashboard Feature (BentoGrid, CategoryPills, DailyProgressCard & HomeViewModel)
+│       ├── leaderboard/       # Leaderboard Feature (LeaderboardScreen, LeaderboardViewModel, PodiumComponent, LeaderboardListItem & CurrentUserRankCard)
+│       ├── onboarding/        # Onboarding Feature (Pager, CareerPathSelection & OnboardingViewModel)
+│       ├── profile/           # Profile & Settings Feature
+│       │   ├── profile/       # ProfileScreen.kt, ProfileViewModel.kt & components/StatCard.kt
         │   ├── settings/      # SettingsScreen.kt, SettingsViewModel.kt & components/LanguageToggleButton.kt, SettingsItem.kt
-        │   └── privacypolicy/ # PrivacyPolicyScreen.kt
-        ├── quiz/              # Quiz Feature (Interactive Quiz, QuizResultScreen & QuizViewModel)
-        └── roadmap/           # Roadmap Feature (Visual Career Roadmap Steps & Skeletons)
+│       │   └── privacypolicy/ # PrivacyPolicyScreen.kt
+│       ├── quiz/              # Quiz Feature (Interactive Quiz, QuizResultScreen & QuizViewModel)
+│       └── roadmap/           # Roadmap Feature (Visual Career Roadmap Steps & Skeletons)
+└── util/                      # File Helpers & Constants (VideoFileHelper, Constants)
 ```
 
 ---
@@ -188,11 +187,11 @@ The app leverages **Type-Safe Jetpack Compose Navigation** with Kotlinx Serializ
    * **Forgot Password**: Password reset dispatch.
 4. **Main Dashboard (Home)**: Modern Bento Grid layout (Progress, Daily Streak & Saved Bookmarks tiles), Category Pills with distinct icons, search bar, and recommended nuggets.
 5. **Roadmap**: Visual progress node flow through selected career path steps.
-6. **Detail, Notes, Video & AI Chat**: 3D flip card learning view with Media3 ExoPlayer video playback, TTS audio reader, audio clash prevention, integrated personal note-taking, and **Google Gemini AI Assistant** chat bottom sheet.
+6. **Detail, Notes, Video & AI Chat**: 3D flip card learning view with Media3 ExoPlayer video playback, TTS audio reader, audio clash prevention, integrated personal note-taking, and **Google Gemini AI Assistant** chat bottom sheet with Bengali translation support.
 7. **Social Leaderboard**: Global Hall of Fame with Top 3 Podium and sticky bottom user rank bar.
 8. **Quiz Screen**: Multiple-choice assessment with instant score computation and reward prompts.
 9. **Bookmarks**: Saved offline nuggets.
-10. **Profile & Settings**: Level/XP progress visualizer, English/Bengali language toggle, dark mode toggle, customizable daily streak reminder time, and privacy settings.
+10. **Profile & Settings**: Level/XP progress visualizer, English/Bengali language toggle, dark mode toggle, customizable daily streak reminder time, privacy policy link, and account deletion.
 
 ---
 
