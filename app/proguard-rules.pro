@@ -1,3 +1,7 @@
+# Application Class & Hilt
+-keep class * extends android.app.Application { *; }
+-keep @dagger.hilt.android.HiltAndroidApp class * { *; }
+
 # Hilt & Dagger Rules
 -keep @dagger.Module class * { *; }
 -keep @dagger.hilt.EntryPoint class * { *; }
