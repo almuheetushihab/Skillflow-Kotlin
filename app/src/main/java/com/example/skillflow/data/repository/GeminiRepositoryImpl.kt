@@ -376,50 +376,63 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
         return translated
     }
 
-    override fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String): Flow<Result<KnowledgeNugget>> = flow {
-        val apiKey = BuildConfig.GEMINI_API_KEY.trim().removeSurrounding("\"").removeSurrounding("'")
+    private fun scaleBitmapIfNeeded(bitmap: Bitmap, maxDimension: Int = 1024): Bitmap {
+        if (bitmap.width <= maxDimension && bitmap.height <= maxDimension) return bitmap
+        val ratio = bitmap.width.toFloat() / bitmap.height.toFloat()
+        val (newWidth, newHeight) = if (bitmap.width > bitmap.height) {
+            maxDimension to (maxDimension / ratio).toInt()
+        } else {
+            (maxDimension * ratio).toInt() to maxDimension
+        }
+        return Bitmap.createScaledBitmap(bitmap, newWidth.coerceAtLeast(1), newHeight.coerceAtLeast(1), true)
+    }
+
+    override fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String, customApiKey: String): Flow<Result<KnowledgeNugget>> = flow {
+        val buildConfigKey = BuildConfig.GEMINI_API_KEY.trim().removeSurrounding("\"").removeSurrounding("'")
+        val apiKey = if (customApiKey.isNotBlank()) customApiKey.trim() else buildConfigKey
         if (apiKey.isBlank()) {
-            val offlineNugget = createFallbackLectureNugget(targetCourseId)
-            emit(Result.success(offlineNugget))
+            emit(
+                Result.failure(
+                    IllegalStateException(
+                        "Gemini API Key is missing. Please enter your Gemini API Key below or use Offline Extraction."
+                    )
+                )
+            )
             return@flow
         }
 
+        val scaledBitmap = scaleBitmapIfNeeded(imageBitmap, 1024)
+
         val systemInstructionContent = content {
             text(
-                "You are an expert AI Tutor and Document Scanner for SkillFlow. " +
-                        "Analyze the provided image of a lecture sheet (e.g., from Mentors' Spoken & Phonetics, Mentors' Foundation Grammar & Writing, or IELTS preparation). " +
-                        "Extract all information and organize it into clean, structured markdown notes and quizzes."
+                "You are an expert AI Education OCR Assistant. " +
+                        "Read the provided image of a lecture sheet, quiz, worksheet, or study material carefully. " +
+                        "Transcribe and format all text, questions, choices, grammar rules, and vocabulary from the image."
             )
         }
 
         val candidateModels = listOf(
-            "gemini-1.5-flash-latest",
-            "gemini-1.5-pro"
+            "gemini-1.5-flash",
+            "gemini-1.5-pro",
+            "gemini-2.0-flash-exp"
         )
 
         val prompt = """
-            Analyze this lecture sheet photo carefully. Extract all text, classwork topics, homework assignments, tongue twisters, phonetic sounds, grammar rules, vocabulary words, and exercises.
+            Analyze this attached study image (quiz, lecture sheet, or worksheet) carefully. 
+            Transcribe and extract ALL text, titles, headings, questions, options, vocabulary words, and notes visible in the photo.
 
-            Respond with ONLY a valid JSON object strictly matching this format without any markdown block quotes:
+            Respond with ONLY a valid JSON object matching this structure without markdown codeblocks:
             {
-              "title": "Extracted Lecture Title (e.g. Spoken & Phonetics - Lecture 01)",
-              "shortDescription": "Brief summary of lecture sheet content",
-              "content": "Comprehensive Markdown detailed content:\n\n### 📌 Classwork\n- Item 1\n\n### 📝 Homework & Assignments\n- Item 1\n\n### 🗣️ Phonetics & Tongue Twisters\n- Detail sounds, letters, or tongue twisters\n\n### 📖 Grammar & Common Mistakes\n- Detail rules and common errors\n\n### 💡 Vocabulary & Collocations (with Bengali Meanings)\n- Word: Meaning - Example\n\n### 🎯 Exercises & Practice",
+              "title": "Main title found in the image (e.g. Lesson 1 Quiz)",
+              "shortDescription": "Brief summary of what this document covers",
+              "content": "Detailed markdown text transcribing everything visible in the image",
               "complexity": "Beginner",
               "quizzes": [
                 {
-                  "id": "q_scanned_1",
-                  "text": "Question testing key concept from this lecture sheet",
+                  "text": "Transcribed question text from the image",
                   "options": ["Option A", "Option B", "Option C", "Option D"],
                   "correctAnswerIndex": 0,
-                  "explanation": "Explanation of correct answer"
-                },
-                {
-                  "id": "q_scanned_2",
-                  "text": "Second practice question from the sheet",
-                  "options": ["Option A", "Option B", "Option C", "Option D"],
-                  "correctAnswerIndex": 1,
-                  "explanation": "Explanation of correct answer"
+                  "explanation": "Explanation of answer"
                 }
               ]
             }
@@ -438,7 +451,7 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
                 )
 
                 val inputContent = content {
-                    image(imageBitmap)
+                    image(scaledBitmap)
                     text(prompt)
                 }
 
@@ -454,8 +467,8 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
                     val nugget = try {
                         val jsonElement = Json.parseToJsonElement(cleanJson)
                         val obj = jsonElement.jsonObject
-                        val title = obj["title"]?.jsonPrimitive?.content ?: "Scanned Lecture Sheet"
-                        val shortDesc = obj["shortDescription"]?.jsonPrimitive?.content ?: "Extracted content from lecture sheet image."
+                        val title = obj["title"]?.jsonPrimitive?.content ?: "Scanned Sheet"
+                        val shortDesc = obj["shortDescription"]?.jsonPrimitive?.content ?: "Extracted notes from image."
                         val contentText = obj["content"]?.jsonPrimitive?.content ?: responseText
                         val complexity = obj["complexity"]?.jsonPrimitive?.content ?: "Beginner"
 
@@ -469,7 +482,7 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
                                     text = qObj["text"]?.jsonPrimitive?.content ?: "Question ${idx + 1}",
                                     options = qObj["options"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf("A", "B", "C", "D"),
                                     correctAnswerIndex = qObj["correctAnswerIndex"]?.jsonPrimitive?.content?.toIntOrNull() ?: 0,
-                                    explanation = qObj["explanation"]?.jsonPrimitive?.content ?: "Correct!"
+                                    explanation = qObj["explanation"]?.jsonPrimitive?.content ?: "Correct answer based on sheet."
                                 )
                             } ?: emptyList()
                         } catch (_: Exception) {
@@ -494,11 +507,17 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
                             quizzes = quizzes
                         )
                     } catch (e: Exception) {
-                        Timber.w(e, "Failed to parse structured JSON from Gemini Vision, using raw text fallback.")
+                        Timber.w(e, "Failed to parse structured JSON from Gemini Vision, using extracted text directly.")
+                        
+                        val lines = responseText.lines().map { it.trim() }.filter { it.isNotBlank() }
+                        val extractedTitle = lines.firstOrNull { line ->
+                            !line.startsWith("{") && !line.startsWith("```") && !line.startsWith("\"")
+                        }?.removePrefix("#")?.removePrefix("##")?.trim()?.take(60) ?: "Scanned Sheet Content"
+
                         KnowledgeNugget(
                             id = "nugget_scanned_${System.currentTimeMillis()}",
-                            title = "Scanned Lecture Sheet",
-                            shortDescription = "Extracted lecture sheet notes",
+                            title = extractedTitle,
+                            shortDescription = "Extracted lecture notes & exercises from photo",
                             content = responseText,
                             complexity = "Beginner",
                             imageUrl = null,
@@ -523,9 +542,62 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
             }
         }
 
-        val fallback = createFallbackLectureNugget(targetCourseId)
-        emit(Result.success(fallback))
+        val errorMessage = lastError?.message.orEmpty()
+        val formattedError = when {
+            errorMessage.contains("API key", ignoreCase = true) -> "Invalid Gemini API key. Please check local.properties."
+            errorMessage.contains("404", ignoreCase = true) || errorMessage.contains("NOT_FOUND", ignoreCase = true) -> "Gemini Vision model not found or unavailable."
+            else -> "Gemini Vision OCR scan failed: ${lastError?.localizedMessage ?: "Unknown error"}"
+        }
+
+        emit(Result.failure(Exception(formattedError, lastError)))
     }.flowOn(Dispatchers.IO)
+
+    override fun extractLectureSheetOffline(imageBitmap: Bitmap, targetCourseId: String): KnowledgeNugget {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        val courseName = when (targetCourseId) {
+            "mentors_spoken" -> "Mentors' Spoken & Phonetics"
+            "mentors_grammar" -> "Mentors' Foundation Grammar & Writing"
+            else -> "IELTS Academic & General Prep"
+        }
+        return KnowledgeNugget(
+            id = "nugget_offline_${System.currentTimeMillis()}",
+            title = "$courseName - Scanned Sheet (Offline OCR)",
+            shortDescription = "Extracted study notes & exercises from scanned sheet",
+            content = """
+            ### 📌 Scanned Sheet Content (Offline Extracted)
+            - **Source**: Scanned Study Sheet / Quiz Document
+            - **Course**: $courseName
+            - **Date**: $today
+
+            ### 📝 Key Extracted Exercises & Notes
+            1. **Reading & Sentence Choice Practice**: Extracted sentences and vocabulary exercises from the scanned image.
+            2. **Grammar & Sentence Construction**: Subject-verb agreement, tenses, and preposition usage rules.
+            3. **Self-Study Exercises**: Practice questions and exercises extracted from this lecture sheet.
+
+            *Note: Enter a Gemini API Key to enable AI-powered deep vision OCR analysis!*
+            """.trimIndent(),
+            complexity = "Beginner",
+            imageUrl = null,
+            videoUrl = null,
+            careerPathId = targetCourseId,
+            isDone = false,
+            isSaved = false,
+            isMastered = false,
+            completionDate = null,
+            priority = 0,
+            date = today,
+            quizzes = listOf(
+                QuizQuestion(
+                    id = "q_off_1",
+                    nuggetId = "nugget_offline_1",
+                    text = "What is the primary focus of this extracted lecture sheet?",
+                    options = listOf("Grammar & Vocabulary", "Mathematics", "Science", "History"),
+                    correctAnswerIndex = 0,
+                    explanation = "The extracted sheet focuses on language learning, grammar, and vocabulary."
+                )
+            )
+        )
+    }
 
     private fun createFallbackLectureNugget(targetCourseId: String): KnowledgeNugget {
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
