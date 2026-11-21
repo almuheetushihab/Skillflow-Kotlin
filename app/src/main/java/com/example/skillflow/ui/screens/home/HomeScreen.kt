@@ -3,9 +3,12 @@ package com.example.skillflow.ui.screens.home
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -35,6 +38,7 @@ fun HomeScreen(
     onNavigateToDetail: (String) -> Unit,
     modifier: Modifier = Modifier,
     onNavigateToBookmarks: () -> Unit = {},
+    onNavigateToLectureScanner: (String) -> Unit = {},
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -44,6 +48,7 @@ fun HomeScreen(
         onSearchQueryChange = viewModel::onSearchQueryChange,
         onNavigateToDetail = onNavigateToDetail,
         onNavigateToBookmarks = onNavigateToBookmarks,
+        onNavigateToLectureScanner = onNavigateToLectureScanner,
         onDateSelected = viewModel::onDateSelected,
         onRefresh = viewModel::refresh,
         modifier = modifier
@@ -57,6 +62,7 @@ fun HomeContent(
     onSearchQueryChange: (String) -> Unit,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToBookmarks: () -> Unit,
+    onNavigateToLectureScanner: (String) -> Unit,
     onDateSelected: (String?) -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier
@@ -115,6 +121,13 @@ fun HomeContent(
                     }
                 },
                 actions = {
+                    IconButton(onClick = { onNavigateToLectureScanner("mentors_spoken") }) {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = "Scan Lecture Sheet AI",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                     IconButton(onClick = { showDatePicker = true }) {
                         Icon(
                             imageVector = Icons.Default.CalendarMonth,
@@ -160,6 +173,57 @@ fun HomeContent(
                             savedCount = state.savedCount,
                             onSavedTileClick = onNavigateToBookmarks
                         )
+                    }
+                }
+
+                item {
+                    Card(
+                        onClick = { onNavigateToLectureScanner("mentors_spoken") },
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primaryContainer
+                        ),
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(44.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = Icons.Default.CameraAlt,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = "Scan Lecture Sheet with AI",
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                                )
+                                Text(
+                                    text = "Snap photo of Mentors' or IELTS sheets",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                )
+                            }
+                            Icon(
+                                imageVector = Icons.Default.AutoAwesome,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                 }
             }

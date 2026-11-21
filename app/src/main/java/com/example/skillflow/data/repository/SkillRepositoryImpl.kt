@@ -142,6 +142,10 @@ class SkillRepositoryImpl @Inject constructor(
         dao.deleteNote(note.toEntity())
     }
 
+    override suspend fun insertCustomNugget(nugget: KnowledgeNugget) {
+        dao.insertNuggets(listOf(nugget.toEntity()))
+    }
+
     override suspend fun seedDatabase(): Boolean {
         Timber.d("Manual seeding triggered...")
         val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())

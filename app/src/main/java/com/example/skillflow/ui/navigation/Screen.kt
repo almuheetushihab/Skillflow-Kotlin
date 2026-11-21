@@ -45,4 +45,7 @@ sealed interface Screen {
 
     @Serializable
     data object Leaderboard : Screen
+
+    @Serializable
+    data class LectureScanner(val targetCourseId: String = "mentors_spoken") : Screen
 }

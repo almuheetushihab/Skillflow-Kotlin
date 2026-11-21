@@ -26,6 +26,9 @@ interface SkillRepository {
     suspend fun saveNote(note: UserNote)
     suspend fun deleteNote(note: UserNote)
 
+    // Custom Scanned Nuggets
+    suspend fun insertCustomNugget(nugget: KnowledgeNugget)
+
     // Seeding
     suspend fun seedDatabase(): Boolean
 }

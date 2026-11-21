@@ -1,6 +1,87 @@
 {
   "career_paths": [
     {
+      "id": "mentors_spoken",
+      "title": "Mentors' Spoken & Phonetics",
+      "description": "Master Spoken English, Phonetics, Tongue Twisters, Self Introduction & Fluency.",
+      "icon_url": "ic_android",
+      "knowledge_nuggets": [
+        {
+          "id": "sp_l1",
+          "title": "Spoken & Phonetics - Lecture 01",
+          "short_description": "Classwork: Self Introduction, Asking Questions & Phonetics. Homework: Tongue Twisters & Read Aloud.",
+          "content": "### 📌 CLASSWORK\n1. **Knowing Each Other**: Warm up conversation and greeting techniques.\n2. **Presentation #1 (Self Introduction)**: Structure using Present-Past-Future formula (Name, Current Role/Study, Interests, Future Goal).\n3. **Asking Questions**: Open-ended (Wh- questions) vs Closed-ended (Yes/No questions).\n4. **Problematic Letters in English Alphabet**: Aspirated sounds (/p/, /t/, /k/) and fricatives (/f/, /v/, /w/, /θ/, /ð/).\n5. **Phrases to say 'Bye'**: *Catch you later*, *Take care*, *See you around*, *Have a good one*.\n\n### 📝 HOMEWORK\n1. **Grammar + Exercises**: Tense consistency and daily action routines.\n2. **Tongue Twisters**: Practice speed and clarity.\n   - *Peter Piper picked a peck of pickled peppers.*\n   - *She sells seashells by the seashore.*\n3. **Read Aloud (Woodcutter Story)** + Glossary.\n4. **Listening Practice # 1.9.1 & # 1.9.2**: Listen and shadow native pronunciation.\n5. **Vocabularies**: Learn 10 new daily conversational words with Bengali meanings.",
+          "complexity": "Beginner",
+          "category_id": "mentors_spoken",
+          "quizzes": [
+            {
+              "id": "q_sp1_1",
+              "text": "How is the letter 'P' pronounced at the beginning of a stressed syllable in English phonetics?",
+              "options": ["Unaspirated /p/", "Aspirated /pʰ/ with a puff of air", "Silent", "Pronounced like /b/"],
+              "correct_answer_index": 1,
+              "explanation": "In English phonetics, /p/, /t/, and /k/ are aspirated [pʰ, tʰ, kʰ] when starting a stressed syllable."
+            },
+            {
+              "id": "q_sp1_2",
+              "text": "Which of the following is an informal, natural phrase to say goodbye?",
+              "options": ["I hereby depart from you", "Catch you later!", "I must terminate this conversation", "Farewell forever"],
+              "correct_answer_index": 1,
+              "explanation": "'Catch you later!' is a common informal way to say goodbye in spoken English."
+            }
+          ]
+        },
+        {
+          "id": "sp_l2",
+          "title": "Spoken & Phonetics - Lecture 02",
+          "short_description": "Vowel & Consonant charts, Syllable stress, Expressing agreement and disagreement.",
+          "content": "### 📌 CLASSWORK\n1. **Vowel & Consonant Sounds**: Understanding pure vowels (monophthongs) vs diphthongs.\n2. **Syllable Stress**: Primary and secondary stress in multisyllabic words (e.g., *pho-TO-grapher* vs *PHO-to-graph*).\n3. **Expressing Agreement & Disagreement**: Polite techniques to disagree (*I see your point, but...*).\n\n### 📝 HOMEWORK\n1. **Tongue Twister Drill**: *How much wood would a woodchuck chuck if a woodchuck could chuck wood?*\n2. **Listening & Shadowing # 2.1.1**: Practice pitch and rhythm.",
+          "complexity": "Beginner",
+          "category_id": "mentors_spoken",
+          "quizzes": [
+            {
+              "id": "q_sp2_1",
+              "text": "Where is the primary stress located in the word 'Photograph'?",
+              "options": ["First syllable (PHO-to-graph)", "Second syllable (pho-TO-graph)", "Third syllable (pho-to-GRAPH)", "No stress"],
+              "correct_answer_index": 0,
+              "explanation": "In 'Photograph', the stress is on the first syllable PHO-."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "mentors_grammar",
+      "title": "Mentors' Foundation Grammar & Writing",
+      "description": "Master English Grammar Rules, Common Mistakes, Academic Reading & Writing.",
+      "icon_url": "ic_design",
+      "knowledge_nuggets": [
+        {
+          "id": "gr_l1",
+          "title": "Foundation Grammar & Writing - Lecture 01",
+          "short_description": "Part 01 Pre-Task, Part 02 Grammar, Part 03 Common Mistakes, Part 04 Reading, Part 05 Writing, Part 06 Vocabulary.",
+          "content": "### 📌 PART 01: PRE-TASK\n- Diagnostic assessment of fundamental grammar knowledge and sentence structure.\n\n### 📖 PART 02: GRAMMAR\n- **Subject-Verb Agreement**: Singular subject takes singular verb (*The list of items is on the table*).\n- **Tenses**: Present Perfect (*have done*) vs Simple Past (*did yesterday*).\n\n### ⚠️ PART 03: COMMON MISTAKES\n- ❌ *He is superior than me.* ➔ ✅ *He is superior to me.*\n- ❌ *I discuss about the topic.* ➔ ✅ *I discuss the topic.*\n- ❌ *Return back.* ➔ ✅ *Return* or *Go back*.\n\n### 📚 PART 04: READING\n- **Skimming**: Reading quickly to get the main idea of a paragraph.\n- **Scanning**: Searching for specific words, numbers, or dates.\n\n### ✍️ PART 05: WRITING\n- **Paragraph Structure**: Topic Sentence ➔ Supporting Sentences ➔ Concluding Sentence.\n\n### 💡 PART 06: VOCABULARY AND COLLOCATION LIST\n- **Substantial** (প্রচুর/উল্লেখযোগ্য): *A substantial contribution.*\n- **Adverse effect** (বিরূপ প্রভাব): *Bad weather had an adverse effect on crops.*",
+          "complexity": "Beginner",
+          "category_id": "mentors_grammar",
+          "quizzes": [
+            {
+              "id": "q_gr1_1",
+              "text": "Which sentence correctly fixes the common error in 'He is superior than me'?",
+              "options": ["He is superior from me", "He is superior to me", "He is superior over me", "He is superior than I"],
+              "correct_answer_index": 1,
+              "explanation": "Latin comparative adjectives like superior, inferior, senior, and junior take the preposition 'to', not 'than'."
+            },
+            {
+              "id": "q_gr1_2",
+              "text": "What reading technique should you use when searching for a specific date or name in an academic text?",
+              "options": ["Skimming", "Scanning", "Intensive reading", "Proofreading"],
+              "correct_answer_index": 1,
+              "explanation": "Scanning is looking quickly through text for a specific piece of information, like a date or name."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "android",
       "title": "Android Developer",
       "description": "Master modern Android development with Kotlin, Jetpack Compose, and Clean Architecture.",

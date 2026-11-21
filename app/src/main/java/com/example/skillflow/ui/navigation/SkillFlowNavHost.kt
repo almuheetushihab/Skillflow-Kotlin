@@ -23,6 +23,7 @@ import com.example.skillflow.ui.screens.profile.profile.ProfileScreen
 import com.example.skillflow.ui.screens.profile.settings.SettingsScreen
 import com.example.skillflow.ui.screens.quiz.QuizScreen
 import com.example.skillflow.ui.screens.roadmap.RoadmapScreen
+import com.example.skillflow.ui.screens.scanner.LectureScannerScreen
 
 /**
  * Centralized Navigation Host for the SkillFlow app.
@@ -94,6 +95,9 @@ fun SkillFlowNavHost(
                 onNavigateToBookmarks = {
                     navController.navigate(Screen.Bookmarks)
                 },
+                onNavigateToLectureScanner = { courseId ->
+                    navController.navigate(Screen.LectureScanner(targetCourseId = courseId))
+                },
                 modifier = Modifier.padding(innerPadding)
             )
         }
@@ -164,6 +168,16 @@ fun SkillFlowNavHost(
         composable<Screen.Leaderboard> {
             LeaderboardScreen(
                 onNavigateBack = { navController.popBackStack() },
+                modifier = Modifier.padding(innerPadding)
+            )
+        }
+        composable<Screen.LectureScanner> { backStackEntry ->
+            val args: Screen.LectureScanner = backStackEntry.toRoute()
+            LectureScannerScreen(
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToDetail = { id ->
+                    navController.navigate(Screen.Detail(nuggetId = id))
+                },
                 modifier = Modifier.padding(innerPadding)
             )
         }

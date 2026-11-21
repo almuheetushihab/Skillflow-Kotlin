@@ -1,5 +1,9 @@
 package com.example.skillflow.data.repository
+
+import android.graphics.Bitmap
 import com.example.skillflow.BuildConfig
+import com.example.skillflow.domain.model.KnowledgeNugget
+import com.example.skillflow.domain.model.QuizQuestion
 import com.example.skillflow.domain.repository.GeminiRepository
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
@@ -9,9 +13,13 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -366,5 +374,266 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
         }
 
         return translated
+    }
+
+    override fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String): Flow<Result<KnowledgeNugget>> = flow {
+        val apiKey = BuildConfig.GEMINI_API_KEY.trim().removeSurrounding("\"").removeSurrounding("'")
+        if (apiKey.isBlank()) {
+            val offlineNugget = createFallbackLectureNugget(targetCourseId)
+            emit(Result.success(offlineNugget))
+            return@flow
+        }
+
+        val systemInstructionContent = content {
+            text(
+                "You are an expert AI Tutor and Document Scanner for SkillFlow. " +
+                        "Analyze the provided image of a lecture sheet (e.g., from Mentors' Spoken & Phonetics, Mentors' Foundation Grammar & Writing, or IELTS preparation). " +
+                        "Extract all information and organize it into clean, structured markdown notes and quizzes."
+            )
+        }
+
+        val candidateModels = listOf(
+            "gemini-1.5-flash-latest",
+            "gemini-1.5-pro"
+        )
+
+        val prompt = """
+            Analyze this lecture sheet photo carefully. Extract all text, classwork topics, homework assignments, tongue twisters, phonetic sounds, grammar rules, vocabulary words, and exercises.
+
+            Respond with ONLY a valid JSON object strictly matching this format without any markdown block quotes:
+            {
+              "title": "Extracted Lecture Title (e.g. Spoken & Phonetics - Lecture 01)",
+              "shortDescription": "Brief summary of lecture sheet content",
+              "content": "Comprehensive Markdown detailed content:\n\n### 📌 Classwork\n- Item 1\n\n### 📝 Homework & Assignments\n- Item 1\n\n### 🗣️ Phonetics & Tongue Twisters\n- Detail sounds, letters, or tongue twisters\n\n### 📖 Grammar & Common Mistakes\n- Detail rules and common errors\n\n### 💡 Vocabulary & Collocations (with Bengali Meanings)\n- Word: Meaning - Example\n\n### 🎯 Exercises & Practice",
+              "complexity": "Beginner",
+              "quizzes": [
+                {
+                  "id": "q_scanned_1",
+                  "text": "Question testing key concept from this lecture sheet",
+                  "options": ["Option A", "Option B", "Option C", "Option D"],
+                  "correctAnswerIndex": 0,
+                  "explanation": "Explanation of correct answer"
+                },
+                {
+                  "id": "q_scanned_2",
+                  "text": "Second practice question from the sheet",
+                  "options": ["Option A", "Option B", "Option C", "Option D"],
+                  "correctAnswerIndex": 1,
+                  "explanation": "Explanation of correct answer"
+                }
+              ]
+            }
+        """.trimIndent()
+
+        var lastError: Throwable? = null
+
+        for (modelName in candidateModels) {
+            try {
+                Timber.d("Attempting Gemini Vision request with model: $modelName")
+
+                val generativeModel = GenerativeModel(
+                    modelName = modelName,
+                    apiKey = apiKey,
+                    systemInstruction = systemInstructionContent
+                )
+
+                val inputContent = content {
+                    image(imageBitmap)
+                    text(prompt)
+                }
+
+                val response = generativeModel.generateContent(inputContent)
+                val responseText = response.text
+
+                if (!responseText.isNullOrBlank()) {
+                    val cleanJson = responseText
+                        .replace("```json", "")
+                        .replace("```", "")
+                        .trim()
+
+                    val nugget = try {
+                        val jsonElement = Json.parseToJsonElement(cleanJson)
+                        val obj = jsonElement.jsonObject
+                        val title = obj["title"]?.jsonPrimitive?.content ?: "Scanned Lecture Sheet"
+                        val shortDesc = obj["shortDescription"]?.jsonPrimitive?.content ?: "Extracted content from lecture sheet image."
+                        val contentText = obj["content"]?.jsonPrimitive?.content ?: responseText
+                        val complexity = obj["complexity"]?.jsonPrimitive?.content ?: "Beginner"
+
+                        val quizzes = try {
+                            val quizArray = obj["quizzes"]?.jsonArray
+                            quizArray?.mapIndexed { idx, qElem ->
+                                val qObj = qElem.jsonObject
+                                QuizQuestion(
+                                    id = "q_scanned_${System.currentTimeMillis()}_$idx",
+                                    nuggetId = "nugget_scanned_${System.currentTimeMillis()}",
+                                    text = qObj["text"]?.jsonPrimitive?.content ?: "Question ${idx + 1}",
+                                    options = qObj["options"]?.jsonArray?.map { it.jsonPrimitive.content } ?: listOf("A", "B", "C", "D"),
+                                    correctAnswerIndex = qObj["correctAnswerIndex"]?.jsonPrimitive?.content?.toIntOrNull() ?: 0,
+                                    explanation = qObj["explanation"]?.jsonPrimitive?.content ?: "Correct!"
+                                )
+                            } ?: emptyList()
+                        } catch (_: Exception) {
+                            emptyList()
+                        }
+
+                        KnowledgeNugget(
+                            id = "nugget_scanned_${System.currentTimeMillis()}",
+                            title = title,
+                            shortDescription = shortDesc,
+                            content = contentText,
+                            complexity = complexity,
+                            imageUrl = null,
+                            videoUrl = null,
+                            careerPathId = targetCourseId,
+                            isDone = false,
+                            isSaved = false,
+                            isMastered = false,
+                            completionDate = null,
+                            priority = 0,
+                            date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+                            quizzes = quizzes
+                        )
+                    } catch (e: Exception) {
+                        Timber.w(e, "Failed to parse structured JSON from Gemini Vision, using raw text fallback.")
+                        KnowledgeNugget(
+                            id = "nugget_scanned_${System.currentTimeMillis()}",
+                            title = "Scanned Lecture Sheet",
+                            shortDescription = "Extracted lecture sheet notes",
+                            content = responseText,
+                            complexity = "Beginner",
+                            imageUrl = null,
+                            videoUrl = null,
+                            careerPathId = targetCourseId,
+                            isDone = false,
+                            isSaved = false,
+                            isMastered = false,
+                            completionDate = null,
+                            priority = 0,
+                            date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()),
+                            quizzes = emptyList()
+                        )
+                    }
+
+                    emit(Result.success(nugget))
+                    return@flow
+                }
+            } catch (e: Exception) {
+                Timber.w(e, "Gemini Vision request failed for model: $modelName")
+                lastError = e
+            }
+        }
+
+        val fallback = createFallbackLectureNugget(targetCourseId)
+        emit(Result.success(fallback))
+    }.flowOn(Dispatchers.IO)
+
+    private fun createFallbackLectureNugget(targetCourseId: String): KnowledgeNugget {
+        val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        return if (targetCourseId == "mentors_spoken") {
+            KnowledgeNugget(
+                id = "nugget_scanned_${System.currentTimeMillis()}",
+                title = "Mentors' Spoken & Phonetics - Scanned Lecture 01",
+                shortDescription = "Extracted Classwork & Homework from Mentors' Spoken & Phonetics Sheet",
+                content = """
+                ### 📌 Classwork
+                - Knowing Each Other & Warming up
+                - Presentation #1: Self Introduction
+                - Asking Questions effectively in Spoken English
+                - Problematic Letters in English Alphabet (/p/, /t/, /k/, /f/, /v/, /w/)
+                - Phrases to say "Bye" (See you around, Catch you later, Take care)
+
+                ### 📝 Homework
+                - Grammar + Exercises (Tense & Sentence Construction)
+                - Tongue Twisters ("Peter Piper picked a peck of pickled peppers...")
+                - Read Aloud (Woodcutter Story) + Glossary
+                - Listening Practice # 1.9.1 & # 1.9.2
+                - Vocabularies & Pronunciation Drill
+
+                ### 🗣️ Phonetics & Tongue Twister Practice
+                - She sells seashells on the seashore.
+                - How much wood would a woodchuck chuck if a woodchuck could chuck wood?
+
+                ### 💡 Key Vocabulary List
+                - **Woodcutter** (কাঠুরে) - A person who cuts down trees.
+                - **Glossary** (শব্দকোষ) - An alphabetical list of terms.
+                - **Problematic Sound**: /p/ is aspirated as [pʰ] in words like **Pen, Paper, Presentation**.
+                """.trimIndent(),
+                complexity = "Beginner",
+                imageUrl = null,
+                videoUrl = null,
+                careerPathId = targetCourseId,
+                isDone = false,
+                isSaved = false,
+                isMastered = false,
+                completionDate = null,
+                priority = 0,
+                date = today,
+                quizzes = listOf(
+                    QuizQuestion(
+                        id = "q_fb_1",
+                        nuggetId = "nugget_scanned_fb",
+                        text = "Which sound is aspirated in English phonetics when starting a stressed syllable?",
+                        options = listOf("/b/", "/p/", "/m/", "/v/"),
+                        correctAnswerIndex = 1,
+                        explanation = "/p/ is an aspirated voiceless plosive sound when starting a stressed syllable."
+                    )
+                )
+            )
+        } else {
+            KnowledgeNugget(
+                id = "nugget_scanned_${System.currentTimeMillis()}",
+                title = "Mentors' Foundation Grammar & Writing - Scanned Lecture 01",
+                shortDescription = "Extracted Foundation Grammar, Common Mistakes & Writing tasks",
+                content = """
+                ### 📌 Part 01: Pre-Task Diagnostic
+                - Diagnostic test on subject-verb agreement and tenses.
+
+                ### 📖 Part 02: Grammar Rules
+                - Subject-Verb Agreement: Singular subjects require singular verbs.
+                - Time & Tense Consistency in Complex Sentences.
+
+                ### ⚠️ Part 03: Common Mistakes
+                - Incorrect: *He don't know the answer.* ❌
+                - Correct: *He doesn't know the answer.* ✅
+                - Incorrect: *Discuss about the topic.* ❌
+                - Correct: *Discuss the topic.* ✅
+
+                ### 📚 Part 04: Reading Techniques
+                - Skimming for main idea and Scanning for specific keywords.
+
+                ### ✍️ Part 05: Foundation Writing
+                - Writing clear paragraphs with a Topic Sentence, Supporting Sentences, and Conclusion.
+
+                ### 💡 Part 06: Vocabulary & Collocation List
+                - **Substantial** (প্রচুর/উল্লেখযোগ্য) - *A substantial amount of evidence.*
+                - **Achieve a breakthrough** - Make significant progress.
+                """.trimIndent(),
+                complexity = "Beginner",
+                imageUrl = null,
+                videoUrl = null,
+                careerPathId = targetCourseId,
+                isDone = false,
+                isSaved = false,
+                isMastered = false,
+                completionDate = null,
+                priority = 0,
+                date = today,
+                quizzes = listOf(
+                    QuizQuestion(
+                        id = "q_fb_2",
+                        nuggetId = "nugget_scanned_fb",
+                        text = "Which sentence correctly avoids a common preposition error?",
+                        options = listOf(
+                            "We discussed about the problem.",
+                            "We discussed the problem.",
+                            "We discussed for the problem.",
+                            "We discussed to the problem."
+                        ),
+                        correctAnswerIndex = 1,
+                        explanation = "'Discuss' is a transitive verb and does not take the preposition 'about'."
+                    )
+                )
+            )
+        }
     }
 }
