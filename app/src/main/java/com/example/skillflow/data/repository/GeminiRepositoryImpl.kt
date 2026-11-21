@@ -390,6 +390,7 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
     override fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String, customApiKey: String): Flow<Result<KnowledgeNugget>> = flow {
         val buildConfigKey = BuildConfig.GEMINI_API_KEY.trim().removeSurrounding("\"").removeSurrounding("'")
         val apiKey = if (customApiKey.isNotBlank()) customApiKey.trim() else buildConfigKey
+        
         if (apiKey.isBlank()) {
             emit(
                 Result.failure(
@@ -401,27 +402,32 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
             return@flow
         }
 
-        val scaledBitmap = scaleBitmapIfNeeded(imageBitmap, 1024)
-
-        val systemInstructionContent = content {
-            text(
-                "You are an expert AI Education OCR Assistant. " +
-                        "Read the provided image of a lecture sheet, quiz, worksheet, or study material carefully. " +
-                        "Transcribe and format all text, questions, choices, grammar rules, and vocabulary from the image."
+        if (!apiKey.startsWith("AIzaSy")) {
+            emit(
+                Result.failure(
+                    IllegalStateException(
+                        "Invalid Gemini API Key format. Google AI Studio keys MUST start with 'AIzaSy'. Please check the key you pasted."
+                    )
+                )
             )
+            return@flow
         }
+
+        val scaledBitmap = scaleBitmapIfNeeded(imageBitmap, 1024)
 
         val candidateModels = listOf(
             "gemini-1.5-flash",
-            "gemini-1.5-pro",
-            "gemini-2.0-flash-exp"
+            "gemini-1.5-flash-latest",
+            "gemini-2.0-flash",
+            "gemini-2.0-flash-exp",
+            "gemini-1.5-pro"
         )
 
         val prompt = """
-            Analyze this attached study image (quiz, lecture sheet, or worksheet) carefully. 
+            You are an expert AI Education OCR Assistant. Read the attached study document image (quiz, lecture sheet, or worksheet) carefully. 
             Transcribe and extract ALL text, titles, headings, questions, options, vocabulary words, and notes visible in the photo.
 
-            Respond with ONLY a valid JSON object matching this structure without markdown codeblocks:
+            Respond with ONLY a valid raw JSON object strictly matching this format without markdown codeblocks:
             {
               "title": "Main title found in the image (e.g. Lesson 1 Quiz)",
               "shortDescription": "Brief summary of what this document covers",
@@ -446,8 +452,7 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
 
                 val generativeModel = GenerativeModel(
                     modelName = modelName,
-                    apiKey = apiKey,
-                    systemInstruction = systemInstructionContent
+                    apiKey = apiKey
                 )
 
                 val inputContent = content {
@@ -544,9 +549,12 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
 
         val errorMessage = lastError?.message.orEmpty()
         val formattedError = when {
-            errorMessage.contains("API key", ignoreCase = true) -> "Invalid Gemini API key. Please check local.properties."
-            errorMessage.contains("404", ignoreCase = true) || errorMessage.contains("NOT_FOUND", ignoreCase = true) -> "Gemini Vision model not found or unavailable."
-            else -> "Gemini Vision OCR scan failed: ${lastError?.localizedMessage ?: "Unknown error"}"
+            errorMessage.contains("API key", ignoreCase = true) || errorMessage.contains("400", ignoreCase = true) -> 
+                "Invalid Gemini API Key format. Google AI Studio keys MUST start with 'AIzaSy'."
+            errorMessage.contains("404", ignoreCase = true) || errorMessage.contains("NOT_FOUND", ignoreCase = true) -> 
+                "Gemini Vision API request failed. Please check your internet connection or verify your API key at Google AI Studio."
+            else -> 
+                "Gemini Vision OCR scan failed: ${lastError?.localizedMessage ?: "Unknown error"}"
         }
 
         emit(Result.failure(Exception(formattedError, lastError)))
