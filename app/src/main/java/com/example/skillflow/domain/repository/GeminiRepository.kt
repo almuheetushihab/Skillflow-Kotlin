@@ -1,5 +1,7 @@
 package com.example.skillflow.domain.repository
 
+import android.graphics.Bitmap
+import com.example.skillflow.domain.model.KnowledgeNugget
 import kotlinx.coroutines.flow.Flow
 
 interface GeminiRepository {
@@ -14,4 +16,10 @@ interface GeminiRepository {
      * Returns a Flow emitting Result containing Pair(translatedTitle, translatedContent).
      */
     fun translateToBangla(title: String, content: String): Flow<Result<Pair<String, String>>>
+
+    /**
+     * Analyzes a lecture sheet photo using Gemini Vision API.
+     * Extracts structured content (Classwork, Homework, Phonetics, Grammar, Vocabularies, Quizzes).
+     */
+    fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String): Flow<Result<KnowledgeNugget>>
 }

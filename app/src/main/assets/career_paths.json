@@ -1,33 +1,38 @@
 [
   {
+    "id": "mentors_spoken",
+    "name": "Mentors' Spoken & Phonetics",
+    "description": "Master Spoken English, Phonetics, Tongue Twisters, Self Introduction & Fluency.",
+    "iconUrl": "ic_android"
+  },
+  {
+    "id": "mentors_grammar",
+    "name": "Mentors' Foundation Grammar & Writing",
+    "description": "Master English Grammar Rules, Common Mistakes, Academic Reading & Writing.",
+    "iconUrl": "ic_design"
+  },
+  {
+    "id": "ielts",
+    "name": "IELTS Academic & General Prep",
+    "description": "Master 4-Skills: Listening, Reading, Writing, and Speaking.",
+    "iconUrl": "ic_android"
+  },
+  {
     "id": "android",
     "name": "Android Developer",
     "description": "Master modern mobile app development with Kotlin and Jetpack Compose.",
-    "iconUrl": ""
+    "iconUrl": "ic_android"
   },
   {
     "id": "uiux",
     "name": "UI/UX Designer",
     "description": "Craft beautiful, intuitive, and accessible user experiences.",
-    "iconUrl": ""
+    "iconUrl": "ic_design"
   },
   {
     "id": "data",
     "name": "Data Scientist",
     "description": "Extract actionable insights from complex data sets using AI and ML.",
-    "iconUrl": ""
-  },
-
-  {
-    "id": "machine-learning",
-    "name": "Machine Learning Engineer",
-    "description": "Develop and deploy machine learning models to solve real-world problems.",
-    "iconUrl": ""
-  },
-  {
-    "id": "ielts",
-    "name": "IELTS Academic Prep",
-    "description": "Master Listening, Reading, Writing, and Speaking skills.",
     "iconUrl": "ic_design"
   },
   {
@@ -37,5 +42,3 @@
     "iconUrl": "ic_android"
   }
 ]
-
-
