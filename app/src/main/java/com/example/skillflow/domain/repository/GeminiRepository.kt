@@ -21,5 +21,10 @@ interface GeminiRepository {
      * Analyzes a lecture sheet photo using Gemini Vision API.
      * Extracts structured content (Classwork, Homework, Phonetics, Grammar, Vocabularies, Quizzes).
      */
-    fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String): Flow<Result<KnowledgeNugget>>
+    fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String, customApiKey: String = ""): Flow<Result<KnowledgeNugget>>
+
+    /**
+     * Generates a structured lecture sheet nugget offline without needing an API key.
+     */
+    fun extractLectureSheetOffline(imageBitmap: Bitmap, targetCourseId: String): KnowledgeNugget
 }

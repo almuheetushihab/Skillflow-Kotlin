@@ -38,5 +38,9 @@ interface SettingsRepository {
     fun getReminderTime(): Flow<Long>
     suspend fun setReminderTime(timeInMillisFromMidnight: Long)
 
+    // Gemini API Key Preference
+    fun getGeminiApiKey(): Flow<String>
+    suspend fun saveGeminiApiKey(apiKey: String)
+
     suspend fun clearSession()
 }

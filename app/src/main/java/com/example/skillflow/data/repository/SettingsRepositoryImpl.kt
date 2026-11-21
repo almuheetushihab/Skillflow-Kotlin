@@ -99,6 +99,7 @@ class SettingsRepositoryImpl @Inject constructor(
         val TOTAL_QUIZ_SCORE = intPreferencesKey("total_quiz_score")
         val IS_NOTIFICATION_ENABLED = booleanPreferencesKey("is_notification_enabled")
         val REMINDER_TIME = longPreferencesKey("reminder_time")
+        val GEMINI_API_KEY = stringPreferencesKey("custom_gemini_api_key")
     }
 
     override fun getLanguage(): Flow<String> = dataStore.data.map { it[NewPreferencesKeys.LANGUAGE] ?: "en" }
@@ -170,6 +171,13 @@ class SettingsRepositoryImpl @Inject constructor(
 
     override suspend fun setReminderTime(timeInMillisFromMidnight: Long) {
         dataStore.edit { it[NewPreferencesKeys.REMINDER_TIME] = timeInMillisFromMidnight }
+    }
+
+    override fun getGeminiApiKey(): Flow<String> =
+        dataStore.data.map { it[NewPreferencesKeys.GEMINI_API_KEY] ?: "" }
+
+    override suspend fun saveGeminiApiKey(apiKey: String) {
+        dataStore.edit { it[NewPreferencesKeys.GEMINI_API_KEY] = apiKey.trim() }
     }
 
     override suspend fun clearSession() = withContext(Dispatchers.IO) {

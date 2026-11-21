@@ -55,6 +55,7 @@ fun LectureScannerScreen(
     viewModel: LectureScannerViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     val state by viewModel.state.collectAsState()
     val scrollState = rememberScrollState()
 
@@ -64,6 +65,12 @@ fun LectureScannerScreen(
                 is LectureScannerEvent.NavigateToDetail -> onNavigateToDetail(event.nuggetId)
                 is LectureScannerEvent.ShowSnackbar -> {}
             }
+        }
+    }
+
+    LaunchedEffect(state.error, state.isScanning) {
+        if (state.error != null || state.isScanning) {
+            scrollState.animateScrollTo(scrollState.maxValue)
         }
     }
 
@@ -119,6 +126,7 @@ fun LectureScannerScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .imePadding()
                 .verticalScroll(scrollState)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -396,7 +404,7 @@ fun LectureScannerScreen(
                         containerColor = MaterialTheme.colorScheme.errorContainer
                     ),
                     modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(16.dp)
                 ) {
                     Column(
                         modifier = Modifier.padding(16.dp),
@@ -405,14 +413,60 @@ fun LectureScannerScreen(
                         Text(
                             text = err,
                             color = MaterialTheme.colorScheme.onErrorContainer,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Center
                         )
+
+                        if (err.contains("API Key", ignoreCase = true) || err.contains("key", ignoreCase = true)) {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            OutlinedTextField(
+                                value = state.apiKeyInput,
+                                onValueChange = viewModel::onApiKeyInputChange,
+                                label = { Text("Paste Gemini API Key") },
+                                placeholder = { Text("AI Studio Key (AIzaSy...)") },
+                                singleLine = true,
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Button(
+                                    onClick = { viewModel.saveApiKey() },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Default.Key, contentDescription = null, modifier = Modifier.size(16.dp))
+                                    Spacer(modifier = Modifier.width(4.dp))
+                                    Text("Save & Connect")
+                                }
+
+                                OutlinedButton(
+                                    onClick = { uriHandler.openUri("https://aistudio.google.com/app/apikey") },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(10.dp)
+                                ) {
+                                    Text("Get Free Key")
+                                }
+                            }
+                        }
+
                         Spacer(modifier = Modifier.height(8.dp))
-                        TextButton(
-                            onClick = { viewModel.analyzeSheet() }
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Text("Retry Scan with Gemini Vision")
+                            TextButton(onClick = { viewModel.useOfflineExtractor() }) {
+                                Text("Extract with Offline Engine")
+                            }
+                            TextButton(onClick = { viewModel.analyzeSheet() }) {
+                                Text("Retry")
+                            }
                         }
                     }
                 }
