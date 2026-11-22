@@ -91,7 +91,7 @@
           "id": "a1",
           "title": "Variables: val vs var",
           "short_description": "Understand mutability and variable declarations.",
-          "content": "In Kotlin, 'val' creates a read-only (immutable) variable, meaning its value cannot be changed once assigned. 'var' creates a mutable variable. Best practice is to use 'val' by default to make your code safer and more predictable.",
+          "content": "In Kotlin, `val` creates a read-only (immutable) variable, meaning its value cannot be changed once assigned. `var` creates a mutable variable.\n\n```kotlin\nval name = \"SkillFlow\" // Immutable\nvar score = 100       // Mutable\n```\n\n- Use `val` by default for safer, predictable code.\n- Use `var` only when state re-assignment is needed.",
           "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
@@ -115,7 +115,7 @@
           "id": "a2",
           "title": "String Templates",
           "short_description": "Concatenate strings the smart way.",
-          "content": "Kotlin allows embedding variables and expressions directly into string literals using the $ symbol. For example: \"Hello $name! 2+2 is ${2+2}\".",
+          "content": "Kotlin allows embedding variables and expressions directly into string literals using the $ symbol. For example:\n\n```kotlin\nval name = \"Alex\"\nprintln(\"Hello $name! 2+2 is ${2+2}\")\n```",
           "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
@@ -132,7 +132,7 @@
           "id": "a3",
           "title": "The 'when' Expression",
           "short_description": "Kotlin's powerful replacement for switch statements.",
-          "content": "'when' replaces the C-style switch statement. It is an expression, meaning it returns a value. It supports complex matching like checking types (is String), ranges (in 1..10), and doesn't require a 'break' statement.",
+          "content": "`when` replaces the C-style switch statement. It is an expression that returns a value.\n\n```kotlin\nval result = when (number) {\n    1 -> \"One\"\n    in 2..10 -> \"A few\"\n    is Int -> \"Any Integer\"\n    else -> \"Unknown\"\n}\n```\n\n- Automatically stops after matching branch\n- No `break` statement required",
           "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
@@ -149,7 +149,7 @@
           "id": "a4",
           "title": "Null Safety",
           "short_description": "The end of NullPointerExceptions.",
-          "content": "Kotlin distinguishes between nullable types (String?) and non-nullable types (String). Use the safe call operator (?.) to call methods on nullable objects, and the Elvis operator (?:) to provide a default value if an object is null.",
+          "content": "Kotlin distinguishes between nullable types (`String?`) and non-nullable types (`String`).\n\n```kotlin\nval name: String? = null\nval length = name?.length ?: 0 // Safe call & Elvis operator\n```\n\n- Safe Call Operator: `?.` prevents crash\n- Elvis Operator: `?:` provides default fallback value",
           "complexity": "Beginner",
           "category_id": "android",
           "video_url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
@@ -174,7 +174,7 @@
           "id": "a5",
           "title": "Singleton Pattern with 'object'",
           "short_description": "Create singletons effortlessly.",
-          "content": "In Java, implementing the Singleton pattern requires boilerplate code (private constructor, static instance, thread-safety). In Kotlin, simply declaring 'object MySingleton' handles all of this automatically under the hood.",
+          "content": "In Kotlin, simply declaring an `object` creates a thread-safe Singleton instance automatically with zero boilerplate.\n\n```kotlin\nobject DatabaseManager {\n    fun connect() { /* Thread-safe Singleton */ }\n}\n```",
           "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
@@ -191,7 +191,7 @@
           "id": "a6",
           "title": "Companion Objects",
           "short_description": "Kotlin's alternative to static members.",
-          "content": "Kotlin does not have 'static' keywords. Instead, you can define a 'companion object' inside a class to hold methods and properties that are tied to the class rather than instances.",
+          "content": "Kotlin does not have `static` keywords. Instead, define a `companion object` inside a class to hold methods and properties tied to the class.\n\n```kotlin\nclass User(val name: String) {\n    companion object {\n        fun createGuest() = User(\"Guest\")\n    }\n}\n```",
           "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
@@ -233,7 +233,7 @@
           "id": "a8",
           "title": "Compose State",
           "short_description": "The heart of reactive UI.",
-          "content": "In Compose, state is any value that can change over time. When state updates, Compose automatically re-executes the functions (recomposition) to reflect the changes in the UI.",
+          "content": "In Compose, state is any value that can change over time.\n\n```kotlin\nvar count by remember { mutableStateOf(0) }\n```\n\nWhen state updates, Compose automatically re-executes functions (recomposition) to update the UI.",
           "complexity": "Beginner",
           "category_id": "android",
           "quizzes": [
@@ -301,7 +301,7 @@
           "id": "a12",
           "title": "Data Classes",
           "short_description": "Hold data with zero boilerplate.",
-          "content": "Adding the 'data' keyword to a class automatically generates equals(), hashCode(), toString(), componentN() functions, and a copy() function. It is perfect for DTOs and holding state in modern architectures.",
+          "content": "Adding the `data` keyword to a class automatically generates utility methods.\n\n```kotlin\ndata class User(val name: String, val age: Int)\n\nval user2 = user1.copy(age = 25) // Immutable copy\n```\n\n- Generates `equals()`, `hashCode()`, `toString()`, and `copy()`",
           "complexity": "Intermediate",
           "category_id": "android",
           "quizzes": [
@@ -318,7 +318,7 @@
           "id": "a13",
           "title": "Extension Functions",
           "short_description": "Add functionality to classes without inheriting.",
-          "content": "Extension functions allow you to add new functions to an existing class (even from third-party libraries) without modifying its source code. Example: fun String.removeSpaces() = this.replace(\" \", \"\")",
+          "content": "Extension functions allow you to add new functions to an existing class without inheriting.\n\n```kotlin\nfun String.removeSpaces(): String {\n    return this.replace(\" \", \"\")\n}\n```",
           "complexity": "Intermediate",
           "category_id": "android",
           "quizzes": [
@@ -335,7 +335,7 @@
           "id": "a14",
           "title": "Lateinit vs Lazy",
           "short_description": "Delayed initialization strategies.",
-          "content": "'lateinit var' is used for variables that will be initialized later (e.g., in Android onCreate). 'val x by lazy' computes its value only upon first access and remembers it.",
+          "content": "- `lateinit var`: Mutable initialization deferred until later (e.g. in `onCreate`).\n- `val x by lazy`: Immutable value computed upon first access and cached.\n\n```kotlin\nlateinit var binding: ActivityMainBinding\nval apiService by lazy { RetrofitClient.create() }\n```",
           "complexity": "Intermediate",
           "category_id": "android",
           "quizzes": [
@@ -352,7 +352,7 @@
           "id": "a15",
           "title": "Higher-Order Functions & Lambdas",
           "short_description": "Functions as first-class citizens.",
-          "content": "A higher-order function is a function that takes another function as a parameter or returns one. Lambdas are anonymous functions. If a lambda is the last parameter of a function, you can place it outside the parentheses (Trailing Lambda).",
+          "content": "A higher-order function takes a function as a parameter or returns one.\n\n```kotlin\nfun calculate(a: Int, b: Int, operation: (Int, Int) -> Int): Int {\n    return operation(a, b)\n}\n```\n\n- Trailing Lambda: Place lambda outside parentheses if it's the last parameter.",
           "complexity": "Intermediate",
           "category_id": "android",
           "quizzes": [
@@ -369,7 +369,7 @@
           "id": "a16",
           "title": "Collections & Transformations",
           "short_description": "Master map, filter, and functional APIs.",
-          "content": "Kotlin standard library offers powerful list operations. Use 'map' to transform every item, 'filter' to remove items matching a condition, and 'flatten' to combine nested lists into one.",
+          "content": "Kotlin standard library offers powerful list operations:\n\n```kotlin\nval names = users.map { it.name }\nval adults = users.filter { it.age >= 18 }\n```\n\n- `map`: Transforms every item\n- `filter`: Keeps matching items\n- `flatten`: Combines nested lists",
           "complexity": "Intermediate",
           "category_id": "android",
           "quizzes": [

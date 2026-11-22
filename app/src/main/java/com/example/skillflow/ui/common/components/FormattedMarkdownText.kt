@@ -29,14 +29,15 @@ fun FormattedMarkdownText(
     modifier: Modifier = Modifier,
     textColor: Color = MaterialTheme.colorScheme.onSurface,
     textAlign: TextAlign = TextAlign.Start,
-    fontSize: TextUnit = 16.sp,
+    fontSize: TextUnit = 15.sp,
     lineHeight: TextUnit = 24.sp,
     headingColor: Color = GradientStart
 ) {
     if (markdownText.isBlank()) return
 
-    val lines = markdownText.lines()
-    val spacing = 6.dp
+    val formattedText = autoFormatMarkdown(markdownText)
+    val lines = formattedText.lines()
+    val spacing = 8.dp
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -142,7 +143,7 @@ fun FormattedMarkdownText(
                 trimmedLine.startsWith("* ") || trimmedLine.startsWith("- ") || trimmedLine.startsWith("+ ") || trimmedLine.startsWith("• ") -> {
                     val bulletText = trimmedLine.substring(2).trim()
                     BulletItemRow(
-                        annotatedText = parseMarkdownToAnnotatedString(bulletText, textColor),
+                        annotatedText = parseMarkdownToAnnotatedString(bulletText, textColor, headingColor),
                         bulletColor = headingColor,
                         textColor = textColor,
                         fontSize = fontSize,
@@ -158,14 +159,14 @@ fun FormattedMarkdownText(
                         val itemContent = match.groupValues[2]
                         NumberedItemRow(
                             numberPrefix = numberPrefix,
-                            annotatedText = parseMarkdownToAnnotatedString(itemContent, textColor),
+                            annotatedText = parseMarkdownToAnnotatedString(itemContent, textColor, headingColor),
                             numberColor = headingColor,
                             fontSize = fontSize,
                             lineHeight = lineHeight
                         )
                     } else {
                         StandardParagraph(
-                            annotatedText = parseMarkdownToAnnotatedString(trimmedLine, textColor),
+                            annotatedText = parseMarkdownToAnnotatedString(trimmedLine, textColor, headingColor),
                             textColor = textColor,
                             textAlign = textAlign,
                             fontSize = fontSize,
@@ -182,7 +183,7 @@ fun FormattedMarkdownText(
                 // Standard paragraph
                 else -> {
                     StandardParagraph(
-                        annotatedText = parseMarkdownToAnnotatedString(trimmedLine, textColor),
+                        annotatedText = parseMarkdownToAnnotatedString(trimmedLine, textColor, headingColor),
                         textColor = textColor,
                         textAlign = textAlign,
                         fontSize = fontSize,
@@ -281,25 +282,58 @@ private fun NumberedItemRow(
 @Composable
 private fun CodeBlockView(code: String) {
     Surface(
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        shape = RoundedCornerShape(10.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
+        shape = RoundedCornerShape(12.dp),
+        border = androidx.compose.foundation.BorderStroke(
+            1.dp,
+            MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+        ),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(vertical = 6.dp)
     ) {
-        Text(
-            text = code,
-            fontFamily = FontFamily.Monospace,
-            fontSize = 13.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(12.dp)
-        )
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = code,
+                fontFamily = FontFamily.Monospace,
+                fontSize = 13.sp,
+                lineHeight = 20.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
     }
+}
+
+fun autoFormatMarkdown(rawText: String): String {
+    if (rawText.isBlank()) return rawText
+
+    var text = rawText
+
+    if (!text.contains("```")) {
+        // Match "For example: \"...\"" or "Example: \"...\""
+        val exampleQuoteRegex = Regex("""(For example:|Example:)\s*["']([^"']+)["']\.?""", RegexOption.IGNORE_CASE)
+        text = exampleQuoteRegex.replace(text) { match ->
+            val prefix = match.groupValues[1]
+            val codeSnippet = match.groupValues[2]
+            "$prefix\n```kotlin\n$codeSnippet\n```"
+        }
+
+        // Match single quote keywords like 'val', 'when', 'is String', 'object', etc.
+        val singleQuoteRegex = Regex("""'([^'\n]+)'""")
+        text = singleQuoteRegex.replace(text) { match ->
+            val inner = match.groupValues[1]
+            "`$inner`"
+        }
+    }
+
+    return text
 }
 
 fun parseMarkdownToAnnotatedString(
     text: String,
-    defaultColor: Color = Color.Unspecified
+    defaultColor: Color = Color.Unspecified,
+    accentColor: Color = GradientStart
 ): AnnotatedString {
     return buildAnnotatedString {
         var i = 0
@@ -327,10 +361,12 @@ fun parseMarkdownToAnnotatedString(
                     withStyle(
                         SpanStyle(
                             fontFamily = FontFamily.Monospace,
-                            fontWeight = FontWeight.SemiBold
+                            fontWeight = FontWeight.Bold,
+                            color = accentColor,
+                            background = accentColor.copy(alpha = 0.12f)
                         )
                     ) {
-                        append(codeContent)
+                        append(" $codeContent ")
                     }
                     i = endCode + 1
                     continue
