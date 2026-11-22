@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
@@ -80,6 +81,8 @@ fun DetailScreen(
         snackbarHostState = snackbarHostState,
         scrollState = scrollState,
         onNavigateBack = onNavigateBack,
+        onNavigateToPrevious = viewModel::navigateToPreviousNugget,
+        onNavigateToNext = viewModel::navigateToNextNugget,
         onToggleSave = viewModel::toggleSave,
         onFlipCard = viewModel::flipCard,
         onMarkAsMastered = viewModel::toggleMastered,
@@ -112,6 +115,8 @@ fun DetailContent(
     snackbarHostState: SnackbarHostState,
     scrollState: ScrollState,
     onNavigateBack: () -> Unit,
+    onNavigateToPrevious: () -> Unit,
+    onNavigateToNext: () -> Unit,
     onToggleSave: () -> Unit,
     onFlipCard: () -> Unit,
     onMarkAsMastered: () -> Unit,
@@ -273,6 +278,50 @@ fun DetailContent(
                         Switch(
                             checked = nugget.isMastered,
                             onCheckedChange = { onMarkAsMastered() }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(spacing.medium))
+
+                // Next / Previous Lesson Navigation Bar
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = onNavigateToPrevious,
+                        enabled = state.hasPrevious,
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(R.string.previous_nugget),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = stringResource(R.string.previous_nugget),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+
+                    Button(
+                        onClick = onNavigateToNext,
+                        enabled = state.hasNext,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = GradientStart)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.next_nugget),
+                            fontWeight = FontWeight.Bold
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                            contentDescription = stringResource(R.string.next_nugget),
+                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }
@@ -446,6 +495,8 @@ private fun DetailContentPreview() {
             snackbarHostState = remember { SnackbarHostState() },
             scrollState = rememberScrollState(),
             onNavigateBack = {},
+            onNavigateToPrevious = {},
+            onNavigateToNext = {},
             onToggleSave = {},
             onFlipCard = {},
             onMarkAsMastered = {},
@@ -467,5 +518,3 @@ private fun DetailContentPreview() {
         )
     }
 }
-
-

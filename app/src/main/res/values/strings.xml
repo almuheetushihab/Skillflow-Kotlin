@@ -370,4 +370,16 @@
     <string name="cd_knowledge_nugget">Knowledge nugget</string>
     <string name="cd_lecture_preview">Lecture Sheet Preview</string>
     <string name="translating">Translating to Bangla...</string>
+
+    <!-- Navigation & Dynamic Roadmap -->
+    <string name="previous_nugget">Previous</string>
+    <string name="next_nugget">Next Lesson</string>
+    <string name="add_topic">Add Topic</string>
+    <string name="add_custom_topic">Add Custom Topic</string>
+    <string name="topic_title">Topic Title</string>
+    <string name="topic_desc">Short Description</string>
+    <string name="topic_content">Lesson Content</string>
+    <string name="enter_topic_title">Enter topic title (e.g. Kotlin Flow)</string>
+    <string name="enter_topic_desc">Enter brief overview</string>
+    <string name="enter_topic_content">Enter lesson content or notes</string>
 </resources>

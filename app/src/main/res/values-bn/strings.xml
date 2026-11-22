@@ -370,4 +370,16 @@
     <string name="cd_knowledge_nugget">জ্ঞানের নাগেট</string>
     <string name="cd_lecture_preview">লেকচার শিট প্রিভিউ</string>
     <string name="translating">বাংলায় অনুবাদ করা হচ্ছে...</string>
+
+    <!-- Navigation & Dynamic Roadmap -->
+    <string name="previous_nugget">পূর্ববর্তী</string>
+    <string name="next_nugget">পরবর্তী লেসন</string>
+    <string name="add_topic">টপিক যোগ করুন</string>
+    <string name="add_custom_topic">নতুন টপিক যোগ করুন</string>
+    <string name="topic_title">টপিকের শিরোনাম</string>
+    <string name="topic_desc">সংক্ষিপ্ত বিবরণ</string>
+    <string name="topic_content">লেসন কনটেন্ট</string>
+    <string name="enter_topic_title">টপিকের নাম লিখুন (যেমন: কোটলিন ফ্লো)</string>
+    <string name="enter_topic_desc">সংক্ষিপ্ত বিবরণ দিন</string>
+    <string name="enter_topic_content">লেসনের মূল আলোচনা বা নোট লিখুন</string>
 </resources>

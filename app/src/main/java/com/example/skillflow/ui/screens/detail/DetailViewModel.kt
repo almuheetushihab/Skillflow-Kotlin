@@ -51,7 +51,12 @@ data class DetailState(
         )
     ),
     val isAiLoading: Boolean = false,
-    val aiError: String? = null
+    val aiError: String? = null,
+    // Sequence navigation
+    val hasPrevious: Boolean = false,
+    val hasNext: Boolean = false,
+    val previousNuggetId: String? = null,
+    val nextNuggetId: String? = null
 )
 
 sealed class DetailUiEvent {
@@ -69,7 +74,7 @@ class DetailViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val nuggetId: String = checkNotNull(savedStateHandle["nuggetId"])
+    private var currentNuggetId: String = checkNotNull(savedStateHandle["nuggetId"])
 
     private val _state = MutableStateFlow(DetailState())
     val state = _state.asStateFlow()
@@ -83,30 +88,81 @@ class DetailViewModel @Inject constructor(
         loadNuggetAndNotes()
     }
 
-    private fun loadNuggetAndNotes() {
-        _state.update { it.copy(isLoading = true) }
+    private fun loadNuggetAndNotes(targetId: String = currentNuggetId) {
+        currentNuggetId = targetId
+        ttsManager.stop()
+        _state.update {
+            it.copy(
+                isLoading = true,
+                isFlipped = false,
+                aiQuestionInput = "",
+                translatedTitle = null,
+                translatedContent = null
+            )
+        }
         
-        repository.getNuggetById(nuggetId)
-            .onEach { nugget ->
-                _state.update { 
+        viewModelScope.launch {
+            repository.getNuggetById(currentNuggetId)
+                .collectLatest { nugget ->
+                    _state.update {
+                        it.copy(
+                            isLoading = false,
+                            nugget = nugget
+                        )
+                    }
+                    if (nugget != null) {
+                        loadSiblingNuggets(nugget.careerPathId, nugget.id)
+                    }
+                    if (_state.value.selectedLanguage == "bn") {
+                        translateCurrentNugget()
+                    }
+                }
+        }
+
+        viewModelScope.launch {
+            repository.getNotesForNugget(currentNuggetId)
+                .collectLatest { notes ->
+                    _state.update { it.copy(notes = notes) }
+                }
+        }
+    }
+
+    private fun loadSiblingNuggets(careerPathId: String, currentId: String) {
+        viewModelScope.launch {
+            repository.getDailyNuggets(careerPathId).collectLatest { nuggets ->
+                val sorted = nuggets.sortedBy { it.priority }
+                val currentIndex = sorted.indexOfFirst { it.id == currentId }
+                val prevId = if (currentIndex > 0) sorted[currentIndex - 1].id else null
+                val nextId = if (currentIndex != -1 && currentIndex < sorted.size - 1) sorted[currentIndex + 1].id else null
+
+                _state.update {
                     it.copy(
-                        isLoading = false, 
-                        nugget = nugget,
-                        translatedTitle = null,
-                        translatedContent = null
-                    ) 
-                }
-                if (_state.value.selectedLanguage == "bn") {
-                    translateCurrentNugget()
+                        hasPrevious = prevId != null,
+                        hasNext = nextId != null,
+                        previousNuggetId = prevId,
+                        nextNuggetId = nextId
+                    )
                 }
             }
-            .launchIn(viewModelScope)
-        
-        repository.getNotesForNugget(nuggetId)
-            .onEach { notes ->
-                _state.update { it.copy(notes = notes) }
+        }
+    }
+
+    fun navigateToNextNugget() {
+        _state.value.nextNuggetId?.let { nextId ->
+            loadNuggetAndNotes(nextId)
+            viewModelScope.launch {
+                _eventFlow.emit(DetailUiEvent.ScrollToTop)
             }
-            .launchIn(viewModelScope)
+        }
+    }
+
+    fun navigateToPreviousNugget() {
+        _state.value.previousNuggetId?.let { prevId ->
+            loadNuggetAndNotes(prevId)
+            viewModelScope.launch {
+                _eventFlow.emit(DetailUiEvent.ScrollToTop)
+            }
+        }
     }
 
     fun flipCard() {
@@ -116,7 +172,7 @@ class DetailViewModel @Inject constructor(
     fun toggleMastered() {
         val currentMastered = _state.value.nugget?.isMastered ?: false
         viewModelScope.launch {
-            repository.updateMasteryStatus(nuggetId, !currentMastered)
+            repository.updateMasteryStatus(currentNuggetId, !currentMastered)
             val msg = if (!currentMastered) "Nugget Mastered! XP Gained." else "Mastery removed."
             _eventFlow.emit(DetailUiEvent.ShowSnackbar(msg))
         }
@@ -164,7 +220,7 @@ class DetailViewModel @Inject constructor(
             try {
                 val note = UserNote(
                     id = currentState.editingNoteId ?: UUID.randomUUID().toString(),
-                    nuggetId = nuggetId,
+                    nuggetId = currentNuggetId,
                     title = currentState.noteTitle,
                     noteContent = currentState.noteDescription,
                     timestamp = System.currentTimeMillis()
@@ -188,7 +244,7 @@ class DetailViewModel @Inject constructor(
     }
 
     fun toggleSave() {
-        viewModelScope.launch { repository.toggleSaveNugget(nuggetId) }
+        viewModelScope.launch { repository.toggleSaveNugget(currentNuggetId) }
     }
 
     fun trackLearningTime(minutes: Long) {
@@ -312,7 +368,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             val savedPath = VideoFileHelper.saveVideoToInternalStorage(context, videoUri)
             if (savedPath != null) {
-                repository.updateNuggetVideoUrl(nuggetId, savedPath)
+                repository.updateNuggetVideoUrl(currentNuggetId, savedPath)
                 _eventFlow.emit(DetailUiEvent.ShowSnackbar("Video saved successfully!"))
             } else {
                 _eventFlow.emit(DetailUiEvent.ShowSnackbar("Failed to save video."))
@@ -324,7 +380,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             val currentVideoPath = _state.value.nugget?.videoUrl
             VideoFileHelper.deleteInternalVideoFile(context, currentVideoPath)
-            repository.updateNuggetVideoUrl(nuggetId, null)
+            repository.updateNuggetVideoUrl(currentNuggetId, null)
             _eventFlow.emit(DetailUiEvent.ShowSnackbar("Video removed."))
         }
     }
@@ -334,4 +390,3 @@ class DetailViewModel @Inject constructor(
         ttsManager.stop()
     }
 }
-
