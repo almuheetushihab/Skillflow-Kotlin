@@ -109,7 +109,12 @@ fun SkillFlowNavHost(
             )
         }
         composable<Screen.Roadmap> {
-            RoadmapScreen(modifier = Modifier.padding(innerPadding))
+            RoadmapScreen(
+                onNavigateToDetail = { id ->
+                    navController.navigate(Screen.Detail(nuggetId = id))
+                },
+                modifier = Modifier.padding(innerPadding)
+            )
         }
         composable<Screen.Bookmarks> {
             BookmarksScreen(

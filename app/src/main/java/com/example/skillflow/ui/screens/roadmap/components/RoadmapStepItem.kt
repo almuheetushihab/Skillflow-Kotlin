@@ -34,6 +34,7 @@ fun RoadmapStepItem(
     isCompleted: Boolean,
     isCurrent: Boolean,
     isLast: Boolean,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "pulse")
@@ -50,7 +51,7 @@ fun RoadmapStepItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(110.dp),
+            .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.Top
     ) {
         Column(
@@ -69,7 +70,7 @@ fun RoadmapStepItem(
                         drawLine(
                             color = color.copy(alpha = 0.5f),
                             start = center.copy(y = 24.dp.toPx()),
-                            end = center.copy(y = size.height),
+                            end = center.copy(y = size.height + 16.dp.toPx()),
                             strokeWidth = 6f
                         )
                     }
@@ -113,9 +114,10 @@ fun RoadmapStepItem(
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.medium))
         
         Card(
+            onClick = onClick,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 20.dp),
+                .padding(bottom = 16.dp),
             shape = RoundedCornerShape(20.dp),
             colors = CardDefaults.cardColors(
                 containerColor = if (isCurrent) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.7f) 
@@ -157,4 +159,3 @@ private fun RoadmapStepItemPreview() {
         )
     }
 }
-
