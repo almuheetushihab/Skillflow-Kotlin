@@ -62,7 +62,11 @@ fun OnboardingContent(
         color = MaterialTheme.colorScheme.background
     ) {
         Box(modifier = Modifier.fillMaxSize().background(backgroundGradient)) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .statusBarsPadding()
+            ) {
                 HorizontalPager(
                     state = pagerState,
                     modifier = Modifier.weight(1f),

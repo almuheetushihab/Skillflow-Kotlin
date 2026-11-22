@@ -24,7 +24,7 @@ interface GeminiRepository {
     fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String, customApiKey: String = ""): Flow<Result<KnowledgeNugget>>
 
     /**
-     * Generates a structured lecture sheet nugget offline without needing an API key.
+     * Generates a structured lecture sheet nugget offline using ML Kit Text Recognition on-device.
      */
-    fun extractLectureSheetOffline(imageBitmap: Bitmap, targetCourseId: String): KnowledgeNugget
+    suspend fun extractLectureSheetOffline(imageBitmap: Bitmap, targetCourseId: String): KnowledgeNugget
 }

@@ -359,9 +359,8 @@ fun LectureScannerScreen(
 
                         HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
-                        Text(
-                            text = nugget.content,
-                            style = MaterialTheme.typography.bodyMedium,
+                        com.example.skillflow.ui.common.components.FormattedMarkdownText(
+                            markdownText = nugget.content,
                             modifier = Modifier.fillMaxWidth()
                         )
 

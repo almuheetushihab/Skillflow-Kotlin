@@ -26,6 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skillflow.R
 import com.example.skillflow.domain.model.KnowledgeNugget
+import com.example.skillflow.ui.common.components.FormattedMarkdownText
+import com.example.skillflow.ui.common.components.stripMarkdownFormatting
 import com.example.skillflow.ui.screens.profile.settings.components.LanguageToggleButton
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
@@ -49,17 +51,21 @@ fun KnowledgeCard(
 ) {
     val revealText = stringResource(R.string.tap_to_reveal)
 
-    val displayTitle = if (selectedLanguage == "bn" && !translatedTitle.isNullOrBlank()) {
+    val rawTitle = if (selectedLanguage == "bn" && !translatedTitle.isNullOrBlank()) {
         translatedTitle
     } else {
         nugget.title
     }
+
+    val displayTitle = stripMarkdownFormatting(rawTitle)
 
     val displayContent = if (selectedLanguage == "bn" && !translatedContent.isNullOrBlank()) {
         translatedContent
     } else {
         nugget.content
     }
+
+    val speechContent = stripMarkdownFormatting(displayContent)
 
     val frontScrollState = rememberScrollState()
     val backScrollState = rememberScrollState()
@@ -101,7 +107,7 @@ fun KnowledgeCard(
 
                         FilledIconButton(
                             onClick = {
-                                if (isSpeaking) onStopAudio() else onPlayAudio("$displayTitle. $displayContent", selectedLanguage)
+                                if (isSpeaking) onStopAudio() else onPlayAudio("$displayTitle. $speechContent", selectedLanguage)
                             },
                             colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = Color.White.copy(alpha = 0.25f),
@@ -188,7 +194,7 @@ fun KnowledgeCard(
 
                         FilledIconButton(
                             onClick = {
-                                if (isSpeaking) onStopAudio() else onPlayAudio(displayContent, selectedLanguage)
+                                if (isSpeaking) onStopAudio() else onPlayAudio(speechContent, selectedLanguage)
                             },
                             colors = IconButtonDefaults.filledIconButtonColors(
                                 containerColor = GradientStart.copy(alpha = 0.15f),
@@ -224,27 +230,34 @@ fun KnowledgeCard(
                                 .fillMaxSize()
                                 .padding(top = 64.dp, bottom = 20.dp, start = 24.dp, end = 24.dp)
                                 .verticalScroll(backScrollState),
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center
+                            horizontalAlignment = Alignment.Start,
+                            verticalArrangement = Arrangement.Top
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Lightbulb,
-                                contentDescription = displayTitle,
-                                tint = GradientStart,
-                                modifier = Modifier.size(44.dp)
-                            )
-                            Spacer(modifier = Modifier.height(MaterialTheme.spacing.medium))
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(bottom = 12.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Lightbulb,
+                                    contentDescription = displayTitle,
+                                    tint = GradientStart,
+                                    modifier = Modifier.size(32.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = displayTitle,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
                             
-                            val fontSize = if (displayContent.length > 180) 18.sp else 20.sp
-                            val lineHeight = if (displayContent.length > 180) 28.sp else 30.sp
-
-                            Text(
-                                text = displayContent,
-                                fontSize = fontSize,
-                                lineHeight = lineHeight,
-                                textAlign = TextAlign.Center,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.onSurface
+                            FormattedMarkdownText(
+                                markdownText = displayContent,
+                                textColor = MaterialTheme.colorScheme.onSurface,
+                                fontSize = if (displayContent.length > 250) 14.sp else 15.sp,
+                                lineHeight = if (displayContent.length > 250) 20.sp else 22.sp,
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }

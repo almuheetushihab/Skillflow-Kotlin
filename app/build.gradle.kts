@@ -123,8 +123,9 @@ dependencies {
     // Serialization
     implementation(libs.kotlinx.serialization.json)
 
-    // Google AI Client SDK (Gemini)
+    // Google AI Client SDK (Gemini) & ML Kit Text Recognition (OCR)
     implementation(libs.google.ai.client)
+    implementation("com.google.mlkit:text-recognition:16.0.1")
 
     // Media3 (ExoPlayer)
     implementation(libs.media3.exoplayer)

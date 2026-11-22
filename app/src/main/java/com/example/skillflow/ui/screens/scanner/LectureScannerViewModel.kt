@@ -119,8 +119,11 @@ class LectureScannerViewModel @Inject constructor(
 
     fun useOfflineExtractor() {
         val targetBitmap = _state.value.selectedBitmap ?: return
-        val offlineNugget = geminiRepository.extractLectureSheetOffline(targetBitmap, _state.value.selectedCourseId)
-        _state.update { it.copy(isScanning = false, scannedNugget = offlineNugget, error = null) }
+        _state.update { it.copy(isScanning = true, error = null) }
+        viewModelScope.launch {
+            val offlineNugget = geminiRepository.extractLectureSheetOffline(targetBitmap, _state.value.selectedCourseId)
+            _state.update { it.copy(isScanning = false, scannedNugget = offlineNugget, error = null) }
+        }
     }
 
     fun saveNuggetAndNavigate() {

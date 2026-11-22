@@ -287,7 +287,7 @@ private fun ChatMessageItem(
 
         Box(
             modifier = Modifier
-                .widthIn(max = 280.dp)
+                .widthIn(max = 290.dp)
                 .clip(
                     RoundedCornerShape(
                         topStart = 16.dp,
@@ -310,12 +310,21 @@ private fun ChatMessageItem(
                 )
                 .padding(horizontal = spacing.medium, vertical = spacing.small + 2.dp)
         ) {
-            Text(
-                text = message.text,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (isUser) Color.White else MaterialTheme.colorScheme.onSurface,
-                lineHeight = 20.sp
-            )
+            if (isUser) {
+                Text(
+                    text = message.text,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.White,
+                    lineHeight = 20.sp
+                )
+            } else {
+                com.example.skillflow.ui.common.components.FormattedMarkdownText(
+                    markdownText = message.text,
+                    textColor = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp
+                )
+            }
         }
     }
 }
