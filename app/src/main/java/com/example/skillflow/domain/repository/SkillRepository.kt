@@ -10,6 +10,7 @@ interface SkillRepository {
     fun getDailyNuggets(careerPathId: String): Flow<List<KnowledgeNugget>>
     fun getNuggetsByDate(careerPathId: String, date: String): Flow<List<KnowledgeNugget>>
     fun getSavedNuggets(): Flow<List<KnowledgeNugget>>
+    fun getSavedNuggetsByPath(careerPathId: String): Flow<List<KnowledgeNugget>>
     suspend fun toggleSaveNugget(nuggetId: String)
     suspend fun markNuggetAsDone(nuggetId: String)
     suspend fun updateMasteryStatus(nuggetId: String, isMastered: Boolean)

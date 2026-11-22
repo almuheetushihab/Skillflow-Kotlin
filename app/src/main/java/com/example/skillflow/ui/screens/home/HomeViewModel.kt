@@ -28,7 +28,8 @@ data class HomeState(
     val totalCount: Int = 0,
     val selectedDate: String? = null,
     val availableDates: List<DateModel> = emptyList(),
-    val isRefreshing: Boolean = false
+    val isRefreshing: Boolean = false,
+    val selectedCareerPathId: String = ""
 )
 
 data class DateModel(
@@ -96,9 +97,14 @@ class HomeViewModel @Inject constructor(
             .onEach { count -> _state.update { it.copy(streakCount = count) } }
             .launchIn(viewModelScope)
 
-        skillRepository.getSavedNuggets()
-            .onEach { savedList -> _state.update { it.copy(savedCount = savedList.size) } }
-            .launchIn(viewModelScope)
+        viewModelScope.launch {
+            settingsRepository.getSelectedCareerPath().filterNotNull().collectLatest { pathId ->
+                _state.update { it.copy(selectedCareerPathId = pathId) }
+                skillRepository.getSavedNuggetsByPath(pathId).collect { savedList ->
+                    _state.update { it.copy(savedCount = savedList.size) }
+                }
+            }
+        }
 
         viewModelScope.launch {
             settingsRepository.getSelectedCareerPath().filterNotNull().collectLatest { pathId ->

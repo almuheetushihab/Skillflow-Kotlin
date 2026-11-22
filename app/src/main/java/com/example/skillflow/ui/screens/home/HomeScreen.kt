@@ -101,6 +101,8 @@ fun HomeContent(
         }
     }
 
+    val isLanguageGoal = state.selectedCareerPathId in listOf("ielts", "mentors_grammar", "mentors_spoken")
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -123,12 +125,16 @@ fun HomeContent(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { onNavigateToLectureScanner("mentors_spoken") }) {
-                        Icon(
-                            imageVector = Icons.Default.CameraAlt,
-                            contentDescription = stringResource(R.string.scan_lecture_sheet_title),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                    if (isLanguageGoal) {
+                        IconButton(onClick = { 
+                            onNavigateToLectureScanner(state.selectedCareerPathId.ifEmpty { "mentors_spoken" }) 
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.CameraAlt,
+                                contentDescription = stringResource(R.string.scan_lecture_sheet_title),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                     IconButton(onClick = { showDatePicker = true }) {
                         Icon(
@@ -178,53 +184,57 @@ fun HomeContent(
                     }
                 }
 
-                item {
-                    Card(
-                        onClick = { onNavigateToLectureScanner("mentors_spoken") },
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer
-                        ),
-                        shape = RoundedCornerShape(20.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically
+                if (isLanguageGoal) {
+                    item {
+                        Card(
+                            onClick = { 
+                                onNavigateToLectureScanner(state.selectedCareerPathId.ifEmpty { "mentors_spoken" }) 
+                            },
+                            colors = CardDefaults.cardColors(
+                                containerColor = MaterialTheme.colorScheme.primaryContainer
+                            ),
+                            shape = RoundedCornerShape(20.dp),
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Surface(
-                                shape = CircleShape,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.size(44.dp)
+                            Row(
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Box(contentAlignment = Alignment.Center) {
-                                    Icon(
-                                        imageVector = Icons.Default.CameraAlt,
-                                        contentDescription = stringResource(R.string.scan_lecture_banner_title),
-                                        tint = MaterialTheme.colorScheme.onPrimary
+                                Surface(
+                                    shape = CircleShape,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.size(44.dp)
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Icon(
+                                            imageVector = Icons.Default.CameraAlt,
+                                            contentDescription = stringResource(R.string.scan_lecture_banner_title),
+                                            tint = MaterialTheme.colorScheme.onPrimary
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.width(16.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.scan_lecture_banner_title),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                    Text(
+                                        text = stringResource(R.string.scan_lecture_banner_desc),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                                     )
                                 }
-                            }
-                            Spacer(modifier = Modifier.width(16.dp))
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = stringResource(R.string.scan_lecture_banner_title),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer
-                                )
-                                Text(
-                                    text = stringResource(R.string.scan_lecture_banner_desc),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = stringResource(R.string.cd_sparkles),
+                                    tint = MaterialTheme.colorScheme.primary
                                 )
                             }
-                            Icon(
-                                imageVector = Icons.Default.AutoAwesome,
-                                contentDescription = stringResource(R.string.cd_sparkles),
-                                tint = MaterialTheme.colorScheme.primary
-                            )
                         }
                     }
                 }

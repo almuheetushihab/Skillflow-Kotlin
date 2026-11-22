@@ -325,7 +325,7 @@ fun AddVideoPlaceholderCard(
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = stringResource(R.string.add_custom_video),
+                        text = stringResource(R.string.add_video_button),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold
                     )

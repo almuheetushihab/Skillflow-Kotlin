@@ -32,6 +32,9 @@ interface SkillDao {
     @Query("SELECT * FROM nuggets WHERE isSaved = 1")
     fun getSavedNuggets(): Flow<List<NuggetEntity>>
 
+    @Query("SELECT * FROM nuggets WHERE isSaved = 1 AND careerPathId = :careerPathId")
+    fun getSavedNuggetsByPath(careerPathId: String): Flow<List<NuggetEntity>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNuggets(nuggets: List<NuggetEntity>)
 

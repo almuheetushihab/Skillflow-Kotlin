@@ -72,6 +72,11 @@ class SkillRepositoryImpl @Inject constructor(
         return dao.getSavedNuggets().map { list -> list.map { it.toDomain() } }
     }
 
+    override fun getSavedNuggetsByPath(careerPathId: String): Flow<List<KnowledgeNugget>> {
+        val path = if (careerPathId.isEmpty()) "android" else careerPathId
+        return dao.getSavedNuggetsByPath(path).map { list -> list.map { it.toDomain() } }
+    }
+
     override suspend fun toggleSaveNugget(nuggetId: String) {
         dao.toggleSaveNugget(nuggetId)
     }

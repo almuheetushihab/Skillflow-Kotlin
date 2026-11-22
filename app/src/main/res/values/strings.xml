@@ -352,6 +352,7 @@
     <string name="change_video">Change</string>
     <string name="remove_video">Remove</string>
     <string name="add_custom_video">Add Custom Video</string>
+    <string name="add_video_button">Add Video</string>
     <string name="knowledge_video">Lesson Video</string>
 
     <!-- Accessibility Descriptions -->

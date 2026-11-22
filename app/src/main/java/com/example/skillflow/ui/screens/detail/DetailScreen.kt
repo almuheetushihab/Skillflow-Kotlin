@@ -14,6 +14,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -228,20 +230,54 @@ fun DetailContent(
 
                 Spacer(modifier = Modifier.height(spacing.large))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(), 
-                    verticalAlignment = Alignment.CenterVertically, 
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = stringResource(R.string.mastered_question), 
-                        style = MaterialTheme.typography.titleMedium, 
-                        fontWeight = FontWeight.Bold
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
                     )
-                    Switch(checked = nugget.isMastered, onCheckedChange = { onMarkAsMastered() })
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = spacing.medium, vertical = spacing.small),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Surface(
+                                shape = CircleShape,
+                                color = if (nugget.isMastered) BeginnerGreen.copy(alpha = 0.2f) else MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+                                modifier = Modifier.size(36.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = if (nugget.isMastered) Icons.Default.CheckCircle else Icons.Default.CheckCircleOutline,
+                                        contentDescription = null,
+                                        tint = if (nugget.isMastered) BeginnerGreen else MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.width(spacing.medium))
+                            Text(
+                                text = stringResource(R.string.mastered_question),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Switch(
+                            checked = nugget.isMastered,
+                            onCheckedChange = { onMarkAsMastered() }
+                        )
+                    }
                 }
 
-                Spacer(modifier = Modifier.height(spacing.extraLarge + spacing.medium))
+                Spacer(modifier = Modifier.height(spacing.large))
 
                 NoteInputCard(
                     title = state.noteTitle,
@@ -383,7 +419,7 @@ fun DetailContent(
                     }
                 }
 
-                Spacer(modifier = Modifier.height(spacing.extraLarge * 2))
+                Spacer(modifier = Modifier.height(100.dp))
             }
         }
 
