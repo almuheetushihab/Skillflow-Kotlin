@@ -73,11 +73,20 @@ class LectureScannerViewModel @Inject constructor(
         _state.update { it.copy(apiKeyInput = input) }
     }
 
+    private fun sanitizeGeminiKey(rawKey: String): String {
+        var key = rawKey.trim().removeSurrounding("\"").removeSurrounding("'")
+        val aizaIndex = key.indexOf("AIzaSy")
+        if (aizaIndex != -1) {
+            key = key.substring(aizaIndex)
+        }
+        return key.trim()
+    }
+
     fun saveApiKey() {
-        val input = _state.value.apiKeyInput.trim()
+        val sanitized = sanitizeGeminiKey(_state.value.apiKeyInput)
         viewModelScope.launch {
-            settingsRepository.saveGeminiApiKey(input)
-            _state.update { it.copy(userApiKey = input, error = null) }
+            settingsRepository.saveGeminiApiKey(sanitized)
+            _state.update { it.copy(userApiKey = sanitized, apiKeyInput = sanitized, error = null) }
             _state.value.selectedBitmap?.let { bitmap ->
                 analyzeSheet(bitmap)
             }

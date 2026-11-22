@@ -387,26 +387,36 @@ class GeminiRepositoryImpl @Inject constructor() : GeminiRepository {
         return Bitmap.createScaledBitmap(bitmap, newWidth.coerceAtLeast(1), newHeight.coerceAtLeast(1), true)
     }
 
+    private fun sanitizeApiKey(rawKey: String): String {
+        var key = rawKey.trim().removeSurrounding("\"").removeSurrounding("'")
+        val aizaIndex = key.indexOf("AIzaSy")
+        if (aizaIndex != -1) {
+            key = key.substring(aizaIndex)
+        }
+        return key.trim()
+    }
+
     override fun analyzeLectureSheetImage(imageBitmap: Bitmap, targetCourseId: String, customApiKey: String): Flow<Result<KnowledgeNugget>> = flow {
-        val buildConfigKey = BuildConfig.GEMINI_API_KEY.trim().removeSurrounding("\"").removeSurrounding("'")
-        val apiKey = if (customApiKey.isNotBlank()) customApiKey.trim() else buildConfigKey
+        val buildConfigKey = sanitizeApiKey(BuildConfig.GEMINI_API_KEY)
+        val customKeySanitized = sanitizeApiKey(customApiKey)
+        val apiKey = if (customKeySanitized.isNotBlank()) customKeySanitized else buildConfigKey
         
         if (apiKey.isBlank()) {
             emit(
                 Result.failure(
                     IllegalStateException(
-                        "Gemini API Key is missing. Please enter your Gemini API Key below or use Offline Extraction."
+                        "Gemini API Key is missing. Please enter your Gemini API Key below, add GEMINI_API_KEY=your_key in local.properties, or use Offline Extraction."
                     )
                 )
             )
             return@flow
         }
 
-        if (!apiKey.startsWith("AIzaSy")) {
+        if (!apiKey.startsWith("AIzaSy") || apiKey.length < 20) {
             emit(
                 Result.failure(
                     IllegalStateException(
-                        "Invalid Gemini API Key format. Google AI Studio keys MUST start with 'AIzaSy'. Please check the key you pasted."
+                        "Invalid Gemini API Key format ('${apiKey.take(12)}...'). Google AI Studio keys MUST start with 'AIzaSy' (e.g. AIzaSyB123...). Please check the key you pasted."
                     )
                 )
             )

@@ -431,27 +431,24 @@ fun LectureScannerScreen(
 
                             Spacer(modifier = Modifier.height(12.dp))
 
-                            Row(
+                            Button(
+                                onClick = { viewModel.saveApiKey() },
                                 modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                shape = RoundedCornerShape(12.dp)
                             ) {
-                                Button(
-                                    onClick = { viewModel.saveApiKey() },
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(10.dp)
-                                ) {
-                                    Icon(imageVector = Icons.Default.Key, contentDescription = null, modifier = Modifier.size(16.dp))
-                                    Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Save & Connect")
-                                }
+                                Icon(imageVector = Icons.Default.Key, contentDescription = null, modifier = Modifier.size(18.dp))
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text("Save & Connect API Key", fontWeight = FontWeight.Bold)
+                            }
 
-                                OutlinedButton(
-                                    onClick = { uriHandler.openUri("https://aistudio.google.com/app/apikey") },
-                                    modifier = Modifier.weight(1f),
-                                    shape = RoundedCornerShape(10.dp)
-                                ) {
-                                    Text("Get Free Key")
-                                }
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            OutlinedButton(
+                                onClick = { uriHandler.openUri("https://aistudio.google.com/app/apikey") },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp)
+                            ) {
+                                Text("Get Free Key from Google AI Studio")
                             }
                         }
 
