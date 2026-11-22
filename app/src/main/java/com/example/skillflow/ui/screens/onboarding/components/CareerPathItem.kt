@@ -10,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.domain.model.CareerPath
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -52,7 +54,7 @@ fun CareerPathItem(
                     Text(
                         text = path.name.take(1),
                         style = MaterialTheme.typography.titleLarge,
-                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.primary
+                        color = if (isSelected) OnPrimary else MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -74,3 +76,16 @@ fun CareerPathItem(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun CareerPathItemPreview() {
+    SkillflowTheme {
+        CareerPathItem(
+            path = CareerPath("1", "Android Developer", "Build modern apps", ""),
+            isSelected = true,
+            onClick = {}
+        )
+    }
+}
+

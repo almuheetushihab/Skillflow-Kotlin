@@ -108,3 +108,16 @@ fun OnboardingContent(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun OnboardingContentPreview() {
+    com.example.skillflow.ui.theme.SkillflowTheme {
+        OnboardingContent(
+            state = OnboardingState(),
+            onCareerPathSelected = {},
+            onCompleteOnboarding = {}
+        )
+    }
+}
+

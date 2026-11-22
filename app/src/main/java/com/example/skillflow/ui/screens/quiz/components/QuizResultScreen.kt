@@ -137,3 +137,15 @@ fun QuizResultScreen(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun QuizResultScreenPreview() {
+    SkillflowTheme {
+        QuizResultScreen(
+            state = QuizState(score = 2),
+            onFinish = {}
+        )
+    }
+}
+

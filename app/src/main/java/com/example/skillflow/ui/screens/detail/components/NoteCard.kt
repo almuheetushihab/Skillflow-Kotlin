@@ -19,10 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
 import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -128,7 +130,7 @@ fun NoteCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Visibility,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.view_note),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(14.dp)
                     )
@@ -174,3 +176,23 @@ fun NoteCard(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun NoteCardPreview() {
+    SkillflowTheme {
+        NoteCard(
+            note = UserNote(
+                id = "1",
+                nuggetId = "1",
+                title = "Coroutines Dispatchers",
+                noteContent = "Main for UI, IO for disk/network, Default for CPU work.",
+                timestamp = System.currentTimeMillis()
+            ),
+            onClick = {},
+            onEdit = {},
+            onDelete = {}
+        )
+    }
+}
+

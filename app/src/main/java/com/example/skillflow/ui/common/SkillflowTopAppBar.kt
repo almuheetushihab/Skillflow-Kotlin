@@ -2,6 +2,8 @@ package com.example.skillflow.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,9 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 /**
  * A reusable Top App Bar with optional gradient and status bar padding.
@@ -46,7 +51,7 @@ fun SkillflowTopAppBar(
                     text = title,
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.ExtraBold,
-                    color = if (useGradient) Color.White else MaterialTheme.colorScheme.primary
+                    color = if (useGradient) OnPrimary else MaterialTheme.colorScheme.primary
                 )
             },
             navigationIcon = {
@@ -54,8 +59,8 @@ fun SkillflowTopAppBar(
                     IconButton(onClick = onNavigationClick) {
                         Icon(
                             imageVector = navigationIcon,
-                            contentDescription = stringResource(R.string.back),
-                            tint = if (useGradient) Color.White else MaterialTheme.colorScheme.primary
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = if (useGradient) OnPrimary else MaterialTheme.colorScheme.primary
                         )
                     }
                 }
@@ -66,3 +71,15 @@ fun SkillflowTopAppBar(
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun SkillflowTopAppBarPreview() {
+    SkillflowTheme {
+        SkillflowTopAppBar(
+            title = "SkillFlow TopBar",
+            navigationIcon = Icons.AutoMirrored.Filled.ArrowBack
+        )
+    }
+}
+

@@ -98,3 +98,15 @@ fun BookmarksContent(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun BookmarksContentPreview() {
+    com.example.skillflow.ui.theme.SkillflowTheme {
+        BookmarksContent(
+            state = BookmarksState(),
+            onNavigateToDetail = {}
+        )
+    }
+}
+

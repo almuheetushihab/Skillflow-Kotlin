@@ -19,12 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.skillflow.R
 import com.example.skillflow.ui.screens.detail.ChatMessage
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -86,8 +91,8 @@ fun AiChatBottomSheet(
                     ) {
                         Icon(
                             imageVector = Icons.Default.AutoAwesome,
-                            contentDescription = "AI Tutor",
-                            tint = Color.White,
+                            contentDescription = stringResource(R.string.ask_ai_assistant),
+                            tint = OnPrimary,
                             modifier = Modifier.size(22.dp)
                         )
                     }
@@ -96,13 +101,13 @@ fun AiChatBottomSheet(
 
                     Column {
                         Text(
-                            text = "SkillFlow AI Tutor",
+                            text = stringResource(R.string.ask_ai_assistant),
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.onSurface
                         )
                         Text(
-                            text = "Context-Aware Learning Assistant",
+                            text = stringResource(R.string.ask_ai_tutor_desc),
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -112,7 +117,7 @@ fun AiChatBottomSheet(
                 IconButton(onClick = onDismiss) {
                     Icon(
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
+                        contentDescription = stringResource(R.string.close),
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
@@ -157,8 +162,8 @@ fun AiChatBottomSheet(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AutoAwesome,
-                                    contentDescription = null,
-                                    tint = Color.White,
+                                    contentDescription = stringResource(R.string.cd_sparkles),
+                                    tint = OnPrimary,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -177,7 +182,7 @@ fun AiChatBottomSheet(
                                 )
                                 Spacer(modifier = Modifier.width(spacing.small))
                                 Text(
-                                    text = "SkillFlow AI Tutor is thinking...",
+                                    text = stringResource(R.string.ask_ai_tutor_desc),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -207,7 +212,7 @@ fun AiChatBottomSheet(
                         onValueChange = onQuestionChange,
                         placeholder = {
                             Text(
-                                text = "Ask AI Tutor about this nugget...",
+                                text = stringResource(R.string.ask_ai_tutor_desc),
                                 fontSize = 14.sp
                             )
                         },
@@ -234,14 +239,17 @@ fun AiChatBottomSheet(
                                 if (canSend) Brush.horizontalGradient(
                                     listOf(GradientStart, GradientEnd)
                                 ) else Brush.linearGradient(
-                                    listOf(Color.Gray.copy(alpha = 0.3f), Color.Gray.copy(alpha = 0.3f))
+                                    listOf(
+                                        MaterialTheme.colorScheme.outlineVariant,
+                                        MaterialTheme.colorScheme.outlineVariant
+                                    )
                                 )
                             )
                     ) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.Send,
-                            contentDescription = "Send Question",
-                            tint = Color.White,
+                            contentDescription = stringResource(R.string.ask_ai),
+                            tint = OnPrimary,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -271,13 +279,13 @@ private fun ChatMessageItem(
             ) {
                 Icon(
                     imageVector = Icons.Default.AutoAwesome,
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.cd_sparkles),
                     tint = GradientStart,
                     modifier = Modifier.size(14.dp)
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "SkillFlow AI Tutor",
+                    text = stringResource(R.string.ask_ai_assistant),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.Bold,
                     color = GradientStart
@@ -314,7 +322,7 @@ private fun ChatMessageItem(
                 Text(
                     text = message.text,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White,
+                    color = OnPrimary,
                     lineHeight = 20.sp
                 )
             } else {
@@ -326,5 +334,24 @@ private fun ChatMessageItem(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AiChatBottomSheetPreview() {
+    SkillflowTheme {
+        AiChatBottomSheet(
+            isSheetOpen = true,
+            messages = listOf(
+                ChatMessage("1", "Hello! How can I help you?", false),
+                ChatMessage("2", "Can you explain this lesson?", true)
+            ),
+            questionInput = "",
+            isLoading = false,
+            onQuestionChange = {},
+            onSendQuestion = {},
+            onDismiss = {}
+        )
     }
 }

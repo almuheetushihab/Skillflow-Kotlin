@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
@@ -29,6 +30,7 @@ import com.example.skillflow.ui.screens.home.components.BentoGrid
 import com.example.skillflow.ui.screens.home.components.CategoryPills
 import com.example.skillflow.ui.screens.home.components.ProgressCardSkeleton
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -124,7 +126,7 @@ fun HomeContent(
                     IconButton(onClick = { onNavigateToLectureScanner("mentors_spoken") }) {
                         Icon(
                             imageVector = Icons.Default.CameraAlt,
-                            contentDescription = "Scan Lecture Sheet AI",
+                            contentDescription = stringResource(R.string.scan_lecture_sheet_title),
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -199,7 +201,7 @@ fun HomeContent(
                                 Box(contentAlignment = Alignment.Center) {
                                     Icon(
                                         imageVector = Icons.Default.CameraAlt,
-                                        contentDescription = null,
+                                        contentDescription = stringResource(R.string.scan_lecture_banner_title),
                                         tint = MaterialTheme.colorScheme.onPrimary
                                     )
                                 }
@@ -207,20 +209,20 @@ fun HomeContent(
                             Spacer(modifier = Modifier.width(16.dp))
                             Column(modifier = Modifier.weight(1f)) {
                                 Text(
-                                    text = "Scan Lecture Sheet with AI",
+                                    text = stringResource(R.string.scan_lecture_banner_title),
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                                 Text(
-                                    text = "Snap photo of Mentors' or IELTS sheets",
+                                    text = stringResource(R.string.scan_lecture_banner_desc),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                                 )
                             }
                             Icon(
                                 imageVector = Icons.Default.AutoAwesome,
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.cd_sparkles),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                         }
@@ -243,7 +245,7 @@ fun HomeContent(
                         leadingIcon = { 
                             Icon(
                                 imageVector = Icons.Default.Search,
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.cd_search),
                                 tint = GradientStart
                             ) 
                         },
@@ -334,3 +336,20 @@ fun HomeContent(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun HomeContentPreview() {
+    SkillflowTheme {
+        HomeContent(
+            state = HomeState(),
+            onSearchQueryChange = {},
+            onNavigateToDetail = {},
+            onNavigateToBookmarks = {},
+            onNavigateToLectureScanner = {},
+            onDateSelected = {},
+            onRefresh = {}
+        )
+    }
+}
+

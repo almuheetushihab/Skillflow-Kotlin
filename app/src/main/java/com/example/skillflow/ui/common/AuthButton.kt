@@ -17,9 +17,12 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 /**
@@ -55,7 +58,7 @@ fun AuthButton(
     ) {
         if (isLoading) {
             CircularProgressIndicator(
-                color = Color.White, 
+                color = OnPrimary, 
                 modifier = Modifier.size(spacing.large),
                 strokeWidth = 2.dp
             )
@@ -64,8 +67,20 @@ fun AuthButton(
                 text = text,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = OnPrimary
             )
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun AuthButtonPreview() {
+    SkillflowTheme {
+        AuthButton(
+            text = "Login",
+            onClick = {}
+        )
+    }
+}
+

@@ -12,11 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
 import com.example.skillflow.domain.model.LeaderboardUser
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 val GoldColor = Color(0xFFFFD700)
 val SilverColor = Color(0xFFC0C0C0)
@@ -126,7 +130,7 @@ private fun PodiumPillar(
         if (isFirstPlace) {
             Icon(
                 imageVector = Icons.Default.EmojiEvents,
-                contentDescription = "First Place Trophy",
+                contentDescription = stringResource(R.string.social_leaderboard),
                 tint = GoldColor,
                 modifier = Modifier
                     .size(28.dp)
@@ -170,7 +174,7 @@ private fun PodiumPillar(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                     style = MaterialTheme.typography.labelSmall,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color.Black
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
         }
@@ -218,3 +222,18 @@ private fun PodiumPillar(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun PodiumComponentPreview() {
+    SkillflowTheme {
+        PodiumComponent(
+            topThreeUsers = listOf(
+                LeaderboardUser(id = "1", name = "Alice Smith", xp = 2400, rank = 1),
+                LeaderboardUser(id = "2", name = "Bob Vance", xp = 1850, rank = 2),
+                LeaderboardUser(id = "3", name = "Charlie Day", xp = 1620, rank = 3)
+            )
+        )
+    }
+}
+

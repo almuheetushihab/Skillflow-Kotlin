@@ -6,7 +6,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 /**
  * A reusable loading view with a centered progress indicator.
@@ -20,3 +22,12 @@ fun LoadingView(modifier: Modifier = Modifier) {
         CircularProgressIndicator(color = GradientStart)
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun LoadingViewPreview() {
+    SkillflowTheme {
+        LoadingView()
+    }
+}
+

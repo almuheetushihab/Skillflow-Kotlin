@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -28,6 +29,8 @@ import com.example.skillflow.R
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.screens.profile.profile.components.StatCard
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 import java.util.Locale
 
@@ -148,7 +151,7 @@ fun ProfileContent(
                         imageVector = Icons.Default.CameraAlt,
                         contentDescription = stringResource(R.string.change_photo),
                         modifier = Modifier.padding(spacing.small),
-                        tint = Color.White
+                        tint = OnPrimary
                     )
                 }
             }
@@ -260,7 +263,11 @@ fun ProfileContent(
             ) {
                 Column(modifier = Modifier.padding(spacing.medium)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Book, contentDescription = null, tint = GradientStart)
+                        Icon(
+                            imageVector = Icons.Default.Book,
+                            contentDescription = stringResource(R.string.todays_summary),
+                            tint = GradientStart
+                        )
                         Spacer(modifier = Modifier.width(spacing.small))
                         Text(
                             text = stringResource(R.string.todays_summary),
@@ -297,7 +304,7 @@ fun ProfileContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.EmojiEvents, 
-                    contentDescription = null, 
+                    contentDescription = stringResource(R.string.social_leaderboard), 
                     tint = MaterialTheme.colorScheme.onTertiaryContainer
                 )
                 Spacer(modifier = Modifier.width(spacing.medium))
@@ -316,7 +323,7 @@ fun ProfileContent(
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = Icons.Default.ChevronRight, 
-                    contentDescription = null, 
+                    contentDescription = stringResource(R.string.social_leaderboard), 
                     tint = MaterialTheme.colorScheme.onTertiaryContainer
                 )
             }
@@ -333,7 +340,7 @@ fun ProfileContent(
             ) {
                 Icon(
                     imageVector = Icons.Default.Quiz, 
-                    contentDescription = null, 
+                    contentDescription = stringResource(R.string.daily_knowledge_quiz), 
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
                 Spacer(modifier = Modifier.width(spacing.medium))
@@ -352,7 +359,7 @@ fun ProfileContent(
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
                     imageVector = Icons.Default.ChevronRight, 
-                    contentDescription = null, 
+                    contentDescription = stringResource(R.string.daily_knowledge_quiz), 
                     tint = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             }
@@ -369,7 +376,7 @@ fun ProfileContent(
                 Column(modifier = Modifier.padding(spacing.small)) {
                     ListItem(
                         headlineContent = { Text(text = stringResource(R.string.settings), fontWeight = FontWeight.Bold) },
-                        leadingContent = { Icon(imageVector = Icons.Default.Settings, contentDescription = null) }
+                        leadingContent = { Icon(imageVector = Icons.Default.Settings, contentDescription = stringResource(R.string.settings)) }
                     )
                     
                     ListItem(
@@ -384,7 +391,7 @@ fun ProfileContent(
 
                     ListItem(
                         headlineContent = { Text(text = stringResource(R.string.daily_reminders)) },
-                        leadingContent = { Icon(imageVector = Icons.Default.Notifications, contentDescription = null) },
+                        leadingContent = { Icon(imageVector = Icons.Default.Notifications, contentDescription = stringResource(R.string.daily_reminders)) },
                         trailingContent = { Switch(checked = true, onCheckedChange = {}) }
                     )
                 }
@@ -410,3 +417,20 @@ fun ProfileContent(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun ProfileContentPreview() {
+    SkillflowTheme {
+        ProfileContent(
+            state = ProfileState(),
+            onToggleDarkMode = {},
+            onNavigateToSettings = {},
+            onNavigateToQuiz = {},
+            onNavigateToLeaderboard = {},
+            onResetOnboarding = {},
+            onChangePhoto = {}
+        )
+    }
+}
+

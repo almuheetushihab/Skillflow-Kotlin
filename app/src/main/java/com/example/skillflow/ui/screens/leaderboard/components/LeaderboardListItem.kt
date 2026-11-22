@@ -8,12 +8,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.domain.model.LeaderboardUser
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 /**
  * List item component for displaying leaderboard users from rank 4 onwards.
@@ -75,7 +77,7 @@ fun LeaderboardListItem(
                             text = user.name.take(2).uppercase(),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
-                            color = if (isCurrentUser) Color.White else MaterialTheme.colorScheme.onSurfaceVariant
+                            color = if (isCurrentUser) OnPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -105,7 +107,7 @@ fun LeaderboardListItem(
                                     modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                     style = MaterialTheme.typography.labelSmall,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color.White
+                                    color = OnPrimary
                                 )
                             }
                         }
@@ -129,3 +131,20 @@ fun LeaderboardListItem(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun LeaderboardListItemPreview() {
+    SkillflowTheme {
+        LeaderboardListItem(
+            user = LeaderboardUser(
+                id = "1",
+                name = "Sarah Connor",
+                xp = 980,
+                rank = 5,
+                isCurrentUser = false
+            )
+        )
+    }
+}
+

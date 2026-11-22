@@ -221,3 +221,25 @@ fun LoginContent(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun LoginContentPreview() {
+    com.example.skillflow.ui.theme.SkillflowTheme {
+        LoginContent(
+            state = AuthState(),
+            snackbarHostState = remember { SnackbarHostState() },
+            email = "user@example.com",
+            password = "password",
+            isPasswordVisible = false,
+            onEmailChange = {},
+            onPasswordChange = {},
+            onTogglePasswordVisibility = {},
+            onToggleRememberMe = {},
+            onLoginClick = {},
+            onNavigateToSignUp = {},
+            onNavigateToForgotPassword = {}
+        )
+    }
+}
+

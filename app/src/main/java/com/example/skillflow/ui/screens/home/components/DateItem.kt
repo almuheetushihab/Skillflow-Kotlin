@@ -9,11 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -26,7 +28,7 @@ fun DateItem(
 ) {
     val spacing = MaterialTheme.spacing
     val containerColor = if (isSelected) GradientStart else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
-    val contentColor = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
+    val contentColor = if (isSelected) OnPrimary else MaterialTheme.colorScheme.onSurface
 
     Card(
         modifier = modifier
@@ -59,8 +61,22 @@ fun DateItem(
             )
             if (isSelected) {
                 Spacer(modifier = Modifier.height(4.dp))
-                Box(modifier = Modifier.size(4.dp).clip(RoundedCornerShape(2.dp)).background(Color.White))
+                Box(modifier = Modifier.size(4.dp).clip(RoundedCornerShape(2.dp)).background(OnPrimary))
             }
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun DateItemPreview() {
+    SkillflowTheme {
+        DateItem(
+            day = "Mon",
+            date = "15",
+            isSelected = true,
+            onClick = {}
+        )
+    }
+}
+

@@ -214,3 +214,27 @@ fun SignUpContent(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun SignUpContentPreview() {
+    com.example.skillflow.ui.theme.SkillflowTheme {
+        SignUpContent(
+            state = AuthState(),
+            snackbarHostState = remember { SnackbarHostState() },
+            name = "John Doe",
+            email = "john@example.com",
+            phone = "01712345678",
+            password = "password",
+            isPasswordVisible = false,
+            onNameChange = {},
+            onEmailChange = {},
+            onPhoneChange = {},
+            onPasswordChange = {},
+            onTogglePasswordVisibility = {},
+            onSignUpClick = {},
+            onNavigateToLogin = {}
+        )
+    }
+}
+

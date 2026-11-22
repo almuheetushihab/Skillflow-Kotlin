@@ -13,8 +13,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 @Composable
 fun BentoSavedTile(
@@ -71,3 +73,16 @@ fun BentoSavedTile(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun BentoSavedTilePreview() {
+    SkillflowTheme {
+        BentoSavedTile(
+            savedCount = 12,
+            onClick = {},
+            modifier = Modifier.size(150.dp)
+        )
+    }
+}
+

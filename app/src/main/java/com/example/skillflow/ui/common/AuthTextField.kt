@@ -12,7 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 /**
@@ -58,3 +60,16 @@ fun AuthTextField(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun AuthTextFieldPreview() {
+    SkillflowTheme {
+        AuthTextField(
+            value = "test@example.com",
+            onValueChange = {},
+            label = "Email"
+        )
+    }
+}
+

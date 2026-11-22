@@ -12,11 +12,13 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -77,7 +79,7 @@ fun LanguageToggleButton(
             ) {
                 Text(
                     text = if (currentLanguage == "en") "EN" else "BN",
-                    color = Color.White,
+                    color = OnPrimary,
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.ExtraBold
                 )
@@ -85,3 +87,15 @@ fun LanguageToggleButton(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun LanguageToggleButtonPreview() {
+    SkillflowTheme {
+        LanguageToggleButton(
+            currentLanguage = "en",
+            onToggle = {}
+        )
+    }
+}
+

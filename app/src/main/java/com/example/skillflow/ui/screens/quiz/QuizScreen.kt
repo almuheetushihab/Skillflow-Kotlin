@@ -248,3 +248,29 @@ fun QuizContent(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun QuizContentPreview() {
+    SkillflowTheme {
+        QuizContent(
+            state = QuizState(
+                questions = listOf(
+                    com.example.skillflow.domain.model.QuizQuestion(
+                        id = "1",
+                        nuggetId = "1",
+                        text = "What is Kotlin Coroutines?",
+                        options = listOf("Async framework", "Database", "UI component"),
+                        correctAnswerIndex = 0,
+                        explanation = "Coroutines allow non-blocking async execution."
+                    )
+                )
+            ),
+            onOptionSelected = {},
+            onSubmit = {},
+            onNext = {},
+            onFinish = {}
+        )
+    }
+}
+

@@ -116,3 +116,18 @@ fun RoadmapContent(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun RoadmapContentPreview() {
+    com.example.skillflow.ui.theme.SkillflowTheme {
+        RoadmapContent(
+            steps = listOf("Step 1", "Step 2", "Step 3"),
+            currentStepIndex = 1,
+            isLoading = false,
+            error = null,
+            onRetry = {}
+        )
+    }
+}
+

@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 /**
@@ -32,3 +34,12 @@ fun EmptyView(
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun EmptyViewPreview() {
+    SkillflowTheme {
+        EmptyView(message = "No items available")
+    }
+}
+

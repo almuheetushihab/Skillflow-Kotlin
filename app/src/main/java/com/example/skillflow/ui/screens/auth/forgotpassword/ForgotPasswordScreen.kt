@@ -119,3 +119,18 @@ fun ForgotPasswordContent(
         }
     }
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun ForgotPasswordContentPreview() {
+    com.example.skillflow.ui.theme.SkillflowTheme {
+        ForgotPasswordContent(
+            email = "user@example.com",
+            isSubmitted = false,
+            onEmailChange = {},
+            onSubmit = {},
+            onNavigateBack = {}
+        )
+    }
+}
+

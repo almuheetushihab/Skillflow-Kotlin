@@ -11,12 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
 import com.example.skillflow.domain.model.LeaderboardUser
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 /**
  * Pinned bottom card displaying the current user's rank and XP status.
@@ -62,12 +66,12 @@ fun CurrentUserRankCard(
                     Surface(
                         modifier = Modifier.size(48.dp),
                         shape = CircleShape,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.surface
                     ) {
                         Box(contentAlignment = Alignment.Center) {
                             Icon(
                                 imageVector = Icons.Default.MilitaryTech,
-                                contentDescription = "Your Rank",
+                                contentDescription = currentUser.name,
                                 tint = GradientStart,
                                 modifier = Modifier.size(28.dp)
                             )
@@ -79,9 +83,9 @@ fun CurrentUserRankCard(
                     Column {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text(
-                                text = "Your Current Rank",
+                                text = stringResource(R.string.social_leaderboard),
                                 style = MaterialTheme.typography.labelMedium,
-                                color = Color.White.copy(alpha = 0.85f)
+                                color = OnPrimary.copy(alpha = 0.85f)
                             )
                         }
 
@@ -89,7 +93,7 @@ fun CurrentUserRankCard(
                             text = "#${currentUser.rank} ${currentUser.name}",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = OnPrimary
                         )
                     }
                 }
@@ -97,7 +101,7 @@ fun CurrentUserRankCard(
                 // XP Badge
                 Surface(
                     shape = RoundedCornerShape(16.dp),
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.surface,
                     contentColor = GradientStart
                 ) {
                     Text(
@@ -111,3 +115,20 @@ fun CurrentUserRankCard(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun CurrentUserRankCardPreview() {
+    SkillflowTheme {
+        CurrentUserRankCard(
+            currentUser = LeaderboardUser(
+                id = "1",
+                name = "Alex Johnson",
+                xp = 1250,
+                rank = 4,
+                isCurrentUser = true
+            )
+        )
+    }
+}
+

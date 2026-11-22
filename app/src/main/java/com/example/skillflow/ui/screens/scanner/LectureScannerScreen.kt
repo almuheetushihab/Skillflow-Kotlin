@@ -7,25 +7,15 @@ import android.os.Build
 import android.provider.MediaStore
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Key
-import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -37,16 +27,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
-import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
-import com.example.skillflow.ui.theme.spacing
+import com.example.skillflow.ui.common.components.FormattedMarkdownText
+import com.example.skillflow.ui.screens.scanner.components.CourseSelectionCard
+import com.example.skillflow.ui.screens.scanner.components.GeminiApiKeyCard
+import com.example.skillflow.ui.screens.scanner.components.ScanActionCard
+import com.example.skillflow.ui.theme.SkillflowTheme
 import kotlinx.coroutines.flow.collectLatest
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LectureScannerScreen(
     onNavigateBack: () -> Unit,
@@ -105,17 +97,56 @@ fun LectureScannerScreen(
         }
     }
 
+    LectureScannerContent(
+        state = state,
+        scrollState = scrollState,
+        onNavigateBack = onNavigateBack,
+        onResetState = viewModel::resetState,
+        onCourseSelected = viewModel::onCourseSelected,
+        onLaunchCamera = { cameraLauncher.launch(null) },
+        onLaunchGallery = { galleryLauncher.launch("image/*") },
+        onAnalyzeSheet = viewModel::analyzeSheet,
+        onSaveNuggetAndNavigate = viewModel::saveNuggetAndNavigate,
+        onApiKeyInputChange = viewModel::onApiKeyInputChange,
+        onSaveApiKey = viewModel::saveApiKey,
+        onGetFreeKey = { uriHandler.openUri("https://aistudio.google.com/app/apikey") },
+        onUseOfflineExtractor = viewModel::useOfflineExtractor,
+        modifier = modifier
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun LectureScannerContent(
+    state: LectureScannerState,
+    scrollState: androidx.compose.foundation.ScrollState,
+    onNavigateBack: () -> Unit,
+    onResetState: () -> Unit,
+    onCourseSelected: (String) -> Unit,
+    onLaunchCamera: () -> Unit,
+    onLaunchGallery: () -> Unit,
+    onAnalyzeSheet: () -> Unit,
+    onSaveNuggetAndNavigate: () -> Unit,
+    onApiKeyInputChange: (String) -> Unit,
+    onSaveApiKey: () -> Unit,
+    onGetFreeKey: () -> Unit,
+    onUseOfflineExtractor: () -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         modifier = modifier,
         topBar = {
             SkillflowTopAppBar(
-                title = "Scan Lecture Sheet AI",
+                title = stringResource(R.string.scan_lecture_sheet_title),
                 navigationIcon = Icons.AutoMirrored.Filled.ArrowBack,
                 onNavigationClick = onNavigateBack,
                 actions = {
                     if (state.selectedBitmap != null && !state.isScanning) {
-                        IconButton(onClick = { viewModel.resetState() }) {
-                            Icon(imageVector = Icons.Default.Refresh, contentDescription = "Reset")
+                        IconButton(onClick = onResetState) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = stringResource(R.string.cd_reset)
+                            )
                         }
                     }
                 }
@@ -132,133 +163,20 @@ fun LectureScannerScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Target Course Selection
-            Text(
-                text = "Select Course for Scanned Sheet",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 8.dp)
+            CourseSelectionCard(
+                availableCourses = state.availableCourses,
+                selectedCourseId = state.selectedCourseId,
+                onCourseSelected = onCourseSelected
             )
-
-            state.availableCourses.forEach { course ->
-                val isSelected = state.selectedCourseId == course.id
-                Card(
-                    onClick = { viewModel.onCourseSelected(course.id) },
-                    colors = CardDefaults.cardColors(
-                        containerColor = if (isSelected)
-                            MaterialTheme.colorScheme.primaryContainer
-                        else
-                            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .padding(12.dp)
-                            .fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = isSelected,
-                            onClick = { viewModel.onCourseSelected(course.id) }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Column {
-                            Text(
-                                text = course.name,
-                                style = MaterialTheme.typography.bodyLarge,
-                                fontWeight = FontWeight.SemiBold,
-                                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurface
-                            )
-                            Text(
-                                text = course.description,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f) else MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
-            }
 
             Spacer(modifier = Modifier.height(20.dp))
 
             // Image Source Action Buttons
             if (state.selectedBitmap == null && !state.isScanning) {
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.surfaceContainerHigh
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(24.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                            modifier = Modifier.size(64.dp)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    imageVector = Icons.Default.AutoAwesome,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.size(32.dp)
-                                )
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        Text(
-                            text = "Snap or Upload Lecture Sheet",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(
-                            text = "Gemini AI will extract Classwork, Homework, Phonetics, Grammar rules & Vocabularies automatically!",
-                            style = MaterialTheme.typography.bodySmall,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
-                        )
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            Button(
-                                onClick = { cameraLauncher.launch(null) },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.CameraAlt, contentDescription = null)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Camera")
-                            }
-
-                            OutlinedButton(
-                                onClick = { galleryLauncher.launch("image/*") },
-                                modifier = Modifier.weight(1f),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.PhotoLibrary, contentDescription = null)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Gallery")
-                            }
-                        }
-                    }
-                }
+                ScanActionCard(
+                    onCameraClick = onLaunchCamera,
+                    onGalleryClick = onLaunchGallery
+                )
             }
 
             // Image Preview & Scanning Status
@@ -275,7 +193,7 @@ fun LectureScannerScreen(
                     ) {
                         Image(
                             bitmap = bitmap.asImageBitmap(),
-                            contentDescription = "Lecture Sheet Preview",
+                            contentDescription = stringResource(R.string.cd_lecture_preview),
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(220.dp)
@@ -288,7 +206,9 @@ fun LectureScannerScreen(
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.fillMaxWidth().padding(8.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
                             ) {
                                 CircularProgressIndicator(
                                     modifier = Modifier.size(24.dp),
@@ -296,20 +216,23 @@ fun LectureScannerScreen(
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
-                                    text = "Gemini AI is analyzing lecture sheet...",
+                                    text = stringResource(R.string.analyzing_lecture_sheet),
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Medium
                                 )
                             }
                         } else if (state.scannedNugget == null) {
                             Button(
-                                onClick = { viewModel.analyzeSheet() },
+                                onClick = onAnalyzeSheet,
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(12.dp)
                             ) {
-                                Icon(imageVector = Icons.Default.AutoAwesome, contentDescription = null)
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = stringResource(R.string.cd_sparkles)
+                                )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Analyze with Gemini Vision")
+                                Text(stringResource(R.string.analyze_with_gemini))
                             }
                         }
                     }
@@ -332,12 +255,12 @@ fun LectureScannerScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.CheckCircle,
-                                contentDescription = null,
+                                contentDescription = stringResource(R.string.cd_check_circle),
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Extracted Lecture Nugget",
+                                text = stringResource(R.string.extracted_lecture_nugget),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.primary
@@ -359,7 +282,7 @@ fun LectureScannerScreen(
 
                         HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
 
-                        com.example.skillflow.ui.common.components.FormattedMarkdownText(
+                        FormattedMarkdownText(
                             markdownText = nugget.content,
                             modifier = Modifier.fillMaxWidth()
                         )
@@ -368,14 +291,16 @@ fun LectureScannerScreen(
                             Spacer(modifier = Modifier.height(12.dp))
                             SuggestionChip(
                                 onClick = {},
-                                label = { Text("${nugget.quizzes.size} AI Quiz Questions Generated") }
+                                label = {
+                                    Text(stringResource(R.string.ai_quiz_generated, nugget.quizzes.size))
+                                }
                             )
                         }
 
                         Spacer(modifier = Modifier.height(16.dp))
 
                         Button(
-                            onClick = { viewModel.saveNuggetAndNavigate() },
+                            onClick = onSaveNuggetAndNavigate,
                             enabled = !state.isSaving,
                             modifier = Modifier.fillMaxWidth(),
                             shape = RoundedCornerShape(12.dp)
@@ -387,9 +312,9 @@ fun LectureScannerScreen(
                                     strokeWidth = 2.dp
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("Saving...")
+                                Text(stringResource(R.string.saving))
                             } else {
-                                Text("Save to Nuggets & Start Studying")
+                                Text(stringResource(R.string.save_to_nuggets))
                             }
                         }
                     }
@@ -398,75 +323,38 @@ fun LectureScannerScreen(
 
             state.error?.let { err ->
                 Spacer(modifier = Modifier.height(16.dp))
-                Card(
-                    colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.errorContainer
-                    ),
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = err,
-                            color = MaterialTheme.colorScheme.onErrorContainer,
-                            style = MaterialTheme.typography.bodyMedium,
-                            fontWeight = FontWeight.SemiBold,
-                            textAlign = TextAlign.Center
-                        )
-
-                        if (err.contains("API Key", ignoreCase = true) || err.contains("key", ignoreCase = true)) {
-                            Spacer(modifier = Modifier.height(12.dp))
-                            OutlinedTextField(
-                                value = state.apiKeyInput,
-                                onValueChange = viewModel::onApiKeyInputChange,
-                                label = { Text("Paste Gemini API Key") },
-                                placeholder = { Text("AI Studio Key (AIzaSy...)") },
-                                singleLine = true,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-
-                            Spacer(modifier = Modifier.height(12.dp))
-
-                            Button(
-                                onClick = { viewModel.saveApiKey() },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Icon(imageVector = Icons.Default.Key, contentDescription = null, modifier = Modifier.size(18.dp))
-                                Spacer(modifier = Modifier.width(6.dp))
-                                Text("Save & Connect API Key", fontWeight = FontWeight.Bold)
-                            }
-
-                            Spacer(modifier = Modifier.height(8.dp))
-
-                            OutlinedButton(
-                                onClick = { uriHandler.openUri("https://aistudio.google.com/app/apikey") },
-                                modifier = Modifier.fillMaxWidth(),
-                                shape = RoundedCornerShape(12.dp)
-                            ) {
-                                Text("Get Free Key from Google AI Studio")
-                            }
-                        }
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            TextButton(onClick = { viewModel.useOfflineExtractor() }) {
-                                Text("Extract with Offline Engine")
-                            }
-                            TextButton(onClick = { viewModel.analyzeSheet() }) {
-                                Text("Retry")
-                            }
-                        }
-                    }
-                }
+                GeminiApiKeyCard(
+                    errorMessage = err,
+                    apiKeyInput = state.apiKeyInput,
+                    onApiKeyChange = onApiKeyInputChange,
+                    onSaveApiKey = onSaveApiKey,
+                    onGetFreeKey = onGetFreeKey,
+                    onUseOfflineExtractor = onUseOfflineExtractor,
+                    onRetry = onAnalyzeSheet
+                )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun LectureScannerContentPreview() {
+    SkillflowTheme {
+        LectureScannerContent(
+            state = LectureScannerState(),
+            scrollState = rememberScrollState(),
+            onNavigateBack = {},
+            onResetState = {},
+            onCourseSelected = {},
+            onLaunchCamera = {},
+            onLaunchGallery = {},
+            onAnalyzeSheet = {},
+            onSaveNuggetAndNavigate = {},
+            onApiKeyInputChange = {},
+            onSaveApiKey = {},
+            onGetFreeKey = {},
+            onUseOfflineExtractor = {}
+        )
     }
 }

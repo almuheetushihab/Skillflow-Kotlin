@@ -3,6 +3,8 @@ package com.example.skillflow.ui.screens.profile.profile.components
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -10,7 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -32,7 +37,7 @@ fun StatCard(
             modifier = Modifier.padding(spacing.medium),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = color)
+            Icon(imageVector = icon, contentDescription = title, tint = color)
             Spacer(modifier = Modifier.height(spacing.small))
             Text(
                 text = value, 
@@ -48,3 +53,17 @@ fun StatCard(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun StatCardPreview() {
+    SkillflowTheme {
+        StatCard(
+            title = "Mastered",
+            value = "12",
+            icon = Icons.Default.Stars,
+            color = GradientStart
+        )
+    }
+}
+

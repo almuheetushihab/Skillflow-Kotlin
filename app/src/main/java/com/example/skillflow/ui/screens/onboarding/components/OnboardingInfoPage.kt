@@ -12,8 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -65,3 +67,15 @@ fun OnboardingInfoPage(
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun OnboardingInfoPagePreview() {
+    SkillflowTheme {
+        OnboardingInfoPage(
+            title = "Master New Skills Faster",
+            description = "Your personal guide to career growth through micro-learning."
+        )
+    }
+}
+

@@ -17,11 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skillflow.R
@@ -31,6 +31,8 @@ import com.example.skillflow.ui.common.components.stripMarkdownFormatting
 import com.example.skillflow.ui.screens.profile.settings.components.LanguageToggleButton
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -110,13 +112,13 @@ fun KnowledgeCard(
                                 if (isSpeaking) onStopAudio() else onPlayAudio("$displayTitle. $speechContent", selectedLanguage)
                             },
                             colors = IconButtonDefaults.filledIconButtonColors(
-                                containerColor = Color.White.copy(alpha = 0.25f),
-                                contentColor = Color.White
+                                containerColor = OnPrimary.copy(alpha = 0.25f),
+                                contentColor = OnPrimary
                             )
                         ) {
                             Icon(
                                 imageVector = if (isSpeaking) Icons.Default.Stop else Icons.AutoMirrored.Filled.VolumeUp,
-                                contentDescription = if (isSpeaking) "Stop Audio" else "Play Audio"
+                                contentDescription = if (isSpeaking) stringResource(R.string.cd_stop) else stringResource(R.string.cd_play)
                             )
                         }
                     }
@@ -127,14 +129,14 @@ fun KnowledgeCard(
                             verticalArrangement = Arrangement.Center
                         ) {
                             CircularProgressIndicator(
-                                color = Color.White,
+                                color = OnPrimary,
                                 modifier = Modifier.size(36.dp)
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                text = "বাংলায় অনুবাদ করা হচ্ছে...",
+                                text = stringResource(R.string.translating),
                                 style = MaterialTheme.typography.bodyMedium,
-                                color = Color.White
+                                color = OnPrimary
                             )
                         }
                     } else {
@@ -148,13 +150,13 @@ fun KnowledgeCard(
                         ) {
                             Surface(
                                 shape = CircleShape,
-                                color = Color.White.copy(alpha = 0.2f),
+                                color = OnPrimary.copy(alpha = 0.2f),
                                 modifier = Modifier.size(56.dp)
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.QuestionMark,
                                     contentDescription = revealText,
-                                    tint = Color.White,
+                                    tint = OnPrimary,
                                     modifier = Modifier.padding(MaterialTheme.spacing.medium)
                                 )
                             }
@@ -164,7 +166,7 @@ fun KnowledgeCard(
                                 style = if (displayTitle.length > 50) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displaySmall,
                                 textAlign = TextAlign.Center,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = OnPrimary
                             )
                         }
                     }
@@ -203,7 +205,7 @@ fun KnowledgeCard(
                         ) {
                             Icon(
                                 imageVector = if (isSpeaking) Icons.Default.Stop else Icons.AutoMirrored.Filled.VolumeUp,
-                                contentDescription = if (isSpeaking) "Stop Audio" else "Play Audio"
+                                contentDescription = if (isSpeaking) stringResource(R.string.cd_stop) else stringResource(R.string.cd_play)
                             )
                         }
                     }
@@ -219,7 +221,7 @@ fun KnowledgeCard(
                             )
                             Spacer(modifier = Modifier.height(12.dp))
                             Text(
-                                text = "বাংলায় অনুবাদ করা হচ্ছে...",
+                                text = stringResource(R.string.translating),
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
@@ -266,4 +268,26 @@ fun KnowledgeCard(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun KnowledgeCardPreview() {
+    SkillflowTheme {
+        KnowledgeCard(
+            nugget = KnowledgeNugget(
+                id = "1",
+                title = "Compose State Lifting",
+                shortDescription = "Understanding state flow",
+                content = "State lifting moves state to a common ancestor.",
+                complexity = "Intermediate",
+                careerPathId = "android",
+                date = "2025-01-01"
+            ),
+            isFlipped = false,
+            rotation = 0f,
+            onFlip = {}
+        )
+    }
+}
+
 

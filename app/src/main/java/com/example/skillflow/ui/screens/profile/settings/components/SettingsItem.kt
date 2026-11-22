@@ -4,13 +4,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -35,7 +38,7 @@ fun SettingsItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f, fill = false)
         ) {
-            Icon(imageVector = icon, contentDescription = null, tint = GradientStart)
+            Icon(imageVector = icon, contentDescription = title, tint = GradientStart)
             Spacer(modifier = Modifier.width(spacing.medium))
             Column {
                 Text(
@@ -55,7 +58,7 @@ fun SettingsItem(
         trailing?.invoke() ?: if (onClick != null) {
             Icon(
                 imageVector = Icons.Default.ChevronRight, 
-                contentDescription = null, 
+                contentDescription = title, 
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         } else {
@@ -63,3 +66,17 @@ fun SettingsItem(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun SettingsItemPreview() {
+    SkillflowTheme {
+        SettingsItem(
+            title = "Notifications",
+            subtitle = "Enable daily study reminders",
+            icon = Icons.Default.Settings,
+            onClick = {}
+        )
+    }
+}
+

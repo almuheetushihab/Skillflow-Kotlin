@@ -19,10 +19,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
 import com.example.skillflow.domain.model.KnowledgeNugget
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -140,10 +142,30 @@ fun NuggetCard(
             
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                contentDescription = stringResource(R.string.knowledge_nugget),
+                contentDescription = stringResource(R.string.cd_knowledge_nugget),
                 modifier = Modifier.size(spacing.medium - 2.dp),
                 tint = MaterialTheme.colorScheme.outline.copy(alpha = 0.6f)
             )
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun NuggetCardPreview() {
+    SkillflowTheme {
+        NuggetCard(
+            nugget = KnowledgeNugget(
+                id = "1",
+                title = "Kotlin Coroutines Overview",
+                shortDescription = "Learn asynchronous programming",
+                content = "Coroutines simplify async code.",
+                complexity = "Beginner",
+                careerPathId = "android",
+                date = "2025-01-01"
+            ),
+            onClick = {}
+        )
+    }
+}
+

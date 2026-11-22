@@ -13,15 +13,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.skillflow.R
 import com.example.skillflow.ui.common.LoadingView
 import com.example.skillflow.ui.common.SkillflowTopAppBar
 import com.example.skillflow.ui.screens.leaderboard.components.CurrentUserRankCard
 import com.example.skillflow.ui.screens.leaderboard.components.LeaderboardListItem
 import com.example.skillflow.ui.screens.leaderboard.components.PodiumComponent
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 /**
@@ -56,7 +60,7 @@ fun LeaderboardContent(
         modifier = modifier.fillMaxSize(),
         topBar = {
             SkillflowTopAppBar(
-                title = "Social Leaderboard",
+                title = stringResource(R.string.social_leaderboard),
                 navigationIcon = if (onNavigateBack != null) Icons.AutoMirrored.Filled.ArrowBack else null,
                 onNavigationClick = { onNavigateBack?.invoke() }
             )
@@ -103,8 +107,8 @@ fun LeaderboardContent(
                                     Box(contentAlignment = Alignment.Center) {
                                         Icon(
                                             imageVector = Icons.Default.Leaderboard,
-                                            contentDescription = null,
-                                            tint = Color.White
+                                            contentDescription = stringResource(R.string.social_leaderboard),
+                                            tint = OnPrimary
                                         )
                                     }
                                 }
@@ -113,13 +117,13 @@ fun LeaderboardContent(
 
                                 Column {
                                     Text(
-                                        text = "Global Hall of Fame",
+                                        text = stringResource(R.string.social_leaderboard),
                                         style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
                                         color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Text(
-                                        text = "Compete with learners worldwide and level up your skills!",
+                                        text = stringResource(R.string.leaderboard_subtitle),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
@@ -143,7 +147,7 @@ fun LeaderboardContent(
                         item {
                             Spacer(modifier = Modifier.height(spacing.small))
                             Text(
-                                text = "All Learners",
+                                text = stringResource(R.string.all_learning_material),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
@@ -174,3 +178,15 @@ fun LeaderboardContent(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun LeaderboardContentPreview() {
+    SkillflowTheme {
+        LeaderboardContent(
+            uiState = LeaderboardUiState(),
+            onNavigateBack = {}
+        )
+    }
+}
+

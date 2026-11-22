@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -30,6 +31,8 @@ import com.example.skillflow.R
 import com.example.skillflow.domain.model.UserNote
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -92,8 +95,8 @@ fun ViewNoteDialog(
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.Notes,
-                                contentDescription = null,
-                                tint = Color.White,
+                                contentDescription = stringResource(R.string.view_note),
+                                tint = OnPrimary,
                                 modifier = Modifier.size(22.dp)
                             )
                         }
@@ -211,7 +214,7 @@ fun ViewNoteDialog(
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = GradientStart,
-                                contentColor = Color.White
+                                contentColor = OnPrimary
                             ),
                             contentPadding = PaddingValues(vertical = 12.dp, horizontal = spacing.small)
                         ) {
@@ -259,3 +262,24 @@ fun ViewNoteDialog(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun ViewNoteDialogPreview() {
+    SkillflowTheme {
+        ViewNoteDialog(
+            note = UserNote(
+                id = "1",
+                nuggetId = "1",
+                title = "Coroutines Notes",
+                noteContent = "Detailed notes on coroutine scopes and dispatchers.",
+                timestamp = System.currentTimeMillis()
+            ),
+            onDismiss = {},
+            onEdit = {},
+            onDelete = {},
+            onCopy = {}
+        )
+    }
+}
+

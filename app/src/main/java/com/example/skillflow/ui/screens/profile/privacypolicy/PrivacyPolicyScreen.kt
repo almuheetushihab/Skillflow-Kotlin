@@ -9,8 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.skillflow.R
 import com.example.skillflow.ui.common.SkillflowTopAppBar
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -52,3 +54,12 @@ fun PrivacyPolicyScreen(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun PrivacyPolicyScreenPreview() {
+    SkillflowTheme {
+        PrivacyPolicyScreen(onNavigateBack = {})
+    }
+}
+

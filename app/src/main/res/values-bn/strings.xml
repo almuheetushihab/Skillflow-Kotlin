@@ -320,4 +320,53 @@
     <string name="status_finished">শেষ হয়েছে</string>
     <string name="status_start_now">এখনই শুরু করুন</string>
     <string name="all_short">সব</string>
+
+    <!-- Scanner & Lecture Sheet AI -->
+    <string name="scan_lecture_sheet_title">লেকচার শিট স্ক্যান (AI)</string>
+    <string name="select_course_for_sheet">স্ক্যানকৃত শিটের জন্য কোর্স নির্বাচন করুন</string>
+    <string name="snap_or_upload_sheet">লেকচার শিট ছবি তুলুন বা আপলোড করুন</string>
+    <string name="gemini_extract_desc">Gemini AI স্বয়ংক্রিয়ভাবে ক্লাসওয়ার্ক, হোমওয়ার্ক, ফোনেটিক্স, গ্রামার ও ভোকাবুলারি এক্সট্র্যাক্ট করবে!</string>
+    <string name="camera">ক্যামেরা</string>
+    <string name="gallery">গ্যালারি</string>
+    <string name="analyzing_lecture_sheet">Gemini AI লেকচার শিট বিশ্লেষণ করছে...</string>
+    <string name="analyze_with_gemini">Gemini Vision দিয়ে বিশ্লেষণ করুন</string>
+    <string name="extracted_lecture_nugget">এক্সট্র্যাক্টকৃত লেকচার নাগেট</string>
+    <string name="ai_quiz_generated">%1$d টি AI কুইজ প্রশ্ন তৈরি করা হয়েছে</string>
+    <string name="saving">সংরক্ষণ করা হচ্ছে...</string>
+    <string name="save_to_nuggets">নাগেটে সংরক্ষণ করুন এবং পড়া শুরু করুন</string>
+    <string name="paste_gemini_api_key">Gemini API Key পেস্ট করুন</string>
+    <string name="api_key_placeholder">AI Studio Key (AIzaSy...)</string>
+    <string name="save_connect_api_key">API Key সংরক্ষণ ও সংযোগ করুন</string>
+    <string name="get_free_key">Google AI Studio থেকে ফ্রি Key নিন</string>
+    <string name="extract_offline_engine">অফলাইন ইঞ্জিন দিয়ে এক্সট্র্যাক্ট করুন</string>
+    <string name="scan_lecture_banner_title">AI দিয়ে লেকচার শিট স্ক্যান করুন</string>
+    <string name="scan_lecture_banner_desc">Mentors\' বা IELTS শিটের ছবি তুলুন</string>
+
+    <!-- Detail & AI Assistant -->
+    <string name="ask_ai_assistant">AI অ্যাসিস্ট্যান্টকে প্রশ্ন করুন</string>
+    <string name="need_help_understanding">বুঝতে কোনো সাহায্য দরকার?</string>
+    <string name="ask_ai_tutor_desc">তাৎক্ষণিক বিষয়ের বিস্তারিত জানতে AI টিউটরকে প্রশ্ন করুন</string>
+    <string name="ask_ai">AI কে প্রশ্ন করুন</string>
+
+    <!-- Video & Media -->
+    <string name="change_video">পরিবর্তন</string>
+    <string name="remove_video">সরান</string>
+    <string name="add_custom_video">কাস্টম ভিডিও যোগ করুন</string>
+    <string name="knowledge_video">লেসন ভিডিও</string>
+
+    <!-- Accessibility Descriptions -->
+    <string name="cd_back">ফিরে যান</string>
+    <string name="cd_reset">পুনরায় সেট করুন</string>
+    <string name="cd_sparkles">AI আলো</string>
+    <string name="cd_check_circle">সম্পন্ন</string>
+    <string name="cd_key">API Key আইকন</string>
+    <string name="cd_search">অনুসন্ধান আইকন</string>
+    <string name="cd_book">বই আইকন</string>
+    <string name="cd_settings">সেটিংস আইকন</string>
+    <string name="cd_notification">নোটিফিকেশন আইকন</string>
+    <string name="cd_play">অডিও প্লে করুন</string>
+    <string name="cd_stop">অডিও থামান</string>
+    <string name="cd_knowledge_nugget">জ্ঞানের নাগেট</string>
+    <string name="cd_lecture_preview">লেকচার শিট প্রিভিউ</string>
+    <string name="translating">বাংলায় অনুবাদ করা হচ্ছে...</string>
 </resources>

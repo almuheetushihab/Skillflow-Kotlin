@@ -18,13 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.ui.theme.spacing
 
 @Composable
@@ -82,8 +84,8 @@ fun NoteInputCard(
                     ) {
                         Icon(
                             imageVector = Icons.Default.EditNote,
-                            contentDescription = null,
-                            tint = Color.White,
+                            contentDescription = stringResource(R.string.add_study_note),
+                            tint = OnPrimary,
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -98,7 +100,7 @@ fun NoteInputCard(
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = if (isEditing) "Update your study note" else "Jot down your key takeaways",
+                            text = if (isEditing) stringResource(R.string.edit_note) else stringResource(R.string.add_study_note),
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -134,7 +136,7 @@ fun NoteInputCard(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Title,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.note_title_placeholder),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(18.dp)
                     )
@@ -161,7 +163,7 @@ fun NoteInputCard(
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Notes,
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.note_details_placeholder),
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(18.dp)
                     )
@@ -187,7 +189,7 @@ fun NoteInputCard(
                 modifier = Modifier.align(Alignment.End),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = GradientStart,
-                    contentColor = Color.White
+                    contentColor = OnPrimary
                 ),
                 shape = RoundedCornerShape(12.dp),
                 enabled = title.isNotBlank() && description.isNotBlank(),
@@ -208,3 +210,18 @@ fun NoteInputCard(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun NoteInputCardPreview() {
+    SkillflowTheme {
+        NoteInputCard(
+            title = "My Note",
+            onTitleChange = {},
+            description = "Note description...",
+            onDescriptionChange = {},
+            onSave = {}
+        )
+    }
+}
+

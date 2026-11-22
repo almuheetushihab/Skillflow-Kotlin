@@ -15,15 +15,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.skillflow.R
 import com.example.skillflow.ui.theme.GradientEnd
 import com.example.skillflow.ui.theme.GradientStart
+import com.example.skillflow.ui.theme.OnPrimary
+import com.example.skillflow.ui.theme.SkillflowTheme
 
 @Composable
 fun BentoProgressTile(
@@ -58,7 +60,7 @@ fun BentoProgressTile(
                     .size(130.dp)
                     .offset(x = (-40).dp, y = (-40).dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.08f))
+                    .background(OnPrimary.copy(alpha = 0.08f))
             )
             Box(
                 modifier = Modifier
@@ -66,7 +68,7 @@ fun BentoProgressTile(
                     .align(Alignment.BottomEnd)
                     .offset(x = 25.dp, y = 25.dp)
                     .clip(CircleShape)
-                    .background(Color.White.copy(alpha = 0.12f))
+                    .background(OnPrimary.copy(alpha = 0.12f))
             )
 
             Column(
@@ -81,13 +83,13 @@ fun BentoProgressTile(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Surface(
-                        color = Color.White.copy(alpha = 0.2f),
+                        color = OnPrimary.copy(alpha = 0.2f),
                         shape = CircleShape
                     ) {
                         Icon(
                             imageVector = Icons.Default.TrendingUp,
-                            contentDescription = null,
-                            tint = Color.White,
+                            contentDescription = stringResource(R.string.daily_progress),
+                            tint = OnPrimary,
                             modifier = Modifier
                                 .padding(6.dp)
                                 .size(18.dp)
@@ -95,14 +97,14 @@ fun BentoProgressTile(
                     }
 
                     Surface(
-                        color = Color.White.copy(alpha = 0.25f),
+                        color = OnPrimary.copy(alpha = 0.25f),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(
                             text = "${(progress.value * 100).toInt()}%",
                             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                             style = MaterialTheme.typography.labelMedium,
-                            color = Color.White,
+                            color = OnPrimary,
                             fontWeight = FontWeight.ExtraBold
                         )
                     }
@@ -112,7 +114,7 @@ fun BentoProgressTile(
                     Text(
                         text = stringResource(R.string.learning_progress),
                         style = MaterialTheme.typography.titleMedium,
-                        color = Color.White,
+                        color = OnPrimary,
                         fontWeight = FontWeight.Black,
                         fontSize = 16.sp,
                         letterSpacing = 0.3.sp
@@ -121,7 +123,7 @@ fun BentoProgressTile(
                     Text(
                         text = "$completedCount / $totalCount ${stringResource(R.string.mastered).lowercase()}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.85f),
+                        color = OnPrimary.copy(alpha = 0.85f),
                         fontWeight = FontWeight.Medium
                     )
                 }
@@ -133,8 +135,8 @@ fun BentoProgressTile(
                             .fillMaxWidth()
                             .height(8.dp)
                             .clip(CircleShape),
-                        color = Color.White,
-                        trackColor = Color.White.copy(alpha = 0.25f),
+                        color = OnPrimary,
+                        trackColor = OnPrimary.copy(alpha = 0.25f),
                         strokeCap = StrokeCap.Round
                     )
 
@@ -146,7 +148,7 @@ fun BentoProgressTile(
                         else
                             stringResource(R.string.keep_momentum),
                         style = MaterialTheme.typography.labelSmall,
-                        color = Color.White.copy(alpha = 0.9f),
+                        color = OnPrimary.copy(alpha = 0.9f),
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp
                     )
@@ -155,3 +157,16 @@ fun BentoProgressTile(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun BentoProgressTilePreview() {
+    SkillflowTheme {
+        BentoProgressTile(
+            completedCount = 5,
+            totalCount = 10,
+            modifier = Modifier.size(200.dp)
+        )
+    }
+}
+

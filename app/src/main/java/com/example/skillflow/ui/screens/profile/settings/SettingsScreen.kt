@@ -350,3 +350,26 @@ private fun formatReminderTime(timeInMillisFromMidnight: Long): String {
     val hour12 = if (hours % 12 == 0) 12 else hours % 12
     return String.format(Locale.getDefault(), "%02d:%02d %s", hour12, minutes, amPm)
 }
+
+@androidx.compose.ui.tooling.preview.Preview(showBackground = true)
+@Composable
+private fun SettingsContentPreview() {
+    com.example.skillflow.ui.theme.SkillflowTheme {
+        SettingsContent(
+            state = SettingsState(),
+            snackbarHostState = remember { SnackbarHostState() },
+            showDeleteDialog = false,
+            onNavigateBack = {},
+            onUpdateName = {},
+            onUpdateEmail = {},
+            onSetLanguage = {},
+            onSetNotificationEnabled = {},
+            onSetReminderTime = {},
+            onNavigateToPrivacy = {},
+            onLogout = {},
+            onDeleteAccount = {},
+            onShowDeleteDialogChange = {}
+        )
+    }
+}
+

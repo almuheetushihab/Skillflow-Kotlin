@@ -20,12 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.skillflow.R
@@ -167,15 +167,15 @@ fun DetailContent(
                     icon = {
                         Icon(
                             imageVector = Icons.Default.AutoAwesome,
-                            contentDescription = "Ask AI Assistant",
-                            tint = Color.White
+                            contentDescription = stringResource(R.string.ask_ai_assistant),
+                            tint = OnPrimary
                         )
                     },
                     text = {
                         Text(
-                            text = "Ask AI Assistant",
+                            text = stringResource(R.string.ask_ai_assistant),
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = OnPrimary
                         )
                     },
                     containerColor = GradientStart
@@ -345,8 +345,8 @@ fun DetailContent(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.AutoAwesome,
-                                    contentDescription = null,
-                                    tint = Color.White,
+                                    contentDescription = stringResource(R.string.cd_sparkles),
+                                    tint = OnPrimary,
                                     modifier = Modifier.size(22.dp)
                                 )
                             }
@@ -355,13 +355,13 @@ fun DetailContent(
 
                             Column {
                                 Text(
-                                    text = "Need help understanding?",
+                                    text = stringResource(R.string.need_help_understanding),
                                     style = MaterialTheme.typography.titleSmall,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
-                                    text = "Ask SkillFlow AI Tutor for instant insights",
+                                    text = stringResource(R.string.ask_ai_tutor_desc),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -371,10 +371,10 @@ fun DetailContent(
                         Surface(
                             shape = RoundedCornerShape(20.dp),
                             color = GradientStart,
-                            contentColor = Color.White
+                            contentColor = OnPrimary
                         ) {
                             Text(
-                                text = "Ask AI",
+                                text = stringResource(R.string.ask_ai),
                                 modifier = Modifier.padding(horizontal = spacing.medium, vertical = spacing.small),
                                 style = MaterialTheme.typography.labelMedium,
                                 fontWeight = FontWeight.Bold
@@ -399,3 +399,37 @@ fun DetailContent(
         )
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun DetailContentPreview() {
+    SkillflowTheme {
+        DetailContent(
+            state = DetailState(),
+            isSpeaking = false,
+            snackbarHostState = remember { SnackbarHostState() },
+            scrollState = rememberScrollState(),
+            onNavigateBack = {},
+            onToggleSave = {},
+            onFlipCard = {},
+            onMarkAsMastered = {},
+            onToggleLanguage = {},
+            onPlayAudio = { _, _ -> },
+            onStopAudio = {},
+            onNoteTitleChange = {},
+            onNoteDescChange = {},
+            onSaveNote = {},
+            onEditNote = {},
+            onCancelEditNote = {},
+            onDeleteNote = {},
+            onCopyNoteText = {},
+            onToggleAiSheet = {},
+            onAiQuestionChange = {},
+            onSendAiQuestion = {},
+            onSaveVideo = {},
+            onRemoveVideo = {}
+        )
+    }
+}
+
+

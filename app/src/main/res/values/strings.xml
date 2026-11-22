@@ -320,4 +320,53 @@
     <string name="status_finished">Finished</string>
     <string name="status_start_now">Start now</string>
     <string name="all_short">All</string>
+
+    <!-- Scanner & Lecture Sheet AI -->
+    <string name="scan_lecture_sheet_title">Scan Lecture Sheet AI</string>
+    <string name="select_course_for_sheet">Select Course for Scanned Sheet</string>
+    <string name="snap_or_upload_sheet">Snap or Upload Lecture Sheet</string>
+    <string name="gemini_extract_desc">Gemini AI will extract Classwork, Homework, Phonetics, Grammar rules &amp; Vocabularies automatically!</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="analyzing_lecture_sheet">Gemini AI is analyzing lecture sheet...</string>
+    <string name="analyze_with_gemini">Analyze with Gemini Vision</string>
+    <string name="extracted_lecture_nugget">Extracted Lecture Nugget</string>
+    <string name="ai_quiz_generated">%1$d AI Quiz Questions Generated</string>
+    <string name="saving">Saving...</string>
+    <string name="save_to_nuggets">Save to Nuggets &amp; Start Studying</string>
+    <string name="paste_gemini_api_key">Paste Gemini API Key</string>
+    <string name="api_key_placeholder">AI Studio Key (AIzaSy...)</string>
+    <string name="save_connect_api_key">Save &amp; Connect API Key</string>
+    <string name="get_free_key">Get Free Key from Google AI Studio</string>
+    <string name="extract_offline_engine">Extract with Offline Engine</string>
+    <string name="scan_lecture_banner_title">Scan Lecture Sheet with AI</string>
+    <string name="scan_lecture_banner_desc">Snap photo of Mentors\' or IELTS sheets</string>
+
+    <!-- Detail & AI Assistant -->
+    <string name="ask_ai_assistant">Ask AI Assistant</string>
+    <string name="need_help_understanding">Need help understanding?</string>
+    <string name="ask_ai_tutor_desc">Ask SkillFlow AI Tutor for instant insights</string>
+    <string name="ask_ai">Ask AI</string>
+
+    <!-- Video & Media -->
+    <string name="change_video">Change</string>
+    <string name="remove_video">Remove</string>
+    <string name="add_custom_video">Add Custom Video</string>
+    <string name="knowledge_video">Lesson Video</string>
+
+    <!-- Accessibility Descriptions -->
+    <string name="cd_back">Go back</string>
+    <string name="cd_reset">Reset</string>
+    <string name="cd_sparkles">AI Sparkles</string>
+    <string name="cd_check_circle">Completed</string>
+    <string name="cd_key">API Key Icon</string>
+    <string name="cd_search">Search icon</string>
+    <string name="cd_book">Book icon</string>
+    <string name="cd_settings">Settings icon</string>
+    <string name="cd_notification">Notification icon</string>
+    <string name="cd_play">Play audio</string>
+    <string name="cd_stop">Stop audio</string>
+    <string name="cd_knowledge_nugget">Knowledge nugget</string>
+    <string name="cd_lecture_preview">Lecture Sheet Preview</string>
+    <string name="translating">Translating to Bangla...</string>
 </resources>

@@ -23,7 +23,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.skillflow.R
+import com.example.skillflow.ui.theme.SkillflowTheme
 import com.example.skillflow.util.VideoFileHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -81,11 +84,11 @@ fun VideoSectionComponent(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Change Video",
+                        contentDescription = stringResource(R.string.change_video),
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(text = "Change", style = MaterialTheme.typography.labelMedium)
+                    Text(text = stringResource(R.string.change_video), style = MaterialTheme.typography.labelMedium)
                 }
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -99,11 +102,11 @@ fun VideoSectionComponent(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Remove Video",
+                        contentDescription = stringResource(R.string.remove_video),
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text(text = "Remove", style = MaterialTheme.typography.labelMedium)
+                    Text(text = stringResource(R.string.remove_video), style = MaterialTheme.typography.labelMedium)
                 }
             }
         } else {
@@ -127,13 +130,13 @@ fun VideoSectionComponent(
                     .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
                 Text(
-                    text = "Attach Reference Video",
+                    text = stringResource(R.string.add_custom_video),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "Choose a video from your gallery or record a new one with your camera.",
+                    text = stringResource(R.string.knowledge_video),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -168,7 +171,7 @@ fun VideoSectionComponent(
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
                                     imageVector = Icons.Default.PhotoLibrary,
-                                    contentDescription = null,
+                                    contentDescription = stringResource(R.string.gallery),
                                     tint = MaterialTheme.colorScheme.primary
                                 )
                             }
@@ -178,12 +181,12 @@ fun VideoSectionComponent(
 
                         Column {
                             Text(
-                                text = "Choose from Gallery",
+                                text = stringResource(R.string.gallery),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "Pick an existing video or screen recording",
+                                text = stringResource(R.string.knowledge_video),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -221,7 +224,7 @@ fun VideoSectionComponent(
                             Box(contentAlignment = Alignment.Center) {
                                 Icon(
                                     imageVector = Icons.Default.Videocam,
-                                    contentDescription = null,
+                                    contentDescription = stringResource(R.string.camera),
                                     tint = MaterialTheme.colorScheme.secondary
                                 )
                             }
@@ -231,12 +234,12 @@ fun VideoSectionComponent(
 
                         Column {
                             Text(
-                                text = "Record with Camera",
+                                text = stringResource(R.string.camera),
                                 style = MaterialTheme.typography.titleSmall,
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = "Shoot a new video using your phone camera",
+                                text = stringResource(R.string.knowledge_video),
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -282,7 +285,7 @@ fun AddVideoPlaceholderCard(
                     Box(contentAlignment = Alignment.Center) {
                         Icon(
                             imageVector = Icons.Default.Videocam,
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.knowledge_video),
                             tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(24.dp)
                         )
@@ -293,13 +296,13 @@ fun AddVideoPlaceholderCard(
 
                 Column {
                     Text(
-                        text = "Add Reference Video",
+                        text = stringResource(R.string.add_custom_video),
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "Attach gallery video or record camera demo",
+                        text = stringResource(R.string.knowledge_video),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -317,12 +320,12 @@ fun AddVideoPlaceholderCard(
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
-                        contentDescription = "Add Video",
+                        contentDescription = stringResource(R.string.add_custom_video),
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "Add",
+                        text = stringResource(R.string.add_custom_video),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Bold
                     )
@@ -331,3 +334,16 @@ fun AddVideoPlaceholderCard(
         }
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+private fun VideoSectionComponentPreview() {
+    SkillflowTheme {
+        VideoSectionComponent(
+            videoUrl = null,
+            onSaveVideo = {},
+            onRemoveVideo = {}
+        )
+    }
+}
+
